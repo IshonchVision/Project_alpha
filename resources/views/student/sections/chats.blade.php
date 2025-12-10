@@ -4,19 +4,7 @@
 @section('page-title', 'Chatlar')
 
 @section('content')
-<div class="top-bar">
-    <h1 class="page-title">@yield('page-title', 'Chatlar')</h1>
-    <div class="search-box">
-        <input type="text" class="search-input" placeholder="Xabar yoki guruh qidirish...">
-    </div>
-    <div class="user-info">
-        <img src="https://ui-avatars.com/api/?name=Malika+Karimova&background=3b82f6&color=fff" alt="Student" class="avatar">
-        <div>
-            <h5 style="margin: 0; font-weight: 800; font-size: 16px;">Malika Karimova</h5>
-            <p style="margin: 0; color: #64748b; font-size: 14px;">Talaba</p>
-        </div>
-    </div>
-</div>
+    
 
 <div class="row">
     <!-- Guruhlar ro'yxati (chap taraf) -->

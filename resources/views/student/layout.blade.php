@@ -271,10 +271,11 @@
                 <input type="text" class="search-input" placeholder="Qidirish...">
             </div>
             <div class="user-info">
-                <img src="https://ui-avatars.com/api/?name=Malika+Karimova&background=3b82f6&color=fff" alt="Student" class="avatar">
                 <div>
-                    <h5 style="margin: 0; font-weight: 800; font-size: 16px;">Malika Karimova</h5>
-                    <p style="margin: 0; color: #64748b; font-size: 14px;">Talaba</p>
+                    <h5 style="margin: 0; font-weight: 800; font-size: 16px;">{{ Auth::user()->name }}</h5>
+                    <p style="margin: 0; color: #64748b; font-size: 14px;">
+                        {{ Auth::user()->role === 'user' ? 'Talaba' : ucfirst(Auth::user()->role) }}
+                    </p>
                 </div>
             </div>
         </div>

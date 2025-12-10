@@ -1,3 +1,9 @@
+@extends('admin.layout')
+
+@section('title', 'Guruhlar')
+@section('page-title', 'Guruhlar')
+
+@section('content')
 <div class="card">
     <div class="card-header">
         <h4>Barcha To'lovlar</h4>
@@ -55,8 +61,6 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Laravel orqali real ma'lumotlar kelsa shu yerda @forelse ishlatiladi -->
-                    <!-- Hozircha demo data -->
                     <tr>
                         <td>#1001</td>
                         <td>
@@ -123,3 +127,5 @@
         </div>
     </div>
 </div>
+
+@endsection

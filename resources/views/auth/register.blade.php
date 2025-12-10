@@ -41,7 +41,6 @@
 
                 <form action="{{ route('register') }}" method="POST">
                     @csrf
-
                     <div class="mb-3">
                         <label for="name" class="form-label">Ismingiz</label>
                         <input type="text" name="name" class="form-control" id="name" placeholder="Ismingiz" required>
@@ -83,5 +82,27 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    toastr.options = {
+        "closeButton": true,
+        "progressBar": true,
+        "positionClass": "toast-top-right",
+        "timeOut": "5000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    }
+
+    @if(session('success'))
+    toastr.success("{{ session('success') }}")
+    @endif
+
+    @if(session('error'))
+    toastr.error("{{ session('error') }}")
+    @endif
+</script>
 </body>
 </html>
