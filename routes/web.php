@@ -82,3 +82,67 @@ Route::prefix('admin')->name('admin.')->group(function () {
     })->name('settings');
     
 });
+
+
+Route::prefix('teacher')->name('teacher.')->group(function () {
+    
+    Route::get('/dashboard', function () {
+        return view('teacher.sections.dashboard');
+    })->name('dashboard');
+    
+    Route::get('/groups', function () {
+        return view('teacher.sections.groups');
+    })->name('groups');
+    
+    Route::get('/courses', function () {
+        return view('teacher.sections.courses');
+    })->name('courses');
+    
+    Route::get('/students', function () {
+        return view('teacher.sections.students');
+    })->name('students');
+    
+    Route::get('/grades', function () {
+        return view('teacher.sections.greades');
+    })->name('grades');
+    
+    Route::get('/chats', function () {
+        return view('teacher.sections.chats');
+    })->name('chats');
+    
+    Route::get('/settings', function () {
+        return view('teacher.sections.settings');
+    })->name('settings');
+    
+});
+
+
+
+
+Route::prefix('student')->name('student.')->group(function () {
+    
+    Route::get('/dashboard', function () {
+        return view('student.sections.dashboard');
+    })->name('dashboard');
+    
+    Route::get('/courses', function () {
+        return view('student.sections.courses');
+    })->name('courses');
+    
+    Route::get('/course/{id}', function () {
+        return view('student.sections.course_detail');
+    })->name('course.detail');
+    
+    Route::get('/grades', function () {
+        return view('student.sections.grades');
+    })->name('grades');
+    
+    Route::get('/chats', function () {
+        return view('student.sections.chats');
+    })->name('chats');
+    
+    Route::get('/settings', function () {
+        return view('student.sections.settings');
+    })->name('settings');
+    
+});
