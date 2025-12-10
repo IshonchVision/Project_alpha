@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\GroupChatsController;
 use App\Http\Controllers\HomeController;
@@ -197,3 +198,7 @@ Route::get('/student/courses/{course}', function ($course) {
 Route::get('/student/lessons/{lesson}', function ($lesson) {
     return view('student.section.lesson', ['lessonId' => $lesson]);
 })->name('student.lessons.show');
+
+
+Route::post('/contact/message/send', [ContactController::class, 'store'])
+    ->name('contact.message.send');

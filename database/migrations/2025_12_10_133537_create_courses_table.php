@@ -19,6 +19,7 @@ return new class extends Migration
             $table->boolean('is_active')->default(true);
             $table->string('sertificate_template');
             $table->foreignId('user_id')->constrained('users');
+            $table->string('img');
             $table->timestamps();
         });
     }
