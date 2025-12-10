@@ -70,7 +70,7 @@ Route::post('/register', [AuthController::class, 'register']);
 // Mening kurslarim
 
 
-Route::get('/universal/panel/{role}' , [UniversalController::class , 'panel']);
+Route::get('/universal/panel' , [UniversalController::class , 'panel']);
 
 
 

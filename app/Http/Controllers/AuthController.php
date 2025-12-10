@@ -48,6 +48,7 @@ class AuthController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password), // avto hash
             'role' => 'user',
+            'status' => true
         ]);
 
         // 3. Muvaffaqiyatli xabar
@@ -79,6 +80,13 @@ class AuthController extends Controller
 
             $user = Auth::user();
 
+            if($user)
+            {
+                $user->update([
+                    'status' => true
+                ]);
+            }
+
             // Role ga qarab yo'naltirish
             if ($user->role === 'teacher') {
                 return redirect('/teacher/dashboard')->with('success', 'Xush kelibsiz, o\'qituvchi!');
@@ -100,10 +108,17 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
+        $user = Auth::user();
         Auth::logout();
 
         $request->session()->invalidate(); // sessiyani tozalaydi
         $request->session()->regenerateToken(); // CSRF tokenni yangilaydi
+
+        if($user){
+            $user->update([
+                'status' => false
+            ]);
+        }
 
         return redirect('/')->with('success', 'Muvaffaqiyatli chiqdingiz!');
     }
