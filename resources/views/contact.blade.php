@@ -79,16 +79,6 @@
                             <div>
                                 <button class="btn btn-primary py-3 px-5" type="submit">Yuborish</button>
                             </div>
-                        </div>
-                        <div class="form-group">
-                            <input type="text" class="form-control border-top-0 border-right-0 border-left-0 p-0" placeholder="Fan" required="required">
-                        </div>
-                        <div class="form-group">
-                            <textarea class="form-control border-top-0 border-right-0 border-left-0 p-0" rows="5" placeholder="Xabar" required="required"></textarea>
-                        </div>
-                        <div>
-                            <button class="btn btn-primary py-3 px-5" type="submit">Yuborish</button>
-                        </div>
                     </form>
                 </div>
             </div>
