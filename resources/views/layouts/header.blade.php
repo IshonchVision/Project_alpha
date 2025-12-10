@@ -25,8 +25,9 @@
                 </div>
 
                 <a href="{{ url('/contact') }}" class="nav-item nav-link {{ request()->is('contact') ? 'active' : '' }}">Bizga bog'lanish</a>
+                @if (Auth::user())
                 <a href="{{ url('/my_course') }}" class="nav-item nav-link {{ request()->is('my_course') ? 'active' : '' }}">Mening kurslarim</a>
-                <a href="{{ url('/group_chats') }}" class="nav-item nav-link {{ request()->is('group_chats') ? 'active' : '' }}">Guruh chatlari</a>
+                @endif
             </div>
 
             <div class="d-flex align-items-center">
