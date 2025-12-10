@@ -15,10 +15,10 @@
                 <a href="{{ url('/course') }}" class="nav-item nav-link {{ request()->is('course') ? 'active' : '' }}">Kurslar</a>
 
                 <div class="nav-item dropdown">
-                    <a href="#" class="nav-link dropdown-toggle {{ request()->is('detail') || request()->is('feature.html') || request()->is('team') || request()->is('testimonial') ? 'active' : '' }}" data-toggle="dropdown">Sahifalar</a>
+                    <a href="#" class="nav-link dropdown-toggle {{ request()->is('detail') || request()->is('feature') || request()->is('team') || request()->is('testimonial') ? 'active' : '' }}" data-toggle="dropdown">Sahifalar</a>
                     <div class="dropdown-menu m-0">
                         <a href="{{ url('detail') }}" class="dropdown-item {{ request()->is('detail') ? 'active' : '' }}">Kurs tafsilotlari</a>
-                        <a href="{{ url('feature') }}" class="dropdown-item {{ request()->is('feature.html') ? 'active' : '' }}">Nimalar olasiz</a>
+                        <a href="{{ url('feature') }}" class="dropdown-item {{ request()->is('feature') ? 'active' : '' }}">Nimalar olasiz</a>
                         <a href="{{ url('team') }}" class="dropdown-item {{ request()->is('team') ? 'active' : '' }}">Bizning jamoa</a>
                         <a href="{{ url('testimonial') }}" class="dropdown-item {{ request()->is('testimonial') ? 'active' : '' }}">Maqolalar</a>
                     </div>
@@ -29,9 +29,29 @@
                 <a href="{{ url('/group_chats') }}" class="nav-item nav-link {{ request()->is('group_chats') ? 'active' : '' }}">Guruh chatlari</a>
             </div>
 
-            <div class="d-flex">
-                <a href="{{ url('/login_blade') }}" class="btn btn-outline-primary py-2 px-4 mr-2">Login</a>
-                <a href="{{ url('/register_blade') }}" class="btn btn-primary py-2 px-4">Register</a>
+            <div class="d-flex align-items-center">
+                @auth
+                    <div class="dropdown">
+                        <a href="#" class="dropdown-toggle text-primary font-weight-bold mr-4" data-toggle="dropdown">
+                            {{ Auth::user()->name }}
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right m-0">
+                            <a href="{{ url('/profile') }}" class="dropdown-item">Profil</a>
+                            <a href="{{ url('/logout') }}" class="dropdown-item"
+                               onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                Chiqish
+                            </a>
+                            <form id="logout-form" action="{{ url('/logout') }}" method="POST" class="d-none">
+                                @csrf
+                            </form>
+                        </div>
+                    </div>
+
+                    <a href="{{ url('/universal/panel') }}" class="btn btn-primary py-2 px-4">Panelga o'tish</a>
+                @else
+                    <a href="{{ url('/login') }}" class="btn btn-outline-primary py-2 px-4 mr-2">Login</a>
+                    <a href="{{ url('/register') }}" class="btn btn-primary py-2 px-4">Register</a>
+                @endauth
             </div>
         </div>
     </nav>
