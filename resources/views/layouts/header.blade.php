@@ -2,7 +2,7 @@
     <nav class="navbar navbar-expand-lg bg-white navbar-light py-3 py-lg-0 px-lg-5">
         <a href="{{ url('/') }}" class="navbar-brand ml-lg-3">
             <h1 class="m-0 text-uppercase text-primary">
-                <i class="fa fa-book-reader mr-3"></i>Killer
+                <i class="fa fa-book-reader mr-3"></i>Ta'lim
             </h1>
         </a>
         <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
