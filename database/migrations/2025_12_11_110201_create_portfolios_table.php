@@ -11,14 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('videos', function (Blueprint $table) {
+        Schema::create('portfolios', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
-            $table->string('video_url');
+            $table->foreignId('user_id')->unique()->constrained('users')->onDelete('cascade');
+            $table->string('title')->default('Mening portfolio');
             $table->text('description')->nullable();
-            $table->integer('duration_seconds');
-            $table->foreignId('user_id')->constrained('users');
-            $table->foreignId('course_id')->constrained('courses')->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -28,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('videos');
+        Schema::dropIfExists('portfolios');
     }
 };

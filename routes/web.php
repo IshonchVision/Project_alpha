@@ -40,7 +40,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/student/lessons/{lesson}', function ($lesson) {
         return view('student.lesson', ['lessonId' => $lesson]);
     })->name('student.lessons.show');
-
 });
 
 
@@ -71,55 +70,31 @@ Route::post('/register', [AuthController::class, 'register']);
 // Mening kurslarim
 
 
-Route::get('/universal/panel' , [UniversalController::class , 'panel']);
+Route::get('/universal/panel', [UniversalController::class, 'panel']);
 
 
 
-Route::get('/my_course', [CourseController::class, 'my_course']);
+Route::get('/my_course', [CourseController::class, 'my_course'])->middleware('auth');;
 
 
 Route::get('group_chats', [GroupChatsController::class, 'index']);
 
-Route::get('admin', [AdminController::class, 'admin_panel']);
 
-Route::post('/logout' , [AuthController::class,'logout'])->name('logout');
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 
 //  Admin url
 
-Route::prefix('admin')->name('admin.')->group(function () {
-
-    Route::get('/dashboard', function () {
-        return view('admin.sections.dashboard');
-    })->name('dashboard');
-
-    Route::get('/users', function () {
-        return view('admin.sections.users');
-    })->name('users');
-
-    Route::get('/teachers', function () {
-        return view('admin.sections.teachers');
-    })->name('teachers');
-
-    Route::get('/groups', function () {
-        return view('admin.sections.groups');
-    })->name('groups');
-
-    Route::get('/chats', function () {
-        return view('admin.sections.chats');
-    })->name('chats');
-
-    Route::get('/statistics', function () {
-        return view('admin.sections.statistics');
-    })->name('statistics');
-
-    Route::get('/payments', function () {
-        return view('admin.sections.payments');
-    })->name('payments');
-
-    Route::get('/settings', function () {
-        return view('admin.sections.settings');
-    })->name('settings');
+Route::prefix('admin')->name('admin.')->middleware(['auth', 'is_admin'])->group(function () {
+    Route::get('/', [AdminController::class, 'admin_panel']);
+    Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
+    Route::get('/users', [AdminController::class, 'users'])->name('users');
+    Route::get('/teachers', [AdminController::class, 'teachers'])->name('teachers');
+    Route::get('/groups', [AdminController::class, 'groups'])->name('groups');
+    Route::get('/chats', [AdminController::class, 'chats'])->name('chats');
+    Route::get('/statistics', [AdminController::class, 'statistics'])->name('statistics');
+    Route::get('/payments', [AdminController::class, 'payments'])->name('payments');
+    Route::get('/settings', [AdminController::class, 'settings'])->name('settings');
 });
 
 
@@ -202,3 +177,12 @@ Route::get('/student/lessons/{lesson}', function ($lesson) {
 
 Route::post('/contact/message/send', [ContactController::class, 'store'])
     ->name('contact.message.send');
+
+
+Route::get('/verify', [AuthController::class, 'showVerifyForm'])->name('verify.show');
+Route::post('/verify', [AuthController::class, 'verify'])->name('verify.check');
+
+
+Route::get('/course/{id}', [CourseController::class, 'detail'])
+     ->name('course.detail') 
+     ->middleware('auth');
