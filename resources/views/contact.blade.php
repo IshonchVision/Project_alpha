@@ -52,7 +52,7 @@
                 <div class="col-lg-7">
                     <div class="section-title position-relative mb-4">
                         <h6 class="d-inline-block position-relative text-secondary text-uppercase pb-2">Yordam uchun</h6>
-                        <h6 class="display-4">Taklif va shikoyatlaringizni yuboring</h6>
+                        <h6 class="display-4">Biz bilan bog'laning</h6>
                     </div>
                     <div class="contact-form">
                         <form action="{{ route('contact.message.send') }}" method="POST">

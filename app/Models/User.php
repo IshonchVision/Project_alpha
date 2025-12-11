@@ -24,6 +24,8 @@ class User extends Authenticatable
         'avatar',
         'status',
         'password',
+        'is_verified',
+        'verification_code',
     ];
 
     /**
@@ -47,5 +49,17 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function courses() // o'qituvchi sifatida yaratgan kurslari
+    {
+        return $this->hasMany(Course::class);
+    }
+
+    public function enrolledCourses() // talaba sifatida sotib olgan kurslari
+    {
+        return $this->belongsToMany(Course::class, 'course_student')
+            ->withTimestamps()
+            ->withPivot('enrolled_at');
     }
 }

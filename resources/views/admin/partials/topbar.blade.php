@@ -1,3 +1,4 @@
+@if (Auth::user()->role === 'admin')
 <div class="top-bar">
     <h1 class="page-title">Admin Dashboard</h1>
     <div class="search-box">
@@ -11,3 +12,4 @@
         </div>
     </div>
 </div>
+@endif

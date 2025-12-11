@@ -16,9 +16,14 @@ return new class extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->string('password');
-            $table->enum('role' , ['admin' , 'teacher' , 'user']);
+            $table->enum('role', ['admin', 'teacher', 'user']);
             $table->string('avatar')->nullable();
             $table->boolean('status')->default(true);
+            $table->string('verification_code')->nullable();
+            $table->boolean('is_verified')->default(false);
+            $table->string('phone')->nullable();
+            $table->text('address')->nullable();
+            $table->integer('payment_id')->nullable();
             $table->timestamps();
         });
 

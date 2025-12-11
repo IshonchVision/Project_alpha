@@ -1,3 +1,4 @@
+@if (Auth::user()->role  === 'admin')
 <div class="sidebar">
     <div class="brand">
         <i class="fas fa-shield-alt"></i>
@@ -64,3 +65,4 @@
         </li>
     </ul>
 </div>
+@endif
