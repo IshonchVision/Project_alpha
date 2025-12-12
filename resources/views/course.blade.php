@@ -8,8 +8,9 @@
     <div class="container text-center py-5">
         <h2 class="text-white display-1">Kurslar</h2>
         <div class="d-inline-flex text-white mb-5">
-            <p class="m-0 text-uppercase"><a class="text-white" href="">Barcha</a></p>
-            <i class="fa fa-angle-double-right pt-1 px-3"></i>
+            <p class="m-0 text-uppercase">Barcha</p>
+            <i class="fa fa-angle-double-left pt-1 px-1"></i>
+            <i class="fa fa-angle-double-right pt-1 px-1"></i>
             <p class="m-0 text-uppercase">Kurslar</p>
         </div>
         <div class="mx-auto mb-5" style="width: 100%; max-width: 600px;">
@@ -34,163 +35,69 @@
 <!-- Header End -->
 
 
-<!-- Courses Start -->
+<!-- Ta'lim Nazariyasi Kurslari Start -->
+<div class="container-fluid py-5 bg-light">
+    <div class="container py-5">
+        <div class="row mx-0 justify-content-center">
+            <div class="col-lg-8">
+                <div class="section-title text-center position-relative mb-5">
+                    <h1 class="display-4">Ta'lim nazariyasi kursi</h1>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <!-- Ta'lim nazariyasi kurs kartasi -->
+            <div class="col-lg-4 col-md-6 pb-4">
+                <a class="courses-list-item position-relative d-block overflow-hidden mb-2" href="{{ url('detail') }}">
+                    <img class="img-fluid" src="img/courses-1.jpg" alt="Ta'lim Nazariyasi">
+                    <div class="courses-text p-3" style="background: rgba(0,0,0,0.6); border-radius: 10px;">
+                        <p class="text-center text-white mb-1" style="font-size: 14px;">O'qituvchi: Mahliyo</p>
+                        <h4 class="text-center text-white px-3">Ta'lim nazariyasi asoslari</h4>
+                        <div class="border-top w-100 mt-3">
+                            <div class="d-flex justify-content-between p-3">
+                                <span class="text-white" style="font-weight: 700; font-size: 18px;">27 ta dars</span>
+                                <span class="text-white"><small>Bepul</small></span>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Ta'lim Nazariyasi Kurslari End -->
+
+<!-- Boshqa Kurslar Start -->
 <div class="container-fluid py-5">
     <div class="container py-5">
         <div class="row mx-0 justify-content-center">
             <div class="col-lg-8">
                 <div class="section-title text-center position-relative mb-5">
-                    <h1 class="display-4">Platformadagi mavjud barcha kurslar</h1>
+                    <h1 class="display-4">Boshqa kurslarimiz</h1>
                 </div>
             </div>
         </div>
         <div class="row">
+            <!-- Sizning boshqa kurslar ro'yxati shu yerda bo'ladi -->
             <div class="col-lg-4 col-md-6 pb-4">
-                <a class="courses-list-item position-relative d-block overflow-hidden mb-2" href="{{ url("detail") }}">
+                <a class="courses-list-item position-relative d-block overflow-hidden mb-2" href="{{ url('detail') }}">
                     <img class="img-fluid" src="img/courses-1.jpg" alt="">
-                    <div class="courses-text">
-                        <h4 class="text-center text-white px-3">Web design & development courses for
-                            beginners</h4>
+                    <div class="courses-text p-3" style="background: rgba(0,0,0,0.6); border-radius: 10px;">
+                        <p class="text-center text-white mb-1" style="font-size: 14px;">O'qituvchi: Anvar N.</p>
+                        <h4 class="text-center text-white px-3">Python boshlang'ich darslar</h4>
                         <div class="border-top w-100 mt-3">
-                            <div class="d-flex justify-content-between p-4">
-                                <span class="text-white"><i class="fa fa-user mr-2"></i>Jhon Doe</span>
-                                <span class="text-white"><i class="fa fa-star mr-2"></i>4.5
-                                    <small>(250)</small></span>
+                            <div class="d-flex justify-content-between p-3">
+                                <span class="text-white" style="font-weight: 700; font-size: 18px;">40 ta dars</span>
+                                <span class="text-white"><small>Bepul</small></span>
                             </div>
                         </div>
                     </div>
                 </a>
             </div>
-            <div class="col-lg-4 col-md-6 pb-4">
-                <a class="courses-list-item position-relative d-block overflow-hidden mb-2" href="{{ url("detail") }}">
-                    <img class="img-fluid" src="img/courses-2.jpg" alt="">
-                    <div class="courses-text">
-                        <h4 class="text-center text-white px-3">Web design & development courses for
-                            beginners</h4>
-                        <div class="border-top w-100 mt-3">
-                            <div class="d-flex justify-content-between p-4">
-                                <span class="text-white"><i class="fa fa-user mr-2"></i>Jhon Doe</span>
-                                <span class="text-white"><i class="fa fa-star mr-2"></i>4.5
-                                    <small>(250)</small></span>
-                            </div>
-                        </div>
-                    </div>
-                </a>
-            </div>
-            <div class="col-lg-4 col-md-6 pb-4">
-
-                <a class="courses-list-item position-relative d-block overflow-hidden mb-2" href="{{ url("detail") }}">
-                    <img class="img-fluid" src="img/courses-3.jpg" alt="">
-                    <div class="courses-text">
-                        <h4 class="text-center text-white px-3">Web design & development courses for
-                            beginners</h4>
-                        <div class="border-top w-100 mt-3">
-                            <div class="d-flex justify-content-between p-4">
-                                <span class="text-white"><i class="fa fa-user mr-2"></i>Jhon Doe</span>
-                                <span class="text-white"><i class="fa fa-star mr-2"></i>4.5
-                                    <small>(250)</small></span>
-                            </div>
-                        </div>
-                    </div>
-                </a>
-            </div>
-            <div class="col-lg-4 col-md-6 pb-4">
-                <a class="courses-list-item position-relative d-block overflow-hidden mb-2" href="{{ url("detail") }}">
-                    <img class="img-fluid" src="img/courses-4.jpg" alt="">
-                    <div class="courses-text">
-                        <h4 class="text-center text-white px-3">Web design & development courses for
-                            beginners</h4>
-                        <div class="border-top w-100 mt-3">
-                            <div class="d-flex justify-content-between p-4">
-                                <span class="text-white"><i class="fa fa-user mr-2"></i>Jhon Doe</span>
-                                <span class="text-white"><i class="fa fa-star mr-2"></i>4.5
-                                    <small>(250)</small></span>
-                            </div>
-                        </div>
-                    </div>
-                </a>
-            </div>
-            <div class="col-lg-4 col-md-6 pb-4">
-                <a class="courses-list-item position-relative d-block overflow-hidden mb-2" href="{{ url("detail") }}">
-                    <img class="img-fluid" src="img/courses-5.jpg" alt="">
-                    <div class="courses-text">
-                        <h4 class="text-center text-white px-3">Web design & development courses for
-                            beginners</h4>
-                        <div class="border-top w-100 mt-3">
-                            <div class="d-flex justify-content-between p-4">
-                                <span class="text-white"><i class="fa fa-user mr-2"></i>Jhon Doe</span>
-                                <span class="text-white"><i class="fa fa-star mr-2"></i>4.5
-                                    <small>(250)</small></span>
-                            </div>
-                        </div>
-                    </div>
-                </a>
-            </div>
-            <div class="col-lg-4 col-md-6 pb-4">
-                <a class="courses-list-item position-relative d-block overflow-hidden mb-2" href="{{ url("detail") }}">
-                    <img class="img-fluid" src="img/courses-6.jpg" alt="">
-                    <div class="courses-text">
-                        <h4 class="text-center text-white px-3">Web design & development courses for
-                            beginners</h4>
-                        <div class="border-top w-100 mt-3">
-                            <div class="d-flex justify-content-between p-4">
-                                <span class="text-white"><i class="fa fa-user mr-2"></i>Jhon Doe</span>
-                                <span class="text-white"><i class="fa fa-star mr-2"></i>4.5
-                                    <small>(250)</small></span>
-                            </div>
-                        </div>
-                    </div>
-                </a>
-            </div>
-            <div class="col-12">
-                <nav aria-label="Page navigation">
-                    <ul class="pagination pagination-lg justify-content-center mb-0">
-                        <li class="page-item disabled">
-
-                            <a class="page-link rounded-0" href="#" aria-label="Previous">
-                                <span aria-hidden="true">&laquo;</span>
-                                <span class="sr-only">Previous</span>
-                            </a>
-                        </li>
-                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                        <li class="page-item"><a class="page-link" href="#">2</a></li>
-                        <li class="page-item"><a class="page-link" href="#">3</a></li>
-                        <li class="page-item">
-                            <a class="page-link rounded-0" href="#" aria-label="Next">
-                                <span aria-hidden="true">&raquo;</span>
-                                <span class="sr-only">Next</span>
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
-            </div>
+            <!-- Shu tarzda boshqa kurslar -->
         </div>
     </div>
 </div>
-<!-- Courses End -->
-
-<div class="container-fluid py-12">
-    <div class="container py-12">
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="section-title position-relative mb-4">
-                    <h6 class="d-inline-block position-relative text-secondary text-uppercase pb-2">Online</h6>
-                    <h1 class="display-4">Kursdan foydalanish yo'riqnomasi</h1>
-                </div>
-                <p>
-                    Tempor erat elitr at rebum at at clita aliquyam consetetur. Diam dolor diam ipsum et, tempor voluptua sit
-                    consetetur sit. Aliquyam diam amet diam et eos sadipscing labore. Clita erat ipsum et lorem et sit,
-                    sed stet no labore lorem sit. Sanctus clita duo justo et tempor consetetur takimata eirmod,
-                    dolores takimata consetetur invidunt magna dolores aliquyam dolores dolore. Amet erat amet et magna
-                    voluptua sit consetetur sit. Aliquyam diam amet diam et eos sadipscing labore. Clita erat ipsum et
-                    lorem et sit, sed stet no labore lorem sit. Sanctus clita duo justo et tempor consetetur takimata
-                    eirmod, dolores takimata consetetur invidunt magna dolores aliquyam dolores dolore.
-                </p>
-            </div>
-        </div>
-    </div>
-</div>
-</div>
-
+<link rel="stylesheet" href="{{ asset('css/style.css') }}">
 
 @endsection

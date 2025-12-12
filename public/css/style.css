@@ -9958,3 +9958,232 @@ h6,
 .testimonial-carousel .owl-nav .owl-prev:hover {
   background: #2878EB;
 }
+
+
+
+    /* Ta'lim Nazariyasi Kurslari Styles */
+    .courses-list-item {
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        transition: all 0.4s ease;
+        text-decoration: none;
+        display: block;
+        position: relative;
+    }
+
+    .courses-list-item:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        text-decoration: none;
+    }
+
+    .courses-list-item img {
+        transition: transform 0.4s ease;
+        width: 100%;
+        height: auto;
+    }
+
+    .courses-list-item:hover img {
+        transform: scale(1.1);
+    }
+
+    .courses-text {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.7), transparent);
+        padding: 30px 0 20px;
+        transition: all 0.3s ease;
+    }
+
+    .courses-text h4 {
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-bottom: 0;
+        transition: all 0.3s ease;
+    }
+
+    .courses-list-item:hover .courses-text h4 {
+        transform: translateY(-5px);
+        color: #ff6b6b !important;
+    }
+
+    .courses-text .border-top {
+        border-color: rgba(255, 255, 255, 0.3) !important;
+        margin-top: 1rem !important;
+        padding-top: 1rem !important;
+    }
+
+    .courses-text span {
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+    }
+
+    .courses-list-item:hover .courses-text span {
+        color: #ffd93d !important;
+    }
+
+    .courses-text small {
+        background: #ff6b6b;
+        padding: 5px 15px;
+        border-radius: 20px;
+        font-weight: 600;
+        display: inline-block;
+        transition: all 0.3s ease;
+    }
+
+    .courses-list-item:hover .courses-text small {
+        background: #ffd93d;
+        color: #333 !important;
+        transform: scale(1.1);
+    }
+
+    /* Section Styles */
+    .bg-light {
+        background-color: #f8f9fa !important;
+    }
+
+    .section-title h1 {
+        font-weight: 700;
+        color: #2c3e50;
+        position: relative;
+        display: inline-block;
+    }
+
+    .section-title h1::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 4px;
+        background: linear-gradient(90deg, #ff6b6b, #ffd93d);
+        border-radius: 2px;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .courses-text h4 {
+            font-size: 1rem;
+        }
+
+        .section-title h1 {
+            font-size: 2rem;
+        }
+    }
+
+
+
+    /* Header */
+    .page-header {
+        background: url('../img/header-bg.jpg') center center / cover no-repeat;
+        height: 300px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+    }
+
+    .page-header h1 {
+        font-size: 3rem;
+        font-weight: 700;
+    }
+
+    .page-header .d-inline-flex p a {
+        text-decoration: none;
+        transition: color 0.3s;
+    }
+
+    .page-header .d-inline-flex p a:hover {
+        color: #ffc107;
+    }
+
+    /* Carousel kurs kartalari */
+    .courses-list-item {
+        border-radius: 10px;
+        overflow: hidden;
+        transition: transform 0.3s, box-shadow 0.3s;
+        cursor: pointer;
+    }
+
+    .courses-list-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .courses-text {
+        background: rgba(0, 0, 0, 0.6);
+        border-radius: 0 0 10px 10px;
+        padding: 15px;
+    }
+
+    .courses-text h4 {
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 5px;
+    }
+
+    .courses-text span {
+        font-weight: 600;
+    }
+
+    /* Sidebar */
+    .bg-primary {
+        background-color: #85c1e9;
+        /* ochroq ko‘k */
+        border-radius: 10px;
+        padding: 0;
+    }
+
+    .bg-primary h3,
+    .bg-primary h5 {
+        font-weight: 700;
+    }
+
+    .bg-primary .btn {
+        background-color: #ffc107;
+        color: #000;
+        font-weight: 600;
+        transition: background-color 0.3s;
+    }
+
+    .bg-primary .btn:hover {
+        background-color: #e0a800;
+    }
+
+    /* Mavzular ro'yxati */
+    .topic-list {
+        max-height: 400px;
+        /* scroll 5 ta mavzudan keyin */
+        overflow-y: auto;
+        padding-right: 10px;
+    }
+
+    .topic-list::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .topic-list::-webkit-scrollbar-thumb {
+        background-color: #ffc107;
+        border-radius: 3px;
+    }
+
+    .topic-list .badge-primary {
+        border-radius: 4px;
+        /* to‘rtburchak */
+        padding: 5px 10px;
+        font-weight: 600;
+    }
+
+    .topic-list .list-group-item:hover {
+        background-color: #f1f1f1;
+        border-radius: 5px;
+    }
+
+    /* Umumiy text */
+    p {
+        line-height: 1.6;
+    }

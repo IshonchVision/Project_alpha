@@ -6,8 +6,7 @@
 <!-- Header Start -->
 <div class="jumbotron jumbotron-fluid position-relative overlay-bottom" style="margin-bottom: 90px;">
     <div class="container text-center my-5 py-5">
-        <h1 class="text-white mt-4 mb-4">O‘zingizga qulay tarzda o‘rganing</h1>
-        <h1 class="text-white display-1 mb-5">Zamonaviy kurslar</h1>
+        <h1 class="text-white mt-4 mb-4">Ta’lim nazariyasini biz bilan sodda va tushunarli tarzda o'rganing!</h1>
         <div class="mx-auto mb-5" style="width: 100%; max-width: 600px;">
             <div class="input-group">
                 <!-- <div class="input-group-prepend">
@@ -41,35 +40,31 @@
             </div>
             <div class="col-lg-7">
                 <div class="section-title position-relative mb-4">
-                    <h6 class="d-inline-block position-relative text-secondary text-uppercase pb-2">Onlayn ta'lim</h6>
-                    <h1 class="display-4">Istalgan joyda onlayn ta'lim uchun birinchi tanlov!</h1>
+                    <h6 class="d-inline-block position-relative text-secondary text-uppercase pb-2">Ta'lim nazariyasi</h6>
+                    <h2 class="display-5">Pedagogik bilimlarni chuqur va zamonaviy usulda o'rganing!</h2>
                 </div>
                 <p>
-                    Bizning platformamiz bilan siz istalgan vaqtda va istalgan joydan sifatli ta'lim olishingiz mumkin.
-                    Tajriba to'plagan xalqaro va mahalliy o'qituvchilar, amaliy topshiriqlar va interaktiv testlar yordamida bilimlaringizni mustahkamlaysiz.
-                    Video darslar, qo'shimcha materiallar va jonli muloqot orqali savollaringizga tezkor javob olasiz.
-                    Boshlash uchun ro'yxatdan o'ting va o'z rivojlanish yo'lingizni bugun boshlang.
+                    Ushbu platforma Ta'lim nazariyasi fanini amaliy, sodda va tushunarli tarzda o'rganishni
+                    istagan talabalar va o'qituvchilar uchun yaratilgan. Har bir modul ilmiy asoslangan tushuntirishlar,
+                    misollar va interaktiv topshiriqlar bilan boyitilgan bo'lib, sizga ta'lim jarayonining mohiyati,
+                    tamoyillari va samarali metodlarini mukammal o'zlashtirish imkonini beradi.
+                    Darslar, testlar va qo'shimcha materiallar orqali o'rganganlaringizni real jarayonda qo'llab borishingiz mumkin.
+                    Fan boэyicha rivojlanishni bugunoq boshlang!
                 </p>
                 <div class="row pt-3 mx-0">
-                    <div class="col-3 px-0">
-                        <div class="bg-success text-center p-4">
-                            <h1 class="text-white" data-toggle="counter-up">123</h1>
-                            <h6 class="text-uppercase text-white">Mavjud<span class="d-block">Kurslar</span></h6>
-                        </div>
-                    </div>
-                    <div class="col-3 px-0">
+                    <div class="col-4 px-0">
                         <div class="bg-primary text-center p-4">
                             <h1 class="text-white" data-toggle="counter-up">123</h1>
                             <h6 class="text-uppercase text-white">Onlayn<span class="d-block">Kurslar</span></h6>
                         </div>
                     </div>
-                    <div class="col-3 px-0">
+                    <div class="col-4 px-0">
                         <div class="bg-secondary text-center p-4">
                             <h1 class="text-white" data-toggle="counter-up">123</h1>
                             <h6 class="text-uppercase text-white">Maxoratli<span class="d-block">O'qituvchilar</span></h6>
                         </div>
                     </div>
-                    <div class="col-3 px-0">
+                    <div class="col-4 px-0">
                         <div class="bg-warning text-center p-4">
                             <h1 class="text-white" data-toggle="counter-up">123</h1>
                             <h6 class="text-uppercase text-white">O'quvchilar<span class="d-block">Soni</span></h6>
@@ -93,7 +88,7 @@
                     <h2 class="display-4">Biz bilan o'rganishni boshlashingizga sabablar?</h2>
                 </div>
                 <p class="mb-4 pb-2"> Ushbu platforma o'quvchilar uchun qulay va samarali ta'lim jarayonini yaratishga mo'ljallangan.
-                    Darslar amaliy misollar bilan boyitilgan bo'lib, o'rgangan bilimlarni darhol amalda qo'llash imkonini beradi.
+                    Ushbu sayt video darslar, amaliy misollar bilan boyitilgan bo'lib, o'rgangan bilimlarni darhol amalda qo'llash imkonini beradi.
                     O'qituvchi bilan onlayn muloqot, savol-javob imkoniyatlari va muntazam yangilanib boradigan materiallar ta'lim jarayonini yanada qiziqarli qiladi.</p>
                 <div class="d-flex mb-3">
                     <div class="btn-icon bg-primary mr-4">
@@ -101,7 +96,7 @@
                     </div>
                     <div class="mt-n1">
                         <h4>Malakali o'qituvchilar</h4>
-                        <p>Video kurslarni siz ko'p yillik tajribaga ega xalqaro toifadagi o'qituvchilar</p>
+                        <p>Video darslarni siz ko'p yillik tajribaga ega o'qituvchilar tomonidan o'rganasiz</p>
                     </div>
                 </div>
                 <div class="d-flex mb-3">
@@ -216,23 +211,23 @@
                 <div class="owl-carousel testimonial-carousel">
                     <div class="bg-white p-5">
                         <i class="fa fa-3x fa-quote-left text-primary mb-4"></i>
-                        <p>Ushbu kurslar orqali men web dizayn bo'yicha o'z ko'nikmalarimni sezilarli darajada oshirdim. Video darslar juda tushunarli va amaliy mashqlar bilan boyitilgan, o'rganish jarayoni qiziqarli bo'ldi</p>
+                        <p>Ta'lim nazariyasi bo'yicha darslar menga o'quv jarayonining asl mohiyatini chuqurroq tushunishga yordam berdi. Murakkab nazariy mavzular ham sodda misollar bilan tushuntirilgani uchun o'rganish juda oson bo'ldi.</p>
                         <div class="d-flex flex-shrink-0 align-items-center mt-4">
                             <img class="img-fluid mr-4" src="img/testimonial-2.jpg" alt="">
                             <div>
-                                <h5>Student Name</h5>
-                                <span>Web Dizayn Kursi</span>
+                                <h5>Abbos Mahmudov</h5>
+                                <span>Ta'lim nazariyasi asoslari</span>
                             </div>
                         </div>
                     </div>
                     <div class="bg-white p-5">
                         <i class="fa fa-3x fa-quote-left text-primary mb-4"></i>
-                        <p>Men IT kurslarida ishtirok etdim va o'qituvchilar juda malakali, har bir modul amaliy misollar bilan mustahkamlangan. Kursni tugatgandan keyin real loyihalarda ishonch bilan ishlash imkoniga ega bo'ldim</p>
+                       <p>Didaktik tamoyillar va o'qitish metodlari haqidagi darslar menga o'zimning kelajakdagi darslarimni qanday samarali tashkil qilishni o'rgatdi. Ayniqsa, interaktiv yondashuvlar bo'yicha misollar juda foydali bo'ldi.</p>
                         <div class="d-flex flex-shrink-0 align-items-center mt-4">
                             <img class="img-fluid mr-4" src="img/testimonial-1.jpg" alt="">
                             <div>
-                                <h5>Student Name</h5>
-                                <span>Frontend Development</span>
+                                <h5>Shahlo Ibrohimova</h5>
+                                <span>Didaktika va metodlar</span>
                             </div>
                         </div>
                     </div>
