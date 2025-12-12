@@ -95,6 +95,15 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'is_admin'])->group(
     Route::get('/statistics', [AdminController::class, 'statistics'])->name('statistics');
     Route::get('/payments', [AdminController::class, 'payments'])->name('payments');
     Route::get('/settings', [AdminController::class, 'settings'])->name('settings');
+    Route::delete('/users/{user}', [AdminController::class, 'destroy'])
+        ->name('users.destroy');
+    Route::delete('/teacher/{user}', [AdminController::class, 'teacher_destroy'])
+        ->name('teachers.destroy');
+    Route::post('/teachers', [AdminController::class, 'teacher_store'])->name('teachers.store');
+
+    Route::get('/chats', [AdminController::class, 'chats'])->name('chats');
+    Route::post('/chats/send', [AdminController::class, 'sendChatMessage'])->name('chats.send');
+    Route::get('/chats/{id}', [AdminController::class, 'loadGroupChat'])->name('chats.group');
 });
 
 
@@ -184,5 +193,5 @@ Route::post('/verify', [AuthController::class, 'verify'])->name('verify.check');
 
 
 Route::get('/course/{id}', [CourseController::class, 'detail'])
-     ->name('course.detail') 
-     ->middleware('auth');
+    ->name('course.detail')
+    ->middleware('auth');

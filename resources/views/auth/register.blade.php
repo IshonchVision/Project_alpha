@@ -58,6 +58,14 @@
                     </div>
 
                     <div class="mb-3">
+                        <label for="phone" class="form-label">Telefon raqam</label>
+                        <input type="phone" name="phone" class="form-control" id="phone" placeholder="Telefon raqam" required>
+                        @error('phone')
+                            <small class="text-danger">{{ $phone }}</small>
+                        @enderror
+                    </div>
+
+                    <div class="mb-3">
                         <label for="password" class="form-label">Parol</label>
                         <input type="password" name="password" class="form-control" id="password" placeholder="Parol" required>
                         @error('password')

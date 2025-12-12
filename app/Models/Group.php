@@ -49,4 +49,17 @@ class Group extends Model
     {
         return $this->hasMany(Payment::class);
     }
+
+    // App/Models/Group.php
+
+
+    public function students()
+    {
+        return $this->belongsToMany(User::class, 'group_student');
+    }
+
+    public function messages()
+    {
+        return $this->hasMany(GroupMessage::class, 'group_id');
+    }
 }

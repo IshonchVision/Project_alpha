@@ -19,7 +19,7 @@ return new class extends Migration
             $table->enum('status', ['pending', 'completed', 'failed', 'refunded'])->default('pending');
             $table->enum('payment_method', ['cash', 'card', 'transfer', 'online'])->default('cash');
             $table->text('description')->nullable();
-            $table->timestamps();
+            $table->timestamps();   
         });
         // Guruh-Talabalar oraliq jadvali
         Schema::create('group_student', function (Blueprint $table) {
