@@ -28,12 +28,13 @@ class AuthController extends Controller
 
         $code = rand(100000, 999999);
 
-        $user = User::create([
+        $user = User::create(   [
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'role' => 'user',
             'status' => true,
+            'phone' => $request->phone,
             'is_verified' => false,
             'verification_code' => $code,
         ]);
