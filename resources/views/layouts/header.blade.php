@@ -20,7 +20,7 @@
                         <a href="{{ url('detail') }}" class="dropdown-item {{ request()->is('detail') ? 'active' : '' }}">Kurs tafsilotlari</a>
                         <a href="{{ url('feature') }}" class="dropdown-item {{ request()->is('feature') ? 'active' : '' }}">Nimalar olasiz</a>
                         <a href="{{ url('team') }}" class="dropdown-item {{ request()->is('team') ? 'active' : '' }}">Bizning jamoa</a>
-                        <a href="{{ url('testimonial') }}" class="dropdown-item {{ request()->is('testimonial') ? 'active' : '' }}">Maqolalar</a>
+                        <a href="{{ url('testimonial') }}" class="dropdown-item {{ request()->is('testimonial') ? 'active' : '' }}">Izohlar</a>
                     </div>
                 </div>
 
