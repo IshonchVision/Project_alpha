@@ -15,28 +15,24 @@
             <a href="{{ route('admin.users') }}" class="menu-link {{ request()->routeIs('admin.users') ? 'active' : '' }}">
                 <i class="fas fa-users"></i>
                 <span>Foydalanuvchilar</span>
-                <span class="badge bg-danger">156</span>
             </a>
         </li>
         <li class="menu-item">
             <a href="{{ route('admin.teachers') }}" class="menu-link {{ request()->routeIs('admin.teachers') ? 'active' : '' }}">
                 <i class="fas fa-chalkboard-teacher"></i>
                 <span>O'qituvchilar</span>
-                <span class="badge bg-success">12</span>
             </a>
         </li>
         <li class="menu-item">
             <a href="{{ route('admin.groups') }}" class="menu-link {{ request()->routeIs('admin.groups') ? 'active' : '' }}">
                 <i class="fas fa-layer-group"></i>
                 <span>Guruhlar</span>
-                <span class="badge bg-info">24</span>
             </a>
         </li>
         <li class="menu-item">
             <a href="{{ route('admin.chats') }}" class="menu-link {{ request()->routeIs('admin.chats') ? 'active' : '' }}">
                 <i class="fas fa-comments"></i>
                 <span>Chatlar</span>
-                <span class="badge bg-warning">45</span>
             </a>
         </li>
         <li class="menu-item">

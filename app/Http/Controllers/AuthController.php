@@ -24,18 +24,23 @@ class AuthController extends Controller
 
     public function register(Request $request)
     {
-        // ... (validation va user yaratish qismi o'zgarmaydi)
+        $validated = $request->validate([
+            'name'     => 'required|string|max:255',
+            'email'    => 'required|email|unique:users,email',  // <--- Bu qator muhim!
+            'phone'    => 'required|string|max:20',
+            'password' => 'required|string|min:6|confirmed',
+        ]);
 
         $code = rand(100000, 999999);
 
-        $user = User::create(   [
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'role' => 'user',
-            'status' => true,
-            'phone' => $request->phone,
-            'is_verified' => false,
+        $user = User::create([
+            'name'              => $validated['name'],
+            'email'             => $validated['email'],
+            'password'          => Hash::make($validated['password']),
+            'role'              => 'user',
+            'status'            => true,
+            'phone'             => $validated['phone'],
+            'is_verified'       => false,
             'verification_code' => $code,
         ]);
 
