@@ -16,12 +16,22 @@ class Group extends Model
      */
     protected $fillable = [
         'name',
+        'code',
         'description',
         'teacher_id',
+        'subject',
+        'level',
         'status',
         'start_date',
         'end_date',
+        'lesson_time',
+        'lesson_days',
+        'duration_months',
         'max_students',
+        'current_students',
+        'monthly_fee',
+        'room',
+        
     ];
 
     /**

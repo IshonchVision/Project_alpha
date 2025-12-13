@@ -104,6 +104,9 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'is_admin'])->group(
     Route::get('/chats', [AdminController::class, 'chats'])->name('chats');
     Route::post('/chats/send', [AdminController::class, 'sendChatMessage'])->name('chats.send');
     Route::get('/chats/{id}', [AdminController::class, 'loadGroupChat'])->name('chats.group');
+    Route::get('/chats/{id}/poll', [AdminController::class, 'pollGroupMessages'])->name('chats.poll');
+    // Creates a new group — use existing controller method `storeGroup`
+    Route::post('/groups', [AdminController::class, 'storeGroup'])->name('groups.store');
 });
 
 

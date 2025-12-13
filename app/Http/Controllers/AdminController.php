@@ -130,17 +130,29 @@ class AdminController extends Controller
             return redirect('/')->with('error', 'Ruxsat yo‘q');
         }
 
-        // Faqat teacher bilan birga yuklaymiz
-        $groups = Group::with('teacher')->get();
+        $groups = Group::with('teacher')->latest()->get();
 
-        // Har bir guruhga o‘quvchilar sonini qo‘lda qo‘shib chiqamiz (xato bermaydi!)
         foreach ($groups as $group) {
-            $group->students_count = DB::table('group_student')
+            // Keep `current_students` attribute in sync for the view
+            $group->current_students = DB::table('group_student')
                 ->where('group_id', $group->id)
                 ->count();
         }
 
-        return view('admin.sections.groups', compact('groups'));
+        $teachers = User::query()
+            ->select(['users.id', 'users.name'])
+            ->selectSub(function ($query) {
+                $query->select('subjects.name')
+                    ->from('subjects')
+                    ->whereColumn('subjects.teacher_id', 'users.id')
+                    ->limit(1);
+            }, 'subject_name')
+            ->where('role', 'teacher')
+            ->where('status', true)
+            ->orderBy('name')
+            ->get();
+
+        return view('admin.sections.groups', compact('groups', 'teachers'));
     }
 
 
@@ -246,7 +258,7 @@ class AdminController extends Controller
             'password'   => Hash::make($request->password),
         ]);
 
-        return redirect()->route('admin.sections.teachers')
+        return redirect()->route('admin.teachers')
             ->with('success', 'Yangi o‘qituvchi muvaffaqiyatli qo‘shildi!');
     }
 
@@ -254,7 +266,8 @@ class AdminController extends Controller
     {
         $groups = Group::with('teacher')
             ->withCount('messages as messages_count')
-            ->with(['messages' => fn($q) => $q->latest()->first()])
+            // eager-load only the latest message per group
+            ->with(['messages' => fn($q) => $q->latest()->limit(1)])
             ->get();
 
         $selectedGroup = $groups->first();
@@ -279,18 +292,40 @@ class AdminController extends Controller
             'message'  => 'required|string|max:1000'
         ]);
 
-        GroupMessage::create([
+        $message = GroupMessage::create([
             'group_id' => $request->group_id,
             'user_id'  => auth()->id(),
             'message'  => $request->message,
         ]);
+
+        if ($request->ajax() || $request->wantsJson()) {
+            $selectedGroup = Group::with('teacher')->findOrFail($request->group_id);
+
+            $messages = GroupMessage::with('user')
+                ->where('group_id', $selectedGroup->id)
+                ->latest()
+                ->limit(100)
+                ->get()
+                ->reverse();
+
+            $html = view('admin.sections.chat-window', compact('selectedGroup', 'messages'))->render();
+
+            return response()->json([
+                'html' => $html,
+                'group_id' => $selectedGroup->id,
+                'last_message' => $message->message,
+                'last_time' => $message->created_at->diffForHumans(),
+                'messages_count' => GroupMessage::where('group_id', $selectedGroup->id)->count(),
+                'last_message_id' => $message->id,
+            ]);
+        }
 
         return back();
     }
 
     public function loadGroupChat($id)
     {
-        $group = Group::with('teacher')->findOrFail($id);
+        $selectedGroup = Group::with('teacher')->findOrFail($id);
 
         $messages = GroupMessage::with('user')
             ->where('group_id', $id)
@@ -299,6 +334,68 @@ class AdminController extends Controller
             ->get()
             ->reverse();
 
-        return view('admin.sections.chat-window', compact('group', 'messages'));
+        $html = view('admin.sections.chat-window', compact('selectedGroup', 'messages'))->render();
+
+        if (request()->ajax() || request()->wantsJson()) {
+            return response()->json([
+                'html' => $html,
+                'group_id' => $selectedGroup->id,
+                'last_message' => optional($messages->last())->message ?? null,
+                'last_time' => optional($messages->last())->created_at?->diffForHumans() ?? null,
+                'messages_count' => GroupMessage::where('group_id', $id)->count(),
+                'last_message_id' => optional($messages->last())->id ?? null,
+            ]);
+        }
+
+        return view('admin.sections.chat-window', compact('selectedGroup', 'messages'));
+    }
+    public function pollGroupMessages($id, Request $request)
+    {
+        $lastId = (int) $request->query('last_id', 0);
+
+        $messages = GroupMessage::with('user')
+            ->where('group_id', $id)
+            ->when($lastId > 0, function ($q) use ($lastId) {
+                $q->where('id', '>', $lastId);
+            })
+            ->orderBy('id')
+            ->get();
+
+        $html = '';
+        foreach ($messages as $msg) {
+            $html .= view('admin.sections.partials.message', compact('msg'))->render();
+        }
+
+        $newLastId = $messages->last()?->id ?? $lastId;
+
+        return response()->json([
+            'html' => $html,
+            'last_message_id' => $newLastId,
+            'messages_count' => GroupMessage::where('group_id', $id)->count(),
+            'last_message' => optional($messages->last())->message ?? null,
+            'last_time' => optional($messages->last())->created_at?->diffForHumans() ?? null,
+        ]);
+    }
+    public function storeGroup(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'code' => 'nullable|string|unique:groups,code',
+            'teacher_id' => 'required|exists:users,id',
+            'subject' => 'nullable|string',
+            'level' => 'required|in:beginner,intermediate,advanced',
+            'lesson_days' => 'nullable|string',
+            'lesson_time' => 'nullable|date_format:H:i',
+            'max_students' => 'required|integer|min:1',
+            'monthly_fee' => 'required|numeric|min:0',
+            'duration_months' => 'required|integer|min:1',
+            'start_date' => 'nullable|date',
+            'room' => 'nullable|string',
+            'description' => 'nullable|string',
+        ]);
+
+        Group::create($validated);
+
+        return redirect()->route('admin.groups')->with('success', 'Yangi guruh muvaffaqiyatli qoʻshildi!');
     }
 }
