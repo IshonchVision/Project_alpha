@@ -10,6 +10,7 @@
         </div>
     </div>
 </div>
+<link rel="stylesheet" href="{{ asset('css/style.css') }}">
 <!-- Header End -->
 
 
