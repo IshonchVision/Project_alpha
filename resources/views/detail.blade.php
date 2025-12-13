@@ -103,8 +103,13 @@
                     </div>
                     <h5 class="text-white py-3 px-4 m-0">Kurs narxi: Bepul</h5>
                     <div class="py-3 px-4">
-                        <a class="btn btn-block btn-secondary py-3 px-5" href="">Hozir ko'rish</a>
+                        <form action="{{ route('course.watch') }}" method="POST" style="display:inline-block; width:100%">
+                            @csrf
+                            <input type="hidden" name="course_id" value="{{ $course->id ?? '' }}">
+                            <button type="submit" class="btn btn-block btn-secondary py-3 px-5">Hozir ko'rish</button>
+                        </form>
                     </div>
+                    
                 </div>
 
             </div>

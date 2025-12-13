@@ -20,6 +20,15 @@
     <link href="{{ asset('lib/owlcarousel/assets/owl.carousel.min.css') }}" rel="stylesheet">
     <link href="{{ asset('css/style.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <style>
+        /* Ensure toastr notifications have readable colors despite global .toast overrides */
+        .toast { color: inherit !important; }
+        .toast-success { background-color: #28a745 !important; color: #fff !important; border-color: rgba(0,0,0,0.05) !important; }
+        .toast-error { background-color: #dc3545 !important; color: #fff !important; }
+        .toast-info { background-color: #17a2b8 !important; color: #fff !important; }
+        .toast-warning { background-color: #f0ad4e !important; color: #000 !important; }
+        .toast .toast-message, .toast .toast-body { color: inherit !important; }
+    </style>
 </head>
 
 <body>

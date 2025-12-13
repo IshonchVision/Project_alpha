@@ -12,6 +12,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Hash;
 
 class AdminController extends Controller
@@ -298,6 +299,9 @@ class AdminController extends Controller
             'message'  => $request->message,
         ]);
 
+        // Broadcast the new message to websocket listeners
+        event(new \App\Events\NewGroupMessage($message));
+
         if ($request->ajax() || $request->wantsJson()) {
             $selectedGroup = Group::with('teacher')->findOrFail($request->group_id);
 
@@ -317,6 +321,8 @@ class AdminController extends Controller
                 'last_time' => $message->created_at->diffForHumans(),
                 'messages_count' => GroupMessage::where('group_id', $selectedGroup->id)->count(),
                 'last_message_id' => $message->id,
+                'message_html' => view('admin.sections.partials.message', ['msg' => $message])->render(),
+                'message_id' => $message->id,
             ]);
         }
 
@@ -325,56 +331,69 @@ class AdminController extends Controller
 
     public function loadGroupChat($id)
     {
-        $selectedGroup = Group::with('teacher')->findOrFail($id);
+        try {
+            $selectedGroup = Group::with('teacher')->findOrFail($id);
 
-        $messages = GroupMessage::with('user')
-            ->where('group_id', $id)
-            ->latest()
-            ->limit(100)
-            ->get()
-            ->reverse();
+            $messages = GroupMessage::with('user')
+                ->where('group_id', $id)
+                ->latest()
+                ->limit(100)
+                ->get()
+                ->reverse();
 
-        $html = view('admin.sections.chat-window', compact('selectedGroup', 'messages'))->render();
+            $html = view('admin.sections.chat-window', compact('selectedGroup', 'messages'))->render();
 
-        if (request()->ajax() || request()->wantsJson()) {
-            return response()->json([
-                'html' => $html,
-                'group_id' => $selectedGroup->id,
-                'last_message' => optional($messages->last())->message ?? null,
-                'last_time' => optional($messages->last())->created_at?->diffForHumans() ?? null,
-                'messages_count' => GroupMessage::where('group_id', $id)->count(),
-                'last_message_id' => optional($messages->last())->id ?? null,
-            ]);
+            if (request()->ajax() || request()->wantsJson()) {
+                return response()->json([
+                    'html' => $html,
+                    'group_id' => $selectedGroup->id,
+                    'last_message' => optional($messages->last())->message ?? null,
+                    'last_time' => optional($messages->last())->created_at?->diffForHumans() ?? null,
+                    'messages_count' => GroupMessage::where('group_id', $id)->count(),
+                    'last_message_id' => optional($messages->last())->id ?? null,
+                ]);
+            }
+
+            return view('admin.sections.chat-window', compact('selectedGroup', 'messages'));
+        } catch (\Throwable $e) {
+            Log::error('loadGroupChat error', ['id' => $id, 'error' => $e->getMessage()]);
+            if (request()->ajax() || request()->wantsJson()) {
+                return response()->json(['message' => 'Guruhni yuklashda server xatosi yuz berdi. Iltimos, sahifani yangilang.'], 500);
+            }
+            throw $e;
         }
-
-        return view('admin.sections.chat-window', compact('selectedGroup', 'messages'));
     }
     public function pollGroupMessages($id, Request $request)
     {
-        $lastId = (int) $request->query('last_id', 0);
+        try {
+            $lastId = (int) $request->query('last_id', 0);
 
-        $messages = GroupMessage::with('user')
-            ->where('group_id', $id)
-            ->when($lastId > 0, function ($q) use ($lastId) {
-                $q->where('id', '>', $lastId);
-            })
-            ->orderBy('id')
-            ->get();
+            $messages = GroupMessage::with('user')
+                ->where('group_id', $id)
+                ->when($lastId > 0, function ($q) use ($lastId) {
+                    $q->where('id', '>', $lastId);
+                })
+                ->orderBy('id')
+                ->get();
 
-        $html = '';
-        foreach ($messages as $msg) {
-            $html .= view('admin.sections.partials.message', compact('msg'))->render();
+            $html = '';
+            foreach ($messages as $msg) {
+                $html .= view('admin.sections.partials.message', compact('msg'))->render();
+            }
+
+            $newLastId = $messages->last()?->id ?? $lastId;
+
+            return response()->json([
+                'html' => $html,
+                'last_message_id' => $newLastId,
+                'messages_count' => GroupMessage::where('group_id', $id)->count(),
+                'last_message' => optional($messages->last())->message ?? null,
+                'last_time' => optional($messages->last())->created_at?->diffForHumans() ?? null,
+            ]);
+        } catch (\Throwable $e) {
+            Log::error('pollGroupMessages error', ['id' => $id, 'error' => $e->getMessage()]);
+            return response()->json(['message' => 'Polling xatosi'], 500);
         }
-
-        $newLastId = $messages->last()?->id ?? $lastId;
-
-        return response()->json([
-            'html' => $html,
-            'last_message_id' => $newLastId,
-            'messages_count' => GroupMessage::where('group_id', $id)->count(),
-            'last_message' => optional($messages->last())->message ?? null,
-            'last_time' => optional($messages->last())->created_at?->diffForHumans() ?? null,
-        ]);
     }
     public function storeGroup(Request $request)
     {

@@ -198,3 +198,6 @@ Route::post('/verify', [AuthController::class, 'verify'])->name('verify.check');
 Route::get('/course/{id}', [CourseController::class, 'detail'])
     ->name('course.detail')
     ->middleware('auth');
+
+// Watch/Access a course — requires auth; returns JSON 401 for AJAX or flashes error for guests
+Route::post('/course/watch', [CourseController::class, 'watch'])->name('course.watch');
