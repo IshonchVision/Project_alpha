@@ -46,20 +46,6 @@
             </div>
         </div>
     </div>
-
-    <!-- Jami daromad -->
-    <div class="stat-card">
-        <div class="stat-icon orange">
-            <i class="fas fa-dollar-sign"></i>
-        </div>
-        <div class="stat-info">
-            <h3>${{ number_format($price_sum, 2) }}</h3>
-            <p>Bu Oylik Daromad</p>
-            <div class="stat-trend down">
-                <i class="fas fa-arrow-down"></i> -3.2%
-            </div>
-        </div>
-    </div>
 </div>
 
 <div class="row" style="margin: 0 -15px;">

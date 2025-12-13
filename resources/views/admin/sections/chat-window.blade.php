@@ -13,6 +13,9 @@
                         {{ $groupVar->current_students ?? 0 }} o'quvchi • 
                         O'qituvchi: {{ $groupVar->teacher?->name ?? 'Yo‘q' }}
                 </p>
+                <div style="font-size:12px;color:#94a3b8;margin-top:4px">
+                    <span id="realtimeStatus">Realtime: ulanmoqda...</span>
+                </div>
             </div>
         </div>
     </div>
