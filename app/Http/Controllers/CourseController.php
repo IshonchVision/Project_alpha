@@ -33,6 +33,6 @@ class CourseController extends Controller
             return response()->json(['success' => true, 'redirect' => route('my_course')]);
         }
 
-        return redirect()->route('my_course');
+        return redirect()->route('/my_course');
     }
 }
