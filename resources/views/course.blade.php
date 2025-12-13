@@ -62,6 +62,21 @@
                     </div>
                 </a>
             </div>
+            <div class="col-lg-8 col-md-6 pb-4">
+                <div class="p-3" style="background: #f8f9fa; border-radius: 10px;">
+                    <h4>Kurs tavsifi</h4>
+                    <p>
+                        Bu kurs ta'lim nazariyasi asoslarini o‘rgatadi. Kurs davomida pedagogik metodlar, darslarni rejalashtirish
+                        va samarali tashkil qilish bo‘yicha amaliy mashqlar mavjud.
+                        Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's
+                        standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it
+                        to make a type specimen book. It has survived not only five centuries, but also the leap
+                        into electronic typesetting, remaining essentially unchanged. It was popularised in the 1
+                        960s with the release of Letraset sheets containing Lorem Ipsum passages, and more
+                        recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+                    </p>
+                </div>
+            </div>
         </div>
     </div>
 </div>
