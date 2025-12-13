@@ -4,7 +4,7 @@
 
 
 <!-- Header Start -->
-<div class="jumbotron jumbotron-fluid position-relative overlay-bottom" style="margin-bottom: 90px;">
+<div class="jumbotron jumbotron-fluid page-header position-relative overlay-bottom" style="margin-bottom: 90px;">
     <div class="container text-center my-5 py-5">
         <h1 class="text-white mt-4 mb-4">Ta’lim nazariyasini biz bilan sodda va tushunarli tarzda o'rganing!</h1>
         <div class="mx-auto mb-5" style="width: 100%; max-width: 600px;">
@@ -26,6 +26,7 @@
         </div>
     </div>
 </div>
+<link rel="stylesheet" href="{{ asset('css/style.css') }}">
 <!-- Header End -->
 
 
@@ -53,21 +54,30 @@
                 </p>
                 <div class="row pt-3 mx-0">
                     <div class="col-4 px-0">
-                        <div class="bg-primary text-center p-4">
+                        <div class="bg-primary text-center p-4"
+                            style="border-top-left-radius: 12px;">
                             <h1 class="text-white" data-toggle="counter-up">123</h1>
-                            <h6 class="text-uppercase text-white">Onlayn<span class="d-block">Kurslar</span></h6>
+                            <h6 class="text-uppercase text-white">
+                                Onlayn<span class="d-block">Kurslar</span>
+                            </h6>
                         </div>
                     </div>
                     <div class="col-4 px-0">
-                        <div class="bg-secondary text-center p-4">
+                        <div class="bg-secondary text-center p-4"
+                            style="border-top-left-radius: 12px;">
                             <h1 class="text-white" data-toggle="counter-up">123</h1>
-                            <h6 class="text-uppercase text-white">Maxoratli<span class="d-block">O'qituvchilar</span></h6>
+                            <h6 class="text-uppercase text-white">
+                                Maxoratli<span class="d-block">O'qituvchilar</span>
+                            </h6>
                         </div>
                     </div>
                     <div class="col-4 px-0">
-                        <div class="bg-warning text-center p-4">
+                        <div class="bg-warning text-center p-4"
+                            style="border-top-left-radius: 12px;">
                             <h1 class="text-white" data-toggle="counter-up">123</h1>
-                            <h6 class="text-uppercase text-white">O'quvchilar<span class="d-block">Soni</span></h6>
+                            <h6 class="text-uppercase text-white">
+                                O'quvchilar<span class="d-block">Soni</span>
+                            </h6>
                         </div>
                     </div>
                 </div>
@@ -133,8 +143,7 @@
 <div class="container-fluid py-5">
     <div class="container py-5">
         <div class="section-title text-center position-relative mb-5">
-            <h6 class="d-inline-block position-relative text-secondary text-uppercase pb-2">O'qituvchilar</h6>
-            <h1 class="display-4">O'qituvchilarimiz bilan tanishing</h1>
+            <h1 class="display-5">O'qituvchilarimiz bilan tanishing</h1>
         </div>
         <div class="owl-carousel team-carousel position-relative" style="padding: 0 30px;">
             <div class="team-item">
@@ -201,7 +210,7 @@
         <div class="row align-items-center">
             <div class="col-lg-5 mb-5 mb-lg-0">
                 <div class="section-title position-relative mb-4">
-                    <h1 class="display-4">O'quvchilarning fikrlari</h1>
+                    <h1 class="display-5">O'quvchilarning fikrlari</h1>
                 </div>
                 <p class="m-0">
                     Ushbu platforma orqali minglab talabalar o'z bilimlarini kengaytirib, amaliy ko'nikmalarini oshirmoqda. Quyida o'quvchilarimizning kurslarimiz haqidagi fikrlari bilan tanishing
@@ -222,7 +231,7 @@
                     </div>
                     <div class="bg-white p-5">
                         <i class="fa fa-3x fa-quote-left text-primary mb-4"></i>
-                       <p>Didaktik tamoyillar va o'qitish metodlari haqidagi darslar menga o'zimning kelajakdagi darslarimni qanday samarali tashkil qilishni o'rgatdi. Ayniqsa, interaktiv yondashuvlar bo'yicha misollar juda foydali bo'ldi.</p>
+                        <p>Didaktik tamoyillar va o'qitish metodlari haqidagi darslar menga o'zimning kelajakdagi darslarimni qanday samarali tashkil qilishni o'rgatdi. Ayniqsa, interaktiv yondashuvlar bo'yicha misollar juda foydali bo'ldi.</p>
                         <div class="d-flex flex-shrink-0 align-items-center mt-4">
                             <img class="img-fluid mr-4" src="img/testimonial-1.jpg" alt="">
                             <div>
@@ -237,6 +246,6 @@
     </div>
 </div>
 <!-- Testimonial Start -->
-
+<link rel="stylesheet" href="{{ asset('css/style.css') }}">
 
 @endsection
