@@ -24,6 +24,7 @@ return new class extends Migration
             $table->string('phone')->nullable();
             $table->text('address')->nullable();
             $table->boolean('is_admin')->default(false);
+            $table->boolean('is_teacher')->default(false);
             $table->integer('payment_id')->nullable();
             $table->timestamps();
         });

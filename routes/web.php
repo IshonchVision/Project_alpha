@@ -95,11 +95,19 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'is_admin'])->group(
     Route::get('/statistics', [AdminController::class, 'statistics'])->name('statistics');
     Route::get('/payments', [AdminController::class, 'payments'])->name('payments');
     Route::get('/settings', [AdminController::class, 'settings'])->name('settings');
+
+    // Admin settings controller actions
+    Route::get('/settings', [\App\Http\Controllers\AdminSettingsController::class, 'edit'])->name('settings');
+    Route::post('/settings/profile', [\App\Http\Controllers\AdminSettingsController::class, 'updateProfile'])->name('settings.profile');
+    Route::post('/settings/general', [\App\Http\Controllers\AdminSettingsController::class, 'updateGeneral'])->name('settings.general');
+    Route::post('/settings/notifications', [\App\Http\Controllers\AdminSettingsController::class, 'updateNotifications'])->name('settings.notifications');
+    Route::post('/settings/password', [\App\Http\Controllers\AdminSettingsController::class, 'updatePassword'])->name('settings.password');
+    Route::post('/settings/destroy', [\App\Http\Controllers\AdminSettingsController::class, 'destroyAll'])->name('settings.destroy');
     Route::delete('/users/{user}', [AdminController::class, 'destroy'])
         ->name('users.destroy');
     Route::delete('/teacher/{user}', [AdminController::class, 'teacher_destroy'])
         ->name('teachers.destroy');
-    Route::post('/teachers', [AdminController::class, 'teacher_store'])->name('teachers.store');
+    Route::post('/teachers', [AdminController::class, 'teach    er_store'])->name('teachers.store');
 
     Route::get('/chats', [AdminController::class, 'chats'])->name('chats');
     Route::post('/chats/send', [AdminController::class, 'sendChatMessage'])->name('chats.send');
@@ -110,7 +118,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'is_admin'])->group(
 });
 
 
-Route::prefix('teacher')->name('teacher.')->group(function () {
+Route::prefix('teacher')->name('teacher.')->middleware(['auth', 'is_teacher'])->group(function () {
 
     Route::get('/dashboard', function () {
         return view('teacher.sections.dashboard');
@@ -148,7 +156,7 @@ Route::prefix('teacher')->name('teacher.')->group(function () {
 
 
 
-Route::prefix('student')->name('student.')->group(function () {
+Route::prefix('student')->name('student.')->middleware('auth')->group(function () {
 
     Route::get('/dashboard', function () {
         return view('student.sections.dashboard');
@@ -171,8 +179,12 @@ Route::prefix('student')->name('student.')->group(function () {
     })->name('chats');
 
     Route::get('/settings', function () {
-        return view('student.sections.settings');
+        return app(\App\Http\Controllers\StudentSettingsController::class)->edit();
     })->name('settings');
+
+    Route::post('/settings/profile', [\App\Http\Controllers\StudentSettingsController::class, 'updateProfile'])->name('settings.profile');
+    Route::post('/settings/password', [\App\Http\Controllers\StudentSettingsController::class, 'updatePassword'])->name('settings.password');
+    Route::post('/settings/notifications', [\App\Http\Controllers\StudentSettingsController::class, 'updateNotifications'])->name('settings.notifications');
 });
 
 

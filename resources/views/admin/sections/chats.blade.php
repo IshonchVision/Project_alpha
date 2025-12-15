@@ -267,6 +267,18 @@ document.addEventListener('DOMContentLoaded', function () {
                     const lastInput = document.getElementById('lastMessageId');
                     if (lastInput) lastInput.value = e.id;
                 }
+
+                // Show a toast for messages coming from other users
+                try {
+                    const currentUserId = Number(document.querySelector('meta[name="user-id"]')?.getAttribute('content') || 0);
+                    if (e.user_id && Number(e.user_id) !== currentUserId) {
+                        if (window.toastr) {
+                            window.toastr.info(e.message ?? 'Yangi xabar');
+                        }
+                    }
+                } catch (err) {
+                    console.warn('Toast show failed', err);
+                }
                 // update preview
                 if (e.message ?? e.last_message) {
                     const item = document.querySelector('.group-chat-item[data-group-id="' + groupId + '"]');
@@ -348,6 +360,15 @@ document.addEventListener('DOMContentLoaded', function () {
                             }
                         }
                     }
+                    // If polling returned a new message from another user, show toast
+                    try {
+                        const currentUserId = Number(document.querySelector('meta[name="user-id"]')?.getAttribute('content') || 0);
+                        if (data.last_user_id && Number(data.last_user_id) !== currentUserId) {
+                            if (window.toastr) {
+                                window.toastr.info(data.last_message ?? 'Yangi xabar');
+                            }
+                        }
+                    } catch (err) { console.warn('Poll toast failed', err); }
                 })
                 .catch(err => {
                     console.error('Poll error', err);

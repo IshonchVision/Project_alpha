@@ -25,9 +25,6 @@
                 </div>
 
                 <a href="{{ url('/contact') }}" class="nav-item nav-link {{ request()->is('contact') ? 'active' : '' }}">Bizga bog'lanish</a>
-                @if (Auth::user())
-                <a href="{{ url('/my_course') }}" class="nav-item nav-link {{ request()->is('my_course') ? 'active' : '' }}">Mening kurslarim</a>
-                @endif
             </div>
 
             <div class="d-flex align-items-center">
@@ -37,7 +34,6 @@
                             {{ Auth::user()->name }}
                         </a>
                         <div class="dropdown-menu dropdown-menu-right m-0">
-                            <a href="{{ url('/profile') }}" class="dropdown-item">Profil</a>
                             <a href="{{ url('/logout') }}" class="dropdown-item"
                                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                                 Chiqish
