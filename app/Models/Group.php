@@ -65,7 +65,7 @@ class Group extends Model
 
     public function students()
     {
-        return $this->belongsToMany(User::class, 'group_student');
+        return $this->belongsToMany(User::class, 'group_student', 'group_id', 'student_id');
     }
 
     public function messages()

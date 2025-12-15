@@ -6,6 +6,7 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\GroupChatsController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\UniversalController;
 use Illuminate\Support\Facades\Route;
 
@@ -120,37 +121,45 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'is_admin'])->group(
 
 Route::prefix('teacher')->name('teacher.')->middleware(['auth', 'is_teacher'])->group(function () {
 
-    Route::get('/dashboard', function () {
-        return view('teacher.sections.dashboard');
-    })->name('dashboard');
+    Route::get('/dashboard', [\App\Http\Controllers\TeacherController::class, 'dashboard'])->name('dashboard');
 
-    Route::get('/groups', function () {
-        return view('teacher.sections.groups');
-    })->name('groups');
+    // Groups
+    Route::get('/groups', [\App\Http\Controllers\TeacherController::class, 'groups'])->name('groups');
+    Route::post('/groups', [\App\Http\Controllers\TeacherController::class, 'storeGroup'])->name('groups.store');
+    Route::get('/groups/{id}', [\App\Http\Controllers\TeacherController::class, 'showGroup'])->name('groups.show');
+    Route::put('/groups/{id}', [\App\Http\Controllers\TeacherController::class, 'updateGroup'])->name('groups.update');
+    Route::delete('/groups/{id}', [\App\Http\Controllers\TeacherController::class, 'destroyGroup'])->name('groups.destroy');
 
-    Route::get('/courses', function () {
-        return view('teacher.sections.courses');
-    })->name('courses');
+    // Courses
+    Route::get('/courses', [\App\Http\Controllers\TeacherController::class, 'courses'])->name('courses');
+    Route::post('/courses', [\App\Http\Controllers\TeacherController::class, 'storeCourse'])->name('courses.store');
+    Route::get('/courses/{id}', [\App\Http\Controllers\TeacherController::class, 'showCourse'])->name('courses.show');
+    Route::put('/courses/{id}', [\App\Http\Controllers\TeacherController::class, 'updateCourse'])->name('courses.update');
+    Route::delete('/courses/{id}', [\App\Http\Controllers\TeacherController::class, 'destroyCourse'])->name('courses.destroy');
 
-    Route::get('/students', function () {
-        return view('teacher.sections.students');
-    })->name('students');
+    // Video upload/delete
+    Route::post('/courses/{id}/videos', [\App\Http\Controllers\TeacherController::class, 'storeVideo'])->name('courses.videos.store');
+    Route::delete('/videos/{id}', [\App\Http\Controllers\TeacherController::class, 'destroyVideo'])->name('videos.destroy');
 
-    Route::get('/grades', function () {
-        return view('teacher.sections.greades');
-    })->name('grades');
+    // Students
+    Route::get('/students', [\App\Http\Controllers\TeacherController::class, 'students'])->name('students');
 
-    Route::get('/chats', function () {
-        return view('teacher.sections.chats');
-    })->name('chats');
+    // Grades (placeholder)
+    Route::get('/grades', [\App\Http\Controllers\TeacherController::class, 'grades'])->name('grades');
 
-    Route::get('/settings', function () {
-        return view('teacher.sections.settings');
-    })->name('settings');
+    // Chats
+    Route::get('/chats', [\App\Http\Controllers\TeacherController::class, 'chats'])->name('chats');
+    Route::post('/chats/send', [\App\Http\Controllers\TeacherController::class, 'sendChatMessage'])->name('chats.send');
+    Route::get('/chats/{id}', [\App\Http\Controllers\TeacherController::class, 'loadGroupChat'])->name('chats.group');
+    Route::get('/chats/{id}/poll', [\App\Http\Controllers\TeacherController::class, 'pollGroupMessages'])->name('chats.poll');
 
-    Route::get('/payments', function () {
-        return view('teacher.sections.payments');
-    })->name('payments');
+    // Settings
+    Route::get('/settings', [\App\Http\Controllers\TeacherSettingsController::class, 'edit'])->name('settings');
+    Route::post('/settings/profile', [\App\Http\Controllers\TeacherSettingsController::class, 'updateProfile'])->name('settings.profile');
+    Route::post('/settings/password', [\App\Http\Controllers\TeacherSettingsController::class, 'updatePassword'])->name('settings.password');
+    Route::post('/settings/notifications', [\App\Http\Controllers\TeacherSettingsController::class, 'updateNotifications'])->name('settings.notifications');
+
+    Route::get('/payments', function () { return view('teacher.sections.payments'); })->name('payments');
 });
 
 
@@ -166,37 +175,8 @@ Route::prefix('student')->name('student.')->middleware('auth')->group(function (
         return view('student.sections.courses');
     })->name('courses');
 
-    Route::get('/course/{id}', function () {
-        return view('student.sections.course_detail');
-    })->name('course.detail');
-
-    Route::get('/grades', function () {
-        return view('student.sections.grades');
-    })->name('grades');
-
-    Route::get('/chats', function () {
-        return view('student.sections.chats');
-    })->name('chats');
-
-    Route::get('/settings', function () {
-        return app(\App\Http\Controllers\StudentSettingsController::class)->edit();
-    })->name('settings');
-
-    Route::post('/settings/profile', [\App\Http\Controllers\StudentSettingsController::class, 'updateProfile'])->name('settings.profile');
-    Route::post('/settings/password', [\App\Http\Controllers\StudentSettingsController::class, 'updatePassword'])->name('settings.password');
-    Route::post('/settings/notifications', [\App\Http\Controllers\StudentSettingsController::class, 'updateNotifications'])->name('settings.notifications');
 });
 
-
-
-// Student kurs detali sahifasi (kursni bosganda ochiladigan sahifa)
-Route::get('/student/courses/{course}', function ($course) {
-    return view('student.section.course-detail', ['courseId' => $course]);
-})->name('student.courses.show');
-
-Route::get('/student/lessons/{lesson}', function ($lesson) {
-    return view('student.section.lesson', ['lessonId' => $lesson]);
-})->name('student.lessons.show');
 
 
 Route::post('/contact/message/send', [ContactController::class, 'store'])

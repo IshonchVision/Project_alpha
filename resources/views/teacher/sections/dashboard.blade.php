@@ -11,10 +11,10 @@
             <i class="fas fa-chalkboard-teacher"></i>
         </div>
         <div class="stat-info">
-            <h3>3</h3>
+            <h3>{{ $coursesCount ?? 0 }}</h3>
             <p>Mening Kurslarim</p>
             <div class="stat-trend up">
-                <i class="fas fa-arrow-up"></i> +1 yangi
+                <i class="fas fa-arrow-up"></i> {{ $coursesCount > 0 ? '+ yangi' : '' }}
             </div>
         </div>
     </div>
@@ -24,10 +24,10 @@
             <i class="fas fa-users"></i>
         </div>
         <div class="stat-info">
-            <h3>140</h3>
+            <h3>{{ $studentsCount ?? 0 }}</h3>
             <p>Jami O'quvchilar</p>
             <div class="stat-trend up">
-                <i class="fas fa-arrow-up"></i> +12 bu oy
+                <i class="fas fa-arrow-up"></i> {{ $studentsCount > 0 ? '+ bu oy' : '' }}
             </div>
         </div>
     </div>
@@ -37,7 +37,7 @@
             <i class="fas fa-layer-group"></i>
         </div>
         <div class="stat-info">
-            <h3>8</h3>
+            <h3>{{ $activeGroups ?? 0 }}</h3>
             <p>Faol Guruhlar</p>
         </div>
     </div>
@@ -47,10 +47,10 @@
             <i class="fas fa-star"></i>
         </div>
         <div class="stat-info">
-            <h3>4.8</h3>
+            <h3>{{ $avgRating ?? '-' }}</h3>
             <p>O'rtacha Baho</p>
             <div class="stat-trend up">
-                <i class="fas fa-arrow-up"></i> +0.2
+                <i class="fas fa-arrow-up"></i> {{ $avgRating ? '+0.0' : '' }}
             </div>
         </div>
     </div>
@@ -69,37 +69,30 @@
                 </select>
             </div>
             <div class="card-body">
-                <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 25px; padding: 18px; background: #f8fafc; border-radius: 14px; border-left: 4px solid var(--primary);">
-                    <img src="https://ui-avatars.com/api/?name=Malika+Karimova&background=random" style="width: 48px; height: 48px; border-radius: 50%;">
-                    <div style="flex: 1;">
-                        <strong>Malika Karimova</strong> "Advanced English Grammar" kursidagi Lesson 1 ni tugatdi
-                        <div style="color: #64748b; font-size: 13px; margin-top: 4px;">15 daqiqa oldin</div>
+                @forelse($activities as $act)
+                    @php
+                        $u = $act['user'] ?? null;
+                        $time = isset($act['created_at']) ? \Carbon\Carbon::parse($act['created_at'])->diffForHumans() : '';
+                        $avatar = $u ? urlencode($u->name) : 'Foydalanuvchi';
+                    @endphp
+                    <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px; padding: 18px; background: #f8fafc; border-radius: 14px; border-left: 4px solid #d1d5db;">
+                        <img src="https://ui-avatars.com/api/?name={{ $u?->name ?? 'Foydalanuvchi' }}&background=random" style="width: 48px; height: 48px; border-radius: 50%;">
+                        <div style="flex: 1;">
+                            @if($act['type'] === 'course_enroll')
+                                <strong>{{ $u?->name ?? 'Foydalanuvchi' }}</strong> "{{ $act['title'] ?? 'Kurs' }}" kursiga qo'shildi
+                            @elseif($act['type'] === 'group_join')
+                                <strong>{{ $u?->name ?? 'Foydalanuvchi' }}</strong> "{{ $act['title'] ?? 'Guruh' }}" guruhiga qo'shildi
+                            @elseif($act['type'] === 'group_message')
+                                <strong>{{ $u?->name ?? 'Foydalanuvchi' }}</strong> guruhga yangi xabar yubordi: "{{ Str::limit($act['message'] ?? '', 80) }}"
+                            @else
+                                <strong>{{ $u?->name ?? 'Foydalanuvchi' }}</strong> faoliyat bildirildi
+                            @endif
+                            <div style="color: #64748b; font-size: 13px; margin-top: 4px;">{{ $time }}</div>
+                        </div>
                     </div>
-                </div>
-
-                <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 25px; padding: 18px; background: #f8fafc; border-radius: 14px; border-left: 4px solid #3b82f6;">
-                    <img src="https://ui-avatars.com/api/?name=Aziz+Toshmatov&background=random" style="width: 48px; height: 48px; border-radius: 50%;">
-                    <div style="flex: 1;">
-                        <strong>Aziz Toshmatov</strong> yangi izoh qoldirdi: "Juda yaxshi tushuntirdingiz!"
-                        <div style="color: #64748b; font-size: 13px; margin-top: 4px;">42 daqiqa oldin</div>
-                    </div>
-                </div>
-
-                <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 25px; padding: 18px; background: #f8fafc; border-radius: 14px; border-left: 4px solid #f59e0b;">
-                    <img src="https://ui-avatars.com/api/?name=Sardor+Rahimov&background=random" style="width: 48px; height: 48px; border-radius: 50%;">
-                    <div style="flex: 1;">
-                        <strong>Sardor Rahimov</strong> "IELTS Speaking Preparation" kursiga qo'shildi
-                        <div style="color: #64748b; font-size: 13px; margin-top: 4px;">1 soat oldin</div>
-                    </div>
-                </div>
-
-                <div style="display: flex; align-items: center; gap: 15px; padding: 18px; background: #f8fafc; border-radius: 14px; border-left: 4px solid var(--success);">
-                    <img src="https://ui-avatars.com/api/?name=Nigora+Aliyeva&background=random" style="width: 48px; height: 48px; border-radius: 50%;">
-                    <div style="flex: 1;">
-                        <strong>Nigora Aliyeva</strong> barcha darslarni 100% yakunladi!
-                        <div style="color: #64748b; font-size: 13px; margin-top: 4px;">2 soat oldin</div>
-                    </div>
-                </div>
+                @empty
+                    <div class="text-muted">Hozircha faollik yo'q</div>
+                @endforelse
             </div>
         </div>
     </div>

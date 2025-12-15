@@ -117,6 +117,9 @@ document.addEventListener('DOMContentLoaded', function () {
         const box = document.getElementById('messagesBox');
         if (box) box.scrollTop = box.scrollHeight;
 
+        // Track last seen message id for polling deduplication
+        let lastId = Number(document.getElementById('lastMessageId')?.value || 0);
+
         const form = document.getElementById('adminChatForm');
         if (!form) return;
 
@@ -162,8 +165,10 @@ document.addEventListener('DOMContentLoaded', function () {
                             box?.insertAdjacentHTML('beforeend', data.message_html);
                             box?.scrollTo({ top: box.scrollHeight, behavior: 'smooth' });
                         }
+                        // Update both DOM input and our local lastId so polling won't re-fetch it
                         const lastInput = document.getElementById('lastMessageId');
                         if (lastInput) lastInput.value = data.message_id;
+                        lastId = Number(data.message_id);
                     }
                 } else {
                     if (data.html) {
@@ -171,6 +176,10 @@ document.addEventListener('DOMContentLoaded', function () {
                         if (container) container.innerHTML = data.html;
                         bindGroupLinks();
                         initChatWindow();
+                        // If server sent a last_message_id, keep our local lastId in sync
+                        if (data.last_message_id) {
+                            lastId = Number(data.last_message_id);
+                        }
                     }
                 }
 
@@ -266,6 +275,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (e.id) {
                     const lastInput = document.getElementById('lastMessageId');
                     if (lastInput) lastInput.value = e.id;
+                    lastId = Number(e.id);
                 }
 
                 // Show a toast for messages coming from other users
@@ -308,8 +318,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (status) status.textContent = 'Realtime: ulanmagan (polling)';
         }
 
-        // Read last message id
-        let lastId = Number(document.getElementById('lastMessageId')?.value || 0);
+        // Polling uses the `lastId` that we keep updated above
 
         window.__adminChatPollInterval = setInterval(function () {
             fetch('/admin/chats/' + groupId + '/poll?last_id=' + lastId, { headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' } })

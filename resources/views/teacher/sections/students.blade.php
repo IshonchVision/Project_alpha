@@ -73,23 +73,23 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- O'quvchi 1 -->
+                    @forelse($students as $i => $s)
                     <tr style="background: white; transition: all 0.3s;">
-                        <td style="padding: 20px;">1</td>
+                        <td style="padding: 20px;">{{ $i + 1 }}</td>
                         <td>
                             <div style="display: flex; align-items: center; gap: 12px;">
-                                <img src="https://ui-avatars.com/api/?name=Malika+Karimova&background=random" class="user-avatar" style="width: 45px; height: 45px; border-radius: 50%;">
+                                <img src="https://ui-avatars.com/api/?name={{ urlencode($s->name) }}&background=random" class="user-avatar" style="width: 45px; height: 45px; border-radius: 50%;">
                                 <div>
-                                    <div style="font-weight: 700; color: var(--dark);">Malika Karimova</div>
-                                    <div style="font-size: 13px; color: #64748b;">ID: 1001</div>
+                                    <div style="font-weight: 700; color: var(--dark);">{{ $s->name }}</div>
+                                    <div style="font-size: 13px; color: #64748b;">ID: {{ $s->id }}</div>
                                 </div>
                             </div>
                         </td>
-                        <td>Advanced English Grammar</td>
-                        <td>+998 99 123 45 67</td>
-                        <td><strong style="color: #10b981;">4.8</strong></td>
-                        <td><strong style="color: #10b981;">92%</strong></td>
-                        <td><span style="background: #dcfce7; color: #059669; padding: 6px 14px; border-radius: 10px; font-size: 13px; font-weight: 700;">Faol</span></td>
+                        <td>{{ optional($s->groups()->where('teacher_id', auth()->id())->first())->name ?? '-' }}</td>
+                        <td>{{ $s->phone ?? '-' }}</td>
+                        <td><strong style="color: #10b981;">-</strong></td>
+                        <td><strong style="color: #10b981;">-</strong></td>
+                        <td><span style="background: #dcfce7; color: #059669; padding: 6px 14px; border-radius: 10px; font-size: 13px; font-weight: 700;">{{ $s->status ? 'Faol' : 'NoFaol' }}</span></td>
                         <td>
                             <div style="display: flex; gap: 8px;">
                                 <button class="btn-sm btn-info" style="padding: 8px 14px; font-size: 13px;"><i class="fas fa-eye"></i></button>
@@ -98,66 +98,11 @@
                             </div>
                         </td>
                     </tr>
-
-                    <!-- O'quvchi 2 -->
-                    <tr style="background: white; transition: all 0.3s;">
-                        <td style="padding: 20px;">2</td>
-                        <td>
-                            <div style="display: flex; align-items: center; gap: 12px;">
-                                <img src="https://ui-avatars.com/api/?name=Aziz+Toshmatov&background=random" class="user-avatar" style="width: 45px; height: 45px; border-radius: 50%;">
-                                <div>
-                                    <div style="font-weight: 700; color: var(--dark);">Aziz Toshmatov</div>
-                                    <div style="font-size: 13px; color: #64748b;">ID: 1002</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td>IELTS Speaking Preparation</td>
-                        <td>+998 90 987 65 43</td>
-                        <td><strong style="color: #3b82f6;">4.2</strong></td>
-                        <td><strong style="color: #3b82f6;">88%</strong></td>
-                        <td><span style="background: #dcfce7; color: #059669; padding: 6px 14px; border-radius: 10px; font-size: 13px; font-weight: 700;">Faol</span></td>
-                        <td>
-                            <div style="display: flex; gap: 8px;">
-                                <button class="btn-sm btn-info" style="padding: 8px 14px; font-size: 13px;"><i class="fas fa-eye"></i></button>
-                                <button class="btn-sm" style="padding: 8px 14px; font-size: 13px; background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white;"><i class="fas fa-comment"></i></button>
-                                <button class="btn-sm btn-danger" style="padding: 8px 14px; font-size: 13px;"><i class="fas fa-trash"></i></button>
-                            </div>
-                        </td>
+                    @empty
+                    <tr>
+                        <td colspan="8" class="text-muted">Hozircha o'quvchilaringiz mavjud emas.</td>
                     </tr>
-
-                    <!-- Qo'shimcha o'quvchilar (namuna uchun 3-4 ta yetarli) -->
-                    <tr style="background: white; transition: all 0.3s;">
-                        <td style="padding: 20px;">3</td>
-                        <td>
-                            <div style="display: flex; align-items: center; gap: 12px;">
-                                <img src="https://ui-avatars.com/api/?name=Sardor+Rahimov&background=random" class="user-avatar" style="width: 45px; height: 45px; border-radius: 50%;">
-                                <div>
-                                    <div style="font-weight: 700; color: var(--dark);">Sardor Rahimov</div>
-                                    <div style="font-size: 13px; color: #64748b;">ID: 1003</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td>English for Beginners</td>
-                        <td>+998 91 555 44 33</td>
-                        <td><strong style="color: #10b981;">5.0</strong></td>
-                        <td><strong style="color: #10b981;">100%</strong></td>
-                        <td><span style="background: #dcfce7; color: #059669; padding: 6px 14px; border-radius: 10px; font-size: 13px; font-weight: 700;">Faol</span></td>
-                        <td>
-                            <div style="display: flex; gap: 8px;">
-                                <button class="btn-sm btn-info" style="padding: 8px 14px; font-size: 13px;"><i class="fas fa-eye"></i></button>
-                                <button class="btn-sm" style="padding: 8px 14px; font-size: 13px; background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white;"><i class="fas fa-comment"></i></button>
-                                <button class="btn-sm btn-danger" style="padding: 8px 14px; font-size: 13px;"><i class="fas fa-trash"></i></button>
-                            </div>
-                        </td>
-                    </tr>
-
-                    <tr style="background: white; transition: all 0.3s;">
-                        <td style="padding: 20px;">4</td>
-                        <td>
-                            <div style="display: flex; align-items: center; gap: 12px;">
-                                <img src="https://ui-avatars.com/api/?name=Nigora+Aliyeva&background=random" class="user-avatar" style="width: 45px; height: 45px; border-radius: 50%;">
-                                <div>
-                                    <div style="font-weight: 700; color: var(--dark);">Nigora Aliyeva</div>
+                    @endforelse
                                     <div style="font-size: 13px; color: #64748b;">ID: 1004</div>
                                 </div>
                             </div>
