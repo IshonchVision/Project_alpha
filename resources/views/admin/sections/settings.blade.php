@@ -71,46 +71,7 @@
     </div>
 
     <div class="col-lg-8" style="padding: 0 15px;">
-        <form action="{{ route('admin.settings.general') }}" method="POST">
-            @csrf
-            <div class="card">
-                <div class="card-header">
-                    <h4>Umumiy Sozlamalar</h4>
-                    <button class="btn-primary">
-                        <i class="fas fa-save"></i> Saqlash
-                    </button>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-6" style="margin-bottom: 25px;">
-                            <label class="form-label">Platforma Nomi</label>
-                            <input type="text" name="platform_name" class="form-control" value="{{ old('platform_name', $settings['platform_name'] ?? 'EduPlatform') }}">
-                        </div>
-                        <div class="col-md-6" style="margin-bottom: 25px;">
-                            <label class="form-label">Administrator Email</label>
-                            <input type="email" name="admin_email" class="form-control" value="{{ old('admin_email', $settings['admin_email'] ?? 'admin@eduplatform.uz') }}">
-                        </div>
-                        <div class="col-md-6" style="margin-bottom: 25px;">
-                            <label class="form-label">Telefon</label>
-                            <input type="text" name="phone" class="form-control" value="{{ old('phone', $settings['phone'] ?? '+998 90 123 45 67') }}">
-                        </div>
-                        <div class="col-md-6" style="margin-bottom: 25px;">
-                            <label class="form-label">Til</label>
-                            <select name="language" class="form-select">
-                                <option value="uz" {{ (old('language', $settings['language'] ?? 'uz') == 'uz') ? 'selected' : '' }}>O'zbek</option>
-                                <option value="ru" {{ (old('language', $settings['language'] ?? '') == 'ru') ? 'selected' : '' }}>Русский</option>
-                                <option value="en" {{ (old('language', $settings['language'] ?? '') == 'en') ? 'selected' : '' }}>English</option>
-                            </select>
-                        </div>
-                        <div class="col-md-12" style="margin-bottom: 25px;">
-                            <label class="form-label">Manzil</label>
-                            <input type="text" name="address" class="form-control" value="{{ old('address', $settings['address'] ?? 'Toshkent, O\'zbekiston') }}">
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </form>
-
+       
         <form action="{{ route('admin.settings.password') }}" method="POST">
             @csrf
             <div class="card" style="margin-top: 20px;">
@@ -121,17 +82,17 @@
                     <div class="row">
                         <div class="col-md-6" style="margin-bottom: 25px;">
                             <label style="display: block; font-weight: 700; margin-bottom: 8px; color: var(--dark);">Joriy Parol</label>
-                            <input name="current_password" type="password" class="form-control" placeholder="••••••••" style="padding: 12px 20px; border: 2px solid #e2e8f0; border-radius: 12px;">
+                            <input name="current_password" type="password" class="form-control" placeholder="" style="padding: 12px 20px; border: 2px solid #e2e8f0; border-radius: 12px;">
                             @error('current_password') <div class="text-danger" style="margin-top:6px">{{ $message }}</div> @enderror
                         </div>
                         <div class="col-md-6" style="margin-bottom: 25px;">
                             <label style="display: block; font-weight: 700; margin-bottom: 8px; color: var(--dark);">Yangi Parol</label>
-                            <input name="password" type="password" class="form-control" placeholder="••••••••" style="padding: 12px 20px; border: 2px solid #e2e8f0; border-radius: 12px;">
+                            <input name="password" type="password" class="form-control" placeholder="" style="padding: 12px 20px; border: 2px solid #e2e8f0; border-radius: 12px;">
                             @error('password') <div class="text-danger" style="margin-top:6px">{{ $message }}</div> @enderror
                         </div>
                         <div class="col-md-12" style="margin-bottom: 25px;">
                             <label style="display: block; font-weight: 700; margin-bottom: 8px; color: var(--dark);">Parolni Tasdiqlash</label>
-                            <input name="password_confirmation" type="password" class="form-control" placeholder="••••••••" style="padding: 12px 20px; border: 2px solid #e2e8f0; border-radius: 12px;">
+                            <input name="password_confirmation" type="password" class="form-control" placeholder="" style="padding: 12px 20px; border: 2px solid #e2e8f0; border-radius: 12px;">
                         </div>
                     </div>
                     <button class="btn-primary">
