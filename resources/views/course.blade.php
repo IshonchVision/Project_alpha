@@ -41,7 +41,7 @@
         <div class="row mx-0 justify-content-center">
             <div class="col-lg-8">
                 <div class="section-title text-center position-relative mb-5">
-                    <h1 class="display-4">Ta'lim nazariyasi kursi</h1>
+                    <h1 class="display-5">Ta'lim nazariyasi kursi</h1>
                 </div>
             </div>
         </div>
@@ -88,7 +88,7 @@
         <div class="row mx-0 justify-content-center">
             <div class="col-lg-8">
                 <div class="section-title text-center position-relative mb-5">
-                    <h1 class="display-4">Boshqa kurslarimiz</h1>
+                    <h1 class="display-5">Boshqa kurslarimiz</h1>
                 </div>
             </div>
         </div>

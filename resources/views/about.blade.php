@@ -15,38 +15,41 @@
 
 
 <!-- About Start -->
-<div class="container py-12">
-    <div class="row align-items-center">
-        <!-- Chap tomonda matn -->
-        <div class="col-lg-5 col-md-6 pb-4">
-            <a class="courses-list-item position-relative d-block overflow-hidden mb-2" href="{{ url('detail') }}">
-                <img class="img-fluid" src="img/courses-1.jpg" alt="">
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-6 col-md-12 mb-4">
+            <a class="courses-list-item position-relative d-block overflow-hidden mb-2" href="" style="max-height: 400px;">
+                <img class="img-fluid" src="img/courses-1.jpg" alt="" style="max-height: 350px; object-fit: cover; width: 100%;">
                 <div class="courses-text">
-                    <h4 class="text-center text-white px-3">
+                    <h4 class="text-center text-white px-3" style="font-size: 1.1rem;">
                         Ta'lim nazariyasi: Videoni joyi
                     </h4>
-                    <div class="border-top w-100 mt-3">
-                        <div class="d-flex justify-content-between p-4">
-                            <span class="text-white"><i class="fa fa-user mr-2"></i>Prof. J. Doe</span>
-                            <span class="text-white"><i class="fa fa-star mr-2"></i>4.8
-                                <small>(512)</small>
-                            </span>
-                        </div>
-                    </div>
                 </div>
             </a>
         </div>
-        <div class="col-lg-7 mb-5">
-            <div class="section-title position-relative mb-4">
-                <h6 class="d-inline-block position-relative text-secondary text-uppercase pb-2">Maqsad sharhi</h6>
-                <h2 class="display-4">Ta'lim nazariyasi haqida qisqacha ma'lumot</h>
+        <div class="col-lg-6 col-md-12 mb-4">
+            <div class="section-title position-relative mb-3">
+                <h6 class="d-inline-block position-relative text-secondary text-uppercase pb-2" style="font-size: 0.85rem;">Maqsad sharhi</h6>
+                <h2 class="display-5">Ta'lim nazariyasi haqida ma'lumot</h2>
             </div>
-            <p>
-                Ta’lim nazariyasi — o‘qitish jarayoni, metodlari, tamoyillari va o‘quvchini rivojlantirishga qaratilgan ilmiy yondashuvlarni o‘rganuvchi fan.
-                Ushbu platformada siz ta’lim jarayonining asoslari, didaktik tamoyillar, o‘qitish metodlari, o‘quvchi psixologiyasi va zamonaviy pedagogik yondashuvlarni chuqur va amaliy shaklda o‘rganasiz.
-                Ta’lim nazariyasi — o‘qitish jarayoni, metodlari, tamoyillari va o‘quvchini rivojlantirishga qaratilgan ilmiy yondashuvlarni o‘rganuvchi fan.
-                Ushbu platformada siz ta’lim jarayonining asoslari, didaktik tamoyillar, o‘qitish metodlari, o‘quvchi psixologiyasi va zamonaviy pedagogik yondashuvlarni chuqur va amaliy shaklda o‘rganasiz.
-                Ushbu platformada siz ta’lim jarayonining asoslari, didaktik tamoyillar, o‘qitish metodlari, o‘quvchi psixologiyasi va zamonaviy pedagogik yondashuvlarni chuqur va amaliy shaklda o‘rganasiz.
+            <p style="font-size: 0.95rem; line-height: 1.7; text-align: justify;">
+                Ta'lim nazariyasi — o'qitish jarayoni, metodlari, tamoyillari va o'quvchini rivojlantirishga qaratilgan ilmiy yondashuvlarni o'rganuvchi fan.
+                Ushbu platformada siz ta'lim jarayonining asoslari, didaktik tamoyillar, o'qitish metodlari, o'quvchi psixologiyasi va zamonaviy pedagogik yondashuvlarni chuqur va amaliy shaklda o'rganasiz.
+            </p>
+        </div>
+        <div class="col-12">
+            <p style="font-size: 0.95rem; line-height: 1.7; text-align: justify;">
+                <b style="color: blue;">Ta'lim nazariyasi</b> — o'qitish jarayoni, metodlari, tamoyillari va o'quvchini rivojlantirishga qaratilgan ilmiy yondashuvlarni o'rganuvchi fan.
+                Ushbu platformada siz ta'lim jarayonining asoslari, didaktik tamoyillar, o'qitish metodlari, o'quvchi psixologiyasi va zamonaviy pedagogik yondashuvlarni chuqur va amaliy shaklda o'rganasiz.
+                Ushbu platformada siz ta'lim jarayonining asoslari, didaktik tamoyillar, o'qitish metodlari, o'quvchi psixologiyasi va zamonaviy pedagogik yondashuvlarni chuqur va amaliy shaklda o'rganasiz.
+            </p>
+            <p style="font-size: 0.95rem; line-height: 1.7; text-align: justify;">
+                Ta'lim nazariyasi — o'qitish jarayoni, metodlari, tamoyillari va o'quvchini rivojlantirishga qaratilgan ilmiy yondashuvlarni o'rganuvchi fan.
+                Ushbu platformada siz ta'lim jarayonining asoslari, didaktik tamoyillar, o'qitish metodlari, o'quvchi psixologiyasi va zamonaviy pedagogik yondashuvlarni chuqur va amaliy shaklda o'rganasiz.
+            </p>
+            <p style="font-size: 0.95rem; line-height: 1.7; text-align: justify;">
+                Ushbu platformada siz ta'lim jarayonining asoslari, didaktik tamoyillar, o'qitish metodlari, o'quvchi psixologiyasi va zamonaviy pedagogik yondashuvlarni chuqur va amaliy shaklda o'rganasiz.
+                Ta'lim nazariyasi — o'qitish jarayoni, metodlari, tamoyillari va o'quvchini rivojlantirishga qaratilgan ilmiy yondashuvlarni o'rganuvchi fan.
             </p>
         </div>
     </div>
