@@ -13,6 +13,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
             'is_admin' => \App\Http\Middleware\IsAdmin::class,
+            'is_teacher' => \App\Http\Middleware\IsTeacher::class,
             'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
             'auth.session' => \Illuminate\Session\Middleware\AuthenticateSession::class,
             'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,

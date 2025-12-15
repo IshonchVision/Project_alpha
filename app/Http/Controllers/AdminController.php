@@ -248,6 +248,7 @@ class AdminController extends Controller
             'subject_id' => 'nullable|exists:subjects,id',
             'password' => 'required|min:6|confirmed',
             'status'   => 'required|in:active,inactive',
+            
         ]);
 
         User::create([
@@ -257,6 +258,7 @@ class AdminController extends Controller
             'subject_id' => $request->subject_id,
             'role'       => 'teacher',
             'password'   => Hash::make($request->password),
+            'is_teacher' => true,
         ]);
 
         return redirect()->route('admin.teachers')
@@ -349,6 +351,7 @@ class AdminController extends Controller
                     'group_id' => $selectedGroup->id,
                     'last_message' => optional($messages->last())->message ?? null,
                     'last_time' => optional($messages->last())->created_at?->diffForHumans() ?? null,
+                    'last_user_id' => optional($messages->last())->user_id ?? null,
                     'messages_count' => GroupMessage::where('group_id', $id)->count(),
                     'last_message_id' => optional($messages->last())->id ?? null,
                 ]);
@@ -389,6 +392,7 @@ class AdminController extends Controller
                 'messages_count' => GroupMessage::where('group_id', $id)->count(),
                 'last_message' => optional($messages->last())->message ?? null,
                 'last_time' => optional($messages->last())->created_at?->diffForHumans() ?? null,
+                'last_user_id' => optional($messages->last())->user_id ?? null,
             ]);
         } catch (\Throwable $e) {
             Log::error('pollGroupMessages error', ['id' => $id, 'error' => $e->getMessage()]);

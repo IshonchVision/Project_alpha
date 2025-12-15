@@ -6,6 +6,7 @@
     <title>Talaba Paneli - @yield('title', 'Dashboard')</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     <style>
         :root {
             --primary: #3b82f6;
@@ -283,4 +284,30 @@
         @yield('content')
     </div>
 </body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<script>
+    toastr.options = {
+        "closeButton": true,
+        "progressBar": true,
+        "positionClass": "toast-top-right",
+        "timeOut": "5000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    }
+
+    @if(session('success'))
+    toastr.success("{{ session('success') }}")
+    @endif
+
+    @if(session('error'))
+    toastr.error("{{ session('error') }}")
+    @endif
+
+    @if($errors->any())
+    toastr.error("{{ $errors->first() }}")
+    @endif
+</script>
 </html>
