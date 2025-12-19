@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Course;
 use App\Models\Group;
 use App\Models\GroupMessage;
+use App\Models\Quiz;
+use App\Models\Quizzes;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -286,7 +288,10 @@ class TeacherController extends Controller
 
         if ($request->hasFile('img')) {
             // Delete old
-            try { \Illuminate\Support\Facades\Storage::disk('public')->delete($course->img); } catch (\Throwable $e) {}
+            try {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($course->img);
+            } catch (\Throwable $e) {
+            }
             $path = $request->file('img')->store('courses', 'public');
             $data['img'] = $path;
         }
@@ -386,7 +391,10 @@ class TeacherController extends Controller
         } catch (\Throwable $e) {
             DB::rollBack();
             // delete uploaded file if DB failed
-            try { \Illuminate\Support\Facades\Storage::disk('public')->delete($path); } catch (\Throwable $_) {}
+            try {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($path);
+            } catch (\Throwable $_) {
+            }
             throw $e;
         }
 
@@ -408,7 +416,10 @@ class TeacherController extends Controller
         if (!$course || $course->user_id !== $user->id) abort(403);
 
         // Try to delete file
-        try { \Illuminate\Support\Facades\Storage::disk('public')->delete(str_replace('storage/', '', $video->video_url)); } catch (\Throwable $e) {}
+        try {
+            \Illuminate\Support\Facades\Storage::disk('public')->delete(str_replace('storage/', '', $video->video_url));
+        } catch (\Throwable $e) {
+        }
 
         $video->delete();
 
@@ -552,5 +563,65 @@ class TeacherController extends Controller
             'last_time' => optional($messages->last())->created_at?->diffForHumans() ?? null,
             'last_user_id' => optional($messages->last())->user_id ?? null,
         ]);
+    }
+    // app/Http/Controllers/TeacherController.php
+
+    public function storeQuiz(Request $request)
+    {
+        $validated = $request->validate([
+            'course_id' => 'required|exists:courses,id',
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'time_limit_minutes' => 'nullable|integer|min:1',
+            'passing_score_percentage' => 'required|integer|min:0|max:100',
+            'questions' => 'required|array|min:1',
+            'questions.*.question' => 'required|string',
+            'questions.*.option_a' => 'required|string',
+            'questions.*.option_b' => 'required|string',
+            'questions.*.option_c' => 'required|string',
+            'questions.*.option_d' => 'required|string',
+            'questions.*.correct_answer' => 'required|in:a,b,c,d',
+            'questions.*.points' => 'required|integer|min:1',
+        ]);
+
+        // Quiz yaratish
+        $quiz = Quiz::create([
+            'course_id' => $validated['course_id'],
+            'title' => $validated['title'],
+            'description' => $validated['description'] ?? null,
+            'time_limit_minutes' => $validated['time_limit_minutes'] ?? null,
+            'passing_score_percentage' => $validated['passing_score_percentage'],
+        ]);
+
+        // Savollarni qo'shish
+        foreach ($validated['questions'] as $questionData) {
+            Quizzes::create([
+                'quiz_id' => $quiz->id,
+                'question' => $questionData['question'],
+                'option_a' => $questionData['option_a'],
+                'option_b' => $questionData['option_b'],
+                'option_c' => $questionData['option_c'],
+                'option_d' => $questionData['option_d'],
+                'correct_answer' => $questionData['correct_answer'],
+                'points' => $questionData['points'],
+            ]);
+        }
+
+        return redirect()->route('teacher.courses.index')
+            ->with('success', 'Test muvaffaqiyatli qo\'shildi!');
+    }
+
+    public function destroyQuiz($id)
+    {
+        $quiz = Quiz::findOrFail($id);
+
+        // Faqat o'z quizini o'chirishi mumkin
+        if ($quiz->course->teacher_id !== auth()->id()) {
+            return back()->with('error', 'Ruxsat yo\'q');
+        }
+
+        $quiz->delete(); // Cascade bilan savollar ham o'chadi
+
+        return back()->with('success', 'Test o\'chirildi');
     }
 }

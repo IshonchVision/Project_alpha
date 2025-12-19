@@ -56,7 +56,7 @@
                 </div>
                 <div style="display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f1f5f9;">
                     <span style="color: #64748b;">Database:</span>
-                    <strong>MySQL 8.0</strong>
+                    <strong>PostgreSQL</strong>
                 </div>
                 <div style="display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f1f5f9;">
                     <span style="color: #64748b;">Server:</span>

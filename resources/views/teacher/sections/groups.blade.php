@@ -7,63 +7,8 @@
 <div class="card">
     <div class="card-header">
         <h4>Guruhlar</h4>
-        <button class="btn-primary" data-bs-toggle="modal" data-bs-target="#createGroupModal">
-            <i class="fas fa-plus"></i> Yangi Guruh
-        </button>
     </div>
 
-    <!-- Create Group Modal -->
-    <div class="modal fade" id="createGroupModal" tabindex="-1" aria-labelledby="createGroupModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <form method="POST" action="{{ route('teacher.groups.store') }}">
-                    @csrf
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="createGroupModalLabel">Yangi Guruh</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <label class="form-label">Guruh nomi</label>
-                            <input type="text" name="name" class="form-control" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Kod (ixtiyoriy)</label>
-                            <input type="text" name="code" class="form-control">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Fan</label>
-                            <input type="text" name="subject" class="form-control">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Dars kunlari</label>
-                            <input type="text" name="lesson_days" class="form-control">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Dars vaqti</label>
-                            <input type="text" name="lesson_time" class="form-control">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Max o'quvchilar</label>
-                            <input type="number" name="max_students" class="form-control" min="1">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Status</label>
-                            <select name="status" class="form-select">
-                                <option value="active">Faol</option>
-                                <option value="inactive">Faol emas</option>
-                                <option value="full">To'ldi</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Bekor qilish</button>
-                        <button type="submit" class="btn btn-primary">Yaratish</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
     <div class="card-body">
         @if(session('success'))
             <div class="alert alert-success">{{ session('success') }}</div>

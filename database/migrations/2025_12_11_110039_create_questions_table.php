@@ -13,11 +13,14 @@ return new class extends Migration
     {
         Schema::create('questions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('quiz_id')->constrained()->onDelete('cascade');
-            $table->enum('type', ['multiple_choice', 'true_false', 'matching', 'short_answer', 'fill_blank']);
-            $table->text('text');
+            $table->foreignId('quiz_id')->constrained('quizzes')->onDelete('cascade');
+            $table->text('question');
+            $table->text('option_a');
+            $table->text('option_b');
+            $table->text('option_c');
+            $table->text('option_d');
+            $table->char('correct_answer', 1); // a, b, c, yoki d
             $table->integer('points')->default(1);
-            $table->text('explanation')->nullable();
             $table->timestamps();
         });
     }
