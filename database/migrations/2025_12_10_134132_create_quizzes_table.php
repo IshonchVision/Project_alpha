@@ -13,13 +13,11 @@ return new class extends Migration
     {
         Schema::create('quizzes', function (Blueprint $table) {
             $table->id();
-            $table->integer('module_id');
+            $table->foreignId('course_id')->constrained('courses')->onDelete('cascade');
             $table->string('title');
+            $table->text('description')->nullable();
             $table->integer('time_limit_minutes')->nullable();
-            $table->integer('attempts_allowed')->default(1);
             $table->integer('passing_score_percentage')->default(70);
-            $table->string('answare');
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->timestamps();
         });
     }

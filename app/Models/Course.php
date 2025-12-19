@@ -23,4 +23,10 @@ class Course extends Model
     {
         return $this->hasMany(Video::class);
     }
+    // app/Models/Course.php ichiga qo'shing:
+
+    public function quizzes()
+    {
+        return $this->hasMany(Quiz::class);
+    }
 }

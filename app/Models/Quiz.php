@@ -6,25 +6,21 @@ use Illuminate\Database\Eloquent\Model;
 
 class Quiz extends Model
 {
-    protected $table = 'quizzes';
-
     protected $fillable = [
-        'module_id',
+        'course_id',
         'title',
+        'description',
         'time_limit_minutes',
-        'attempts_allowed',
         'passing_score_percentage',
-        'answare',
-        'user_id',
     ];
 
-    public function module()
+    public function course()
     {
-        return $this->belongsTo(Module::class);
+        return $this->belongsTo(Course::class);
     }
 
-    public function user()
+    public function questions()
     {
-        return $this->belongsTo(User::class);
+        return $this->hasMany(Quizzes::class);
     }
 }

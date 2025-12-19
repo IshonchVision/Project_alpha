@@ -159,7 +159,8 @@ Route::prefix('teacher')->name('teacher.')->middleware(['auth', 'is_teacher'])->
     Route::post('/settings/password', [\App\Http\Controllers\TeacherSettingsController::class, 'updatePassword'])->name('settings.password');
     Route::post('/settings/notifications', [\App\Http\Controllers\TeacherSettingsController::class, 'updateNotifications'])->name('settings.notifications');
 
-    Route::get('/payments', function () { return view('teacher.sections.payments'); })->name('payments');
+    Route::post('/teacher/quizzes', [TeacherController::class, 'storeQuiz'])->name('quizzes.store');
+    Route::delete('/teacher/quizzes/{id}', [TeacherController::class, 'destroyQuiz'])->name('quizzes.destroy');
 });
 
 
@@ -174,7 +175,6 @@ Route::prefix('student')->name('student.')->middleware('auth')->group(function (
     Route::get('/courses', function () {
         return view('student.sections.courses');
     })->name('courses');
-
 });
 
 
@@ -193,3 +193,6 @@ Route::get('/course/{id}', [CourseController::class, 'detail'])
 
 // Watch/Access a course — requires auth; returns JSON 401 for AJAX or flashes error for guests
 Route::post('/course/watch', [CourseController::class, 'watch'])->name('course.watch');
+
+
+// routes/web.php yoki teacher route file ichiga:

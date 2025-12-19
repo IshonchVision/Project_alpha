@@ -39,7 +39,6 @@
             <a href="{{ route('teacher.chats') }}" class="menu-link {{ request()->routeIs('teacher.chats') ? 'active' : '' }}">
                 <i class="fas fa-comments"></i>
                 <span>Chatlar</span>
-                <span class="badge bg-danger">5</span>
             </a>
         </li>
         <li class="menu-item">
