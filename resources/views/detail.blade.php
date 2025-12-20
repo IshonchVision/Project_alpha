@@ -14,15 +14,24 @@
             background: rgba(0, 0, 0, 0.2);
             border-radius: 10px;
         }
+
+        .back-button-container {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 10;
+        }
     </style>
-    <div class="container-fluid py-5">
+    <div class="container-fluid py-5" style="position: relative;">
+        <div class="back-button-container">
+            <a href="{{ route('courses') }}" class="btn btn-outline-primary" style="border-radius: 50px; padding: 10px 20px;">
+                <i class="fa fa-arrow-left mr-1"></i> Orqaga
+            </a>
+        </div>
+
         <div class="container py-5">
-            <div class="position-relative mb-4">
-                <a href="{{ route('courses') }}" class="btn btn-outline-primary position-absolute"
-                    style="left: 0; top: 50%; transform: translateY(-50%); border-radius: 50px;">
-                    <i class="fa fa-arrow-left mr-2"></i> Orqaga
-                </a>
-                <h1 class="display-5 text-center mb-0">{{ $course->title }}</h1>
+            <div class="text-center mb-5">
+                <h1 class="display-5 mb-0">{{ $course->title }}</h1>
             </div>
             <div class="row mb-4">
                 <div class="col-lg-6 col-md-12 mb-4">
@@ -63,7 +72,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="col-lg-4 col-md-12 mb-4">
                     <div
                         style="background: #ffffff; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border: 1px solid #e0e0e0;">
