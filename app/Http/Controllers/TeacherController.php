@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Course;
 use App\Models\Group;
 use App\Models\GroupMessage;
+use App\Models\Question;
 use App\Models\Quiz;
 use App\Models\Quizzes;
 use App\Models\User;
+use App\Models\Video;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -328,96 +330,36 @@ class TeacherController extends Controller
      */
     public function storeVideo(Request $request, $courseId)
     {
-        $user = Auth::user();
-        $course = Course::where('id', $courseId)->where('user_id', $user->id)->firstOrFail();
-        $data = $request->validate([
+        $course = Auth::user()->courses()->findOrFail($courseId);
+
+        $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'duration_minutes' => 'nullable|numeric|min:0',
-            'video' => 'required|file|mimetypes:video/mp4,video/avi,video/mov,video/quicktime|max:512000', // up to 500MB
-
-            // Quiz fields (optional)
-            'quiz_title' => 'nullable|string|max:255',
-            'quiz_time_limit' => 'nullable|integer|min:0',
-            'quiz_attempts' => 'nullable|integer|min:1',
-            'quiz_passing' => 'nullable|integer|min:0|max:100',
-            'quiz_answare' => 'nullable|string',
+            'duration_minutes' => 'required|integer|min:1',
+            'video' => 'required|file|mimes:mp4,avi,mov,webm|max:1024000', // 1 GB = 1024000 KB
         ]);
 
-        // Store file first
-        $file = $request->file('video');
-        $path = $file->store('videos', 'public');
+        $path = $request->file('video')->store('videos', 'public');
 
-        // Create DB records in a transaction so module/quiz/video creation is atomic
-        $video = null;
-        try {
-            DB::beginTransaction();
+        Video::create([
+            'course_id' => $course->id,
+            'user_id' => Auth::id(),
+            'title' => $validated['title'],
+            'description' => $validated['description'],
+            'video_url' => 'storage/' . $path,
+            'duration_seconds' => $validated['duration_minutes'] * 60,
+        ]);
 
-            $moduleId = null;
-            if (!empty($data['quiz_title'])) {
-                // create a module for the video (module ordering)
-                $order = \App\Models\Module::where('course_id', $course->id)->max('order_number') ?? 0;
-                $module = \App\Models\Module::create([
-                    'course_id' => $course->id,
-                    'title' => $data['quiz_title'],
-                    'order_number' => $order + 1,
-                    'description' => $data['description'] ?? null,
-                    'is_locked' => false,
-                ]);
-                $moduleId = $module->id;
-            }
-
-            $video = \App\Models\Video::create([
-                'title' => $data['title'],
-                'description' => $data['description'] ?? null,
-                'duration_seconds' => isset($data['duration_minutes']) ? intval($data['duration_minutes']) * 60 : 0,
-                'video_url' => 'storage/' . $path,
-                'user_id' => $user->id,
-                'course_id' => $course->id,
-                'module_id' => $moduleId,
-            ]);
-
-            if ($moduleId && !empty($data['quiz_title'])) {
-                \App\Models\Quiz::create([
-                    'module_id' => $moduleId,
-                    'title' => $data['quiz_title'],
-                    'time_limit_minutes' => $data['quiz_time_limit'] ?? null,
-                    'attempts_allowed' => $data['quiz_attempts'] ?? 1,
-                    'passing_score_percentage' => $data['quiz_passing'] ?? 70,
-                    'answare' => $data['quiz_answare'] ?? null,
-                    'user_id' => $user->id,
-                ]);
-            }
-
-            DB::commit();
-        } catch (\Throwable $e) {
-            DB::rollBack();
-            // delete uploaded file if DB failed
-            try {
-                \Illuminate\Support\Facades\Storage::disk('public')->delete($path);
-            } catch (\Throwable $_) {
-            }
-            throw $e;
-        }
-
-        if ($request->ajax() || $request->wantsJson()) {
-            return response()->json(['message' => 'Video yuklandi', 'video' => $video]);
-        }
-
-        return back()->with('success', 'Video yuklandi')->withInput(['course_id' => $course->id]);
+        return back()->with('success', 'Video muvaffaqiyatli yuklandi!');
     }
 
-    /**
-     * Delete a video (teacher owns course)
-     */
     public function destroyVideo($id)
     {
         $user = Auth::user();
-        $video = \App\Models\Video::findOrFail($id);
+        $video = Video::findOrFail($id);
         $course = $video->course;
         if (!$course || $course->user_id !== $user->id) abort(403);
 
-        // Try to delete file
         try {
             \Illuminate\Support\Facades\Storage::disk('public')->delete(str_replace('storage/', '', $video->video_url));
         } catch (\Throwable $e) {
@@ -449,12 +391,6 @@ class TeacherController extends Controller
         return view('teacher.sections.students', compact('students'));
     }
 
-    public function grades()
-    {
-        return view('teacher.sections.greades');
-    }
-
-    // Chats similar to admin but scoped to teacher's groups
     public function chats()
     {
         $user = Auth::user();
@@ -597,7 +533,7 @@ class TeacherController extends Controller
 
         // Savollarni qo'shish
         foreach ($validated['questions'] as $questionData) {
-            Quizzes::create([
+            Question::create([
                 'quiz_id' => $quiz->id,
                 'question' => $questionData['question'],
                 'option_a' => $questionData['option_a'],
@@ -609,8 +545,7 @@ class TeacherController extends Controller
             ]);
         }
 
-        return redirect()->route('teacher.courses.index')
-            ->with('success', 'Test muvaffaqiyatli qo\'shildi!');
+        return back()->with('success', 'Test muvaffaqiyatli qo\'shildi!');
     }
 
     public function destroyQuiz($id)
@@ -632,5 +567,19 @@ class TeacherController extends Controller
     {
         $course = Auth::user()->courses()->findOrFail($courseId);
         return view('teacher.videos.create', compact('course'));
+    }
+
+    // Quiz yaratish sahifasini ko'rsatish
+    public function createQuiz($courseId)
+    {
+        $course = Auth::user()->courses()->findOrFail($courseId);
+
+        // Faqat theory kurslarga ruxsat berish
+        if ($course->course_type !== 'theory') {
+            return redirect()->route('teacher.courses')
+                ->with('error', 'Bu kurs turi uchun quiz qo\'shib bo\'lmaydi.');
+        }
+
+        return view('teacher.quizzes.create', compact('course'));
     }
 }

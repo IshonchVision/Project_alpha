@@ -157,9 +157,8 @@ Route::prefix('teacher')->name('teacher.')->middleware(['auth', 'is_teacher'])->
 
     // Settings
     Route::get('/settings', [TeacherSettingsController::class, 'edit'])->name('settings');
-    Route::post('/settings/profile', [TeacherSettingsController::class, 'updateProfile'])->name('settings.profile');
-    Route::post('/settings/password', [TeacherSettingsController::class, 'updatePassword'])->name('settings.password');
-    Route::post('/settings/notifications', [TeacherSettingsController::class, 'updateNotifications'])->name('settings.notifications');
+    Route::put('/settings', [TeacherSettingsController::class, 'updateProfile'])->name('profile.update');
+    Route::put('/password', [TeacherSettingsController::class, 'updatePassword'])->name('password.update');
 
     Route::post('/teacher/quizzes', [TeacherController::class, 'storeQuiz'])->name('quizzes.store');
     Route::delete('/teacher/quizzes/{id}', [TeacherController::class, 'destroyQuiz'])->name('quizzes.destroy');
@@ -181,6 +180,14 @@ Route::prefix('teacher')->name('teacher.')->middleware(['auth', 'is_teacher'])->
     // Video saqlash (oldincha qoldiramiz)
     Route::post('/courses/{course}/videos', [TeacherController::class, 'storeVideo'])
         ->name('courses.videos.store');
+
+
+    Route::get('/courses/{course}/quizzes/create', [TeacherController::class, 'createQuiz'])
+        ->name('quizzes.create');
+
+    // Quiz saqlash (agar hali yo'q bo'lsa)
+    Route::post('/courses/{course}/quizzes', [TeacherController::class, 'storeQuiz'])
+        ->name('quizzes.store');
 });
 
 

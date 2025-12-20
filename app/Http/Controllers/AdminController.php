@@ -149,7 +149,6 @@ class AdminController extends Controller
                     ->limit(1);
             }, 'subject_name')
             ->where('role', 'teacher')
-            ->where('status', true)
             ->orderBy('name')
             ->get();
 

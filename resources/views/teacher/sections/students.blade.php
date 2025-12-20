@@ -12,7 +12,7 @@
             <i class="fas fa-users"></i>
         </div>
         <div class="stat-info">
-            <h3>140</h3>
+            <h3>{{ $students->count() }}</h3>
             <p>Jami O'quvchilar</p>
         </div>
     </div>
@@ -21,7 +21,7 @@
             <i class="fas fa-user-check"></i>
         </div>
         <div class="stat-info">
-            <h3>128</h3>
+            <h3>{{ $students->where('status', 1)->count() }}</h3> <!-- Agar status fieldi bo'lsa -->
             <p>Faol O'quvchilar</p>
         </div>
     </div>
@@ -30,7 +30,7 @@
             <i class="fas fa-user-clock"></i>
         </div>
         <div class="stat-info">
-            <h3>12</h3>
+            <h3>{{ $students->where('status', 0)->count() }}</h3>
             <p>NoFaol</p>
         </div>
     </div>
@@ -41,21 +41,7 @@
     <div class="card-header">
         <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
             <h4 style="margin: 0;">O'quvchilar Ro'yxati</h4>
-            <select class="form-select" style="width: 250px;">
-                <option>Barcha guruhlar</option>
-                <option>Advanced English Grammar</option>
-                <option>IELTS Speaking Preparation</option>
-                <option>English for Beginners</option>
-            </select>
-            <select class="form-select" style="width: 180px;">
-                <option>Barcha statuslar</option>
-                <option>Faol</option>
-                <option>NoFaol</option>
-            </select>
         </div>
-        <button class="btn-primary">
-            <i class="fas fa-file-export"></i> Excel Export
-        </button>
     </div>
     <div class="card-body" style="padding: 0;">
         <div style="overflow-x: auto;">
@@ -69,57 +55,52 @@
                         <th style="padding: 18px 20px; text-align: left;">O'RTACHA BAHO</th>
                         <th style="padding: 18px 20px; text-align: left;">DAVOMAT</th>
                         <th style="padding: 18px 20px; text-align: left;">STATUS</th>
-                        <th style="padding: 18px 20px; text-align: left;">AMALLAR</th>
                     </tr>
                 </thead>
                 <tbody>
                     @forelse($students as $i => $s)
                     <tr style="background: white; transition: all 0.3s;">
-                        <td style="padding: 20px;">{{ $i + 1 }}</td>
+                        <td style="padding: 20px;">{{ $loop->iteration }}</td>
                         <td>
                             <div style="display: flex; align-items: center; gap: 12px;">
-                                <img src="https://ui-avatars.com/api/?name={{ urlencode($s->name) }}&background=random" class="user-avatar" style="width: 45px; height: 45px; border-radius: 50%;">
+                                <img src="https://ui-avatars.com/api/?name={{ urlencode($s->name) }}&background=random"
+                                    class="user-avatar"
+                                    style="width: 45px; height: 45px; border-radius: 50%;">
                                 <div>
                                     <div style="font-weight: 700; color: var(--dark);">{{ $s->name }}</div>
                                     <div style="font-size: 13px; color: #64748b;">ID: {{ $s->id }}</div>
                                 </div>
                             </div>
                         </td>
-                        <td>{{ optional($s->groups()->where('teacher_id', auth()->id())->first())->name ?? '-' }}</td>
+                        <td>
+                            @php
+                            // O'qituvchiga tegishli guruhlar orasidan ushbu o'quvchi qatnashgan birinchi guruhni topamiz
+                            $teacherGroup = \App\Models\Group::where('teacher_id', auth()->id())
+                            ->whereHas('students', function($query) use ($s) {
+                            $query->where('student_id', $s->id);
+                            })
+                            ->first();
+                            @endphp
+                            {{ $teacherGroup ? $teacherGroup->name : '-' }}
+                        </td>
                         <td>{{ $s->phone ?? '-' }}</td>
                         <td><strong style="color: #10b981;">-</strong></td>
                         <td><strong style="color: #10b981;">-</strong></td>
-                        <td><span style="background: #dcfce7; color: #059669; padding: 6px 14px; border-radius: 10px; font-size: 13px; font-weight: 700;">{{ $s->status ? 'Faol' : 'NoFaol' }}</span></td>
                         <td>
-                            <div style="display: flex; gap: 8px;">
-                                <button class="btn-sm btn-info" style="padding: 8px 14px; font-size: 13px;"><i class="fas fa-eye"></i></button>
-                                <button class="btn-sm" style="padding: 8px 14px; font-size: 13px; background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white;"><i class="fas fa-comment"></i></button>
-                                <button class="btn-sm btn-danger" style="padding: 8px 14px; font-size: 13px;"><i class="fas fa-trash"></i></button>
-                            </div>
+                            @if($s->status ?? false)
+                            <span style="background: #dcfce7; color: #059669; padding: 6px 14px; border-radius: 10px; font-size: 13px; font-weight: 700;">Faol</span>
+                            @else
+                            <span style="background: #fee2e2; color: #dc2626; padding: 6px 14px; border-radius: 10px; font-size: 13px; font-weight: 700;">NoFaol</span>
+                            @endif
                         </td>
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="8" class="text-muted">Hozircha o'quvchilaringiz mavjud emas.</td>
+                        <td colspan="8" style="text-align: center; padding: 40px; color: #64748b;">
+                            Hozircha o'quvchilaringiz mavjud emas.
+                        </td>
                     </tr>
                     @endforelse
-                                    <div style="font-size: 13px; color: #64748b;">ID: 1004</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td>Advanced English Grammar</td>
-                        <td>+998 93 222 11 00</td>
-                        <td><strong style="color: #f59e0b;">3.6</strong></td>
-                        <td><strong style="color: #f59e0b;">78%</strong></td>
-                        <td><span style="background: #fee2e2; color: #dc2626; padding: 6px 14px; border-radius: 10px; font-size: 13px; font-weight: 700;">NoFaol</span></td>
-                        <td>
-                            <div style="display: flex; gap: 8px;">
-                                <button class="btn-sm btn-info" style="padding: 8px 14px; font-size: 13px;"><i class="fas fa-eye"></i></button>
-                                <button class="btn-sm" style="padding: 8px 14px; font-size: 13px; background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white;"><i class="fas fa-comment"></i></button>
-                                <button class="btn-sm btn-danger" style="padding: 8px 14px; font-size: 13px;"><i class="fas fa-trash"></i></button>
-                            </div>
-                        </td>
-                    </tr>
                 </tbody>
             </table>
         </div>
@@ -130,16 +111,20 @@
     tbody tr:hover {
         background: #f8fafc !important;
         transform: scale(1.01);
-        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
     }
+
     .btn-sm {
         border: none;
         border-radius: 10px;
         transition: all 0.3s;
+        cursor: pointer;
     }
+
     .btn-sm:hover {
         transform: translateY(-3px);
     }
+
     .btn-info {
         background: linear-gradient(135deg, #06b6d4, #0891b2);
         color: white;

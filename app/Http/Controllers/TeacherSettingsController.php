@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Hash;
 
 class TeacherSettingsController extends Controller
 {
@@ -21,52 +20,46 @@ class TeacherSettingsController extends Controller
 
         $data = $request->validate([
             'name' => 'required|string|max:255',
-            'phone' => 'nullable|string|max:50',
             'email' => 'required|email|max:255|unique:users,email,' . $user->id,
+            'phone' => 'nullable|string|max:50',
             'avatar' => 'nullable|image|max:2048',
         ]);
 
         if ($request->hasFile('avatar')) {
-            $file = $request->file('avatar');
-            $path = $file->store('avatars', 'public');
-            if ($user->avatar && Storage::disk('public')->exists($user->avatar)) {
-                Storage::disk('public')->delete($user->avatar);
+            try {
+                $file = $request->file('avatar');
+                $path = $file->store('avatars', 'public');
+                if (!$path || !Storage::disk('public')->exists($path)) {
+                    return back()->with('error', 'Avatarni saqlashda xatolik yuz berdi');
+                }
+
+                if ($user->avatar && Storage::disk('public')->exists($user->avatar)) {
+                    Storage::disk('public')->delete($user->avatar);
+                }
+
+                $user->avatar = $path;
+            } catch (\Throwable $e) {
+                return back()->with('error', 'Avatarni yuklashda xatolik');
             }
-            $data['avatar'] = $path;
         }
 
-        $user->update($data);
+        $user->name = $data['name'];
+        $user->email = $data['email'];
+        $user->phone = $data['phone'] ?? $user->phone;
+        $user->save();
 
-        return back()->with('success', 'Profil yangilandi');
+        return back()->with('success', 'Admin profil saqlandi');
     }
 
     public function updatePassword(Request $request)
     {
-        $user = Auth::user();
-
         $request->validate([
-            'current_password' => 'required',
-            'password' => 'required|confirmed|min:6',
+            'current_password' => ['required', 'current_password'],
+            'password' => ['required', 'min:8', 'confirmed'],
         ]);
 
-        if (!Hash::check($request->current_password, $user->password)) {
-            return back()->with('error', 'Joriy parol noto‘g‘ri');
-        }
+        Auth::user()->update(['password' => bcrypt($request->password)]);
 
-        $user->password = bcrypt($request->password);
-        $user->save();
-
-        return back()->with('success', 'Parol yangilandi');
-    }
-
-    public function updateNotifications(Request $request)
-    {
-        $user = Auth::user();
-
-        $user->email_notifications = (bool) ($request->has('email_notifications') && $request->email_notifications);
-        $user->push_notifications = (bool) ($request->has('push_notifications') && $request->push_notifications);
-        $user->save();
-
-        return back()->with('success', 'Bildirishnoma sozlamalari saqlandi');
+        return back()->with('success', 'Parol muvaffaqiyatli yangilandi!');
     }
 }

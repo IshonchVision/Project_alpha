@@ -30,12 +30,6 @@
             </a>
         </li>
         <li class="menu-item">
-            <a href="{{ route('teacher.grades') }}" class="menu-link {{ request()->routeIs('teacher.grades') ? 'active' : '' }}">
-                <i class="fas fa-table"></i>
-                <span>Baholar</span>
-            </a>
-        </li>
-        <li class="menu-item">
             <a href="{{ route('teacher.chats') }}" class="menu-link {{ request()->routeIs('teacher.chats') ? 'active' : '' }}">
                 <i class="fas fa-comments"></i>
                 <span>Chatlar</span>
@@ -48,7 +42,8 @@
             </a>
         </li>
         <li class="menu-item">
-            <a href="#" class="menu-link">
+            <form id="admin-logout-form" action="{{ route('logout') }}" method="POST" style="display:none">@csrf</form>
+            <a href="#" class="menu-link" onclick="event.preventDefault(); document.getElementById('admin-logout-form').submit();">
                 <i class="fas fa-sign-out-alt"></i>
                 <span>Chiqish</span>
             </a>
