@@ -1,12 +1,15 @@
 <?php
 namespace App\Http\Controllers;
 use App\Models\Course;
+use App\Models\User;
 
 class HomeController extends Controller
 {
     public function home()
     {
-        return view("index");
+        $teachers  = User::where('role' , 'teacher')->get();
+
+        return view("index" , compact('teachers'));
     }
     public function about()
     {

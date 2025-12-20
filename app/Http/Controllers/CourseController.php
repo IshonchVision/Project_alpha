@@ -1,17 +1,34 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Models\Course;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Course;
 
 class CourseController extends Controller
 {
-    public function my_course()
+    public function index()
     {
+        $courses = Course::with(['user', 'videos'])->get();
+        return view('course', compact('courses'));
+    }
+
+    public function my_course(Request $request)
+    {
+        $search = $request->input('search');
+
         $courses = Course::withCount('videos')->get();
 
         return view('courses.my_course', compact('courses'));
+    }
+
+    public function detail($id)
+    {
+        // 1. Kursni hamma darslari va o'qituvchisi bilan bazadan olamiz
+        $course = Course::with(['user', 'videos'])->findOrFail($id);
+
+        // 2. Fayling nomi 'detail.blade.php' bo'lgani uchun faqat 'detail' deb yozamiz
+        return view('detail', compact('course'));
     }
 
     /**

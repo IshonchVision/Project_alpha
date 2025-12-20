@@ -20,6 +20,7 @@ Route::get('/', [HomeController::class, 'home'])->name('home'); // Sayt bosh sah
 Route::get('/courses', [CourseController::class, 'index'])->name('courses'); // Barcha kurslar sahifasi (public)
 Route::get('/courses/{id}', [CourseController::class, 'show'])->name('courses.show'); // Kurs detali (public)
 
+
 // Boshqa public sahifalar (masalan: about, contact va h.k.)
 Route::get('/about', function () {
     return view('about');
@@ -58,7 +59,7 @@ Route::get('team', [HomeController::class, 'team']);
 Route::get('testimonial', [HomeController::class, 'testimonial']);
 
 
-// Login Register 
+// Login Register
 
 // Login sahifasini ko'rsatish (GET)
 Route::get('/login', [AuthController::class, 'login_blade'])->name('login');
@@ -208,8 +209,7 @@ Route::post('/verify', [AuthController::class, 'verify'])->name('verify.check');
 
 
 Route::get('/course/{id}', [CourseController::class, 'detail'])
-    ->name('course.detail')
-    ->middleware('auth');
+    ->name('course.detail');
 
 // Watch/Access a course — requires auth; returns JSON 401 for AJAX or flashes error for guests
 Route::post('/course/watch', [CourseController::class, 'watch'])->name('course.watch');
