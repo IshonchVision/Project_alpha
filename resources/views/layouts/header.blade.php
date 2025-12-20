@@ -17,10 +17,10 @@
                 <div class="nav-item dropdown">
                     <a href="#" class="nav-link dropdown-toggle {{ request()->is('detail') || request()->is('feature') || request()->is('team') || request()->is('testimonial') ? 'active' : '' }}" data-toggle="dropdown">Sahifalar</a>
                     <div class="dropdown-menu m-0">
-                        <a href="{{ url('detail') }}" class="dropdown-item {{ request()->is('detail') ? 'active' : '' }}">Kurs tafsilotlari</a>
-                        <a href="{{ url('feature') }}" class="dropdown-item {{ request()->is('feature') ? 'active' : '' }}">Nimalar olasiz</a>
-                        <a href="{{ url('team') }}" class="dropdown-item {{ request()->is('team') ? 'active' : '' }}">Bizning jamoa</a>
                         <a href="{{ url('testimonial') }}" class="dropdown-item {{ request()->is('testimonial') ? 'active' : '' }}">Izohlar</a>
+                        <a href="{{ url('team') }}" class="dropdown-item {{ request()->is('team') ? 'active' : '' }}">Bizning jamoa</a>
+                        <a href="{{ url('feature') }}" class="dropdown-item {{ request()->is('feature') ? 'active' : '' }}">Nimalar olasiz</a>
+                        <a class="dropdown-item {{ request()->is('detail') ? 'active' : '' }}">Kurs tafsilotlari</a>
                     </div>
                 </div>
 

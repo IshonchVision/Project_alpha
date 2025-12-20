@@ -19,10 +19,10 @@
     <div class="row">
         <div class="col-lg-6 col-md-12 mb-4">
             <a class="courses-list-item position-relative d-block overflow-hidden mb-2" href="" style="max-height: 400px;">
-                <img class="img-fluid" src="img/courses-1.jpg" alt="" style="max-height: 350px; object-fit: cover; width: 100%;">
+                <img class="img-fluid" src="img/header.jpg" alt="" style="max-height: 350px; object-fit: cover; width: 100%;">
                 <div class="courses-text">
                     <h4 class="text-center text-white px-3" style="font-size: 1.1rem;">
-                        Ta'lim nazariyasi: Videoni joyi
+                        Ta'lim nazariyasi: Video
                     </h4>
                 </div>
             </a>
