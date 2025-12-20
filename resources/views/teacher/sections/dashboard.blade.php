@@ -62,11 +62,6 @@
         <div class="card">
             <div class="card-header">
                 <h4>So'nggi Faollik</h4>
-                <select class="form-select" style="width: 180px;">
-                    <option>Bugun</option>
-                    <option>Oxirgi 7 kun</option>
-                    <option>Oxirgi 30 kun</option>
-                </select>
             </div>
             <div class="card-body">
                 @forelse($activities as $act)

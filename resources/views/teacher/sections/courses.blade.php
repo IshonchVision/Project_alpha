@@ -45,15 +45,9 @@
                     </div>
                 </div>
                 <div class="course-actions">
-                    @if($course->course_type === 'theory')
-                    <button class="btn-sm btn-quiz open-quiz-modal" data-course-id="{{ $course->id }}" type="button">
-                        <i class="fas fa-clipboard-check"></i> Quiz/Test
-                    </button>
-                    @else
                     <a href="{{ route('teacher.courses.videos.create', $course->id) }}" class="btn-sm btn-info">
                         <i class="fas fa-video"></i> Video qo'shish
                     </a>
-                    @endif
                     <form action="{{ route('teacher.courses.destroy', $course->id) }}" method="POST"
                         style="display:inline" onsubmit="return confirm('Kursni o\'chirishni xohlaysizmi?')">
                         @csrf
@@ -63,66 +57,6 @@
                         </button>
                     </form>
                 </div>
-
-                <!-- Quizlar ro'yxati (theory kurslar uchun) -->
-                @if($course->course_type === 'theory' && $course->quizzes && $course->quizzes->count())
-                <div class="course-quizzes" style="margin-top:15px;">
-                    @foreach($course->quizzes as $quiz)
-                    <div class="quiz-item" style="padding:15px;background:#f0f9ff;border-radius:12px;margin-top:10px;">
-                        <div style="display:flex;justify-content:space-between;align-items:center;">
-                            <div>
-                                <h6 style="margin:0 0 5px 0;font-weight:700;"><i class="fas fa-clipboard-check"></i> {{ $quiz->title }}</h6>
-                                <p style="margin:0;color:#64748b;font-size:14px;">
-                                    <i class="fas fa-question-circle"></i> {{ $quiz->questions->count() }} savol
-                                    @if($quiz->time_limit_minutes)
-                                    • <i class="fas fa-clock"></i> {{ $quiz->time_limit_minutes }} daqiqa
-                                    @endif
-                                    • <i class="fas fa-percent"></i> O'tish: {{ $quiz->passing_score_percentage }}%
-                                </p>
-                            </div>
-                            <div style="display:flex;gap:8px;">
-                                <button class="btn-sm btn-info edit-quiz-btn" data-quiz-id="{{ $quiz->id }}" type="button">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-                                <form action="{{ route('teacher.quizzes.destroy', $quiz->id) }}" method="POST" style="display:inline" onsubmit="return confirm('Testni o\'chirishni xohlaysizmi?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button class="btn-sm btn-danger" type="submit">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                    @endforeach
-                </div>
-                @endif
-
-                <!-- Videolar ro'yxati -->
-                @if($course->videos->count())
-                <div class="course-videos" style="margin-top:15px;">
-                    @foreach($course->videos as $video)
-                    <div class="video-row" style="display:flex;gap:12px;align-items:center;margin-top:12px;">
-                        <video width="180" controls preload="metadata" style="border-radius:8px;overflow:hidden;">
-                            <source src="{{ asset($video->video_url) }}" type="video/mp4">
-                            Your browser does not support the video tag.
-                        </video>
-                        <div style="flex:1;">
-                            <strong>{{ $video->title }}</strong>
-                            <p style="margin:6px 0;color:#64748b;">{{ Str::limit($video->description ?? '', 120) }}</p>
-                            <div style="display:flex;gap:10px;align-items:center;">
-                                <span style="color:#64748b;font-size:13px;"><i class="fas fa-clock"></i> {{ intdiv($video->duration_seconds,60) }} min</span>
-                                <form action="{{ route('teacher.videos.destroy', $video->id) }}" method="POST" style="display:inline" onsubmit="return confirm('Videoni o\'chirishni xohlaysizmi?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button class="btn-sm btn-danger" type="submit">O'chirish</button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                    @endforeach
-                </div>
-                @endif
             </div>
         </div>
         @empty

@@ -58,38 +58,6 @@ class AdminSettingsController extends Controller
         return back()->with('success', 'Admin profil saqlandi');
     }
 
-    public function updateGeneral(Request $request)
-    {
-        $data = $request->validate([
-            'platform_name' => 'nullable|string|max:255',
-            'admin_email' => 'nullable|email|max:255',
-            'phone' => 'nullable|string|max:50',
-            'language' => 'nullable|string|max:20',
-            'address' => 'nullable|string',
-        ]);
-
-        foreach ($data as $k => $v) {
-            Setting::set($k, $v);
-        }
-
-        return back()->with('success', 'Umumiy sozlamalar saqlandi');
-    }
-
-    public function updateNotifications(Request $request)
-    {
-        $email = $request->has('email_notifications') ? '1' : '0';
-        $sms = $request->has('sms_notifications') ? '1' : '0';
-        $push = $request->has('push_notifications') ? '1' : '0';
-        $weekly = $request->has('weekly_reports') ? '1' : '0';
-
-        Setting::set('email_notifications', $email);
-        Setting::set('sms_notifications', $sms);
-        Setting::set('push_notifications', $push);
-        Setting::set('weekly_reports', $weekly);
-
-        return back()->with('success', 'Bildirishnoma sozlamalari saqlandi');
-    }
-
     public function updatePassword(Request $request)
     {
         $user = Auth::user();

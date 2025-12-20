@@ -12,6 +12,7 @@ class Quiz extends Model
         'description',
         'time_limit_minutes',
         'passing_score_percentage',
+        'user_id',
     ];
 
     public function course()
@@ -21,6 +22,6 @@ class Quiz extends Model
 
     public function questions()
     {
-        return $this->hasMany(Quizzes::class);
+        return $this->hasMany(Question::class); 
     }
 }
