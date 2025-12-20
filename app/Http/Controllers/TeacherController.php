@@ -238,6 +238,7 @@ class TeacherController extends Controller
             'description' => 'nullable|string',
             'duration_hours' => 'nullable|numeric',
             'is_active' => 'sometimes|boolean',
+            'course_type' => 'required|in:regular,theory',
         ]);
 
         // Handle optional image upload
@@ -252,6 +253,7 @@ class TeacherController extends Controller
         $data['sertificate_template'] = $data['sertificate_template'] ?? '';
         $data['img'] = $data['img'] ?? '';
         $data['is_active'] = isset($data['is_active']) ? (bool) $data['is_active'] : true;
+        $data['course_type'] = $data['course_type'];
 
         $data['user_id'] = $user->id;
 
@@ -623,5 +625,12 @@ class TeacherController extends Controller
         $quiz->delete(); // Cascade bilan savollar ham o'chadi
 
         return back()->with('success', 'Test o\'chirildi');
+    }
+
+
+    public function createVideo($courseId)
+    {
+        $course = Auth::user()->courses()->findOrFail($courseId);
+        return view('teacher.videos.create', compact('course'));
     }
 }

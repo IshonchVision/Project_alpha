@@ -57,9 +57,9 @@ class User extends Authenticatable
         ];
     }
 
-    public function courses() // o'qituvchi sifatida yaratgan kurslari
+    public function courses()
     {
-        return $this->hasMany(Course::class);
+        return $this->hasMany(Course::class);  // Course modelining to'liq nomi
     }
 
     public function enrolledCourses() // talaba sifatida sotib olgan kurslari
