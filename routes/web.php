@@ -7,7 +7,10 @@ use App\Http\Controllers\CourseController;
 use App\Http\Controllers\GroupChatsController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\TeacherController;
+use App\Http\Controllers\TeacherSettingsController;
 use App\Http\Controllers\UniversalController;
+use App\Http\Controllers\VideoController;
+use App\Http\Controllers\VideoController as ControllersVideoController;
 use Illuminate\Support\Facades\Route;
 
 // Route::view('/{any}', 'dashboard')->where('any', '.*');
@@ -121,46 +124,63 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'is_admin'])->group(
 
 Route::prefix('teacher')->name('teacher.')->middleware(['auth', 'is_teacher'])->group(function () {
 
-    Route::get('/dashboard', [\App\Http\Controllers\TeacherController::class, 'dashboard'])->name('dashboard');
+    Route::get('/dashboard', [TeacherController::class, 'dashboard'])->name('dashboard');
 
     // Groups
-    Route::get('/groups', [\App\Http\Controllers\TeacherController::class, 'groups'])->name('groups');
-    Route::post('/groups', [\App\Http\Controllers\TeacherController::class, 'storeGroup'])->name('groups.store');
-    Route::get('/groups/{id}', [\App\Http\Controllers\TeacherController::class, 'showGroup'])->name('groups.show');
-    Route::put('/groups/{id}', [\App\Http\Controllers\TeacherController::class, 'updateGroup'])->name('groups.update');
-    Route::delete('/groups/{id}', [\App\Http\Controllers\TeacherController::class, 'destroyGroup'])->name('groups.destroy');
+    Route::get('/groups', [TeacherController::class, 'groups'])->name('groups');
+    Route::post('/groups', [TeacherController::class, 'storeGroup'])->name('groups.store');
+    Route::get('/groups/{id}', [TeacherController::class, 'showGroup'])->name('groups.show');
+    Route::put('/groups/{id}', [TeacherController::class, 'updateGroup'])->name('groups.update');
+    Route::delete('/groups/{id}', [TeacherController::class, 'destroyGroup'])->name('groups.destroy');
 
     // Courses
-    Route::get('/courses', [\App\Http\Controllers\TeacherController::class, 'courses'])->name('courses');
-    Route::post('/courses', [\App\Http\Controllers\TeacherController::class, 'storeCourse'])->name('courses.store');
-    Route::get('/courses/{id}', [\App\Http\Controllers\TeacherController::class, 'showCourse'])->name('courses.show');
-    Route::put('/courses/{id}', [\App\Http\Controllers\TeacherController::class, 'updateCourse'])->name('courses.update');
-    Route::delete('/courses/{id}', [\App\Http\Controllers\TeacherController::class, 'destroyCourse'])->name('courses.destroy');
+    Route::get('/courses', [TeacherController::class, 'courses'])->name('courses');
+    Route::post('/courses', [TeacherController::class, 'storeCourse'])->name('courses.store');
+    Route::get('/courses/{id}', [TeacherController::class, 'showCourse'])->name('courses.show');
+    Route::put('/courses/{id}', [TeacherController::class, 'updateCourse'])->name('courses.update');
+    Route::delete('/courses/{id}', [TeacherController::class, 'destroyCourse'])->name('courses.destroy');
 
     // Video upload/delete
-    Route::post('/courses/{id}/videos', [\App\Http\Controllers\TeacherController::class, 'storeVideo'])->name('courses.videos.store');
-    Route::delete('/videos/{id}', [\App\Http\Controllers\TeacherController::class, 'destroyVideo'])->name('videos.destroy');
+    Route::delete('/videos/{id}', [TeacherController::class, 'destroyVideo'])->name('videos.destroy');
 
     // Students
-    Route::get('/students', [\App\Http\Controllers\TeacherController::class, 'students'])->name('students');
+    Route::get('/students', [TeacherController::class, 'students'])->name('students');
 
     // Grades (placeholder)
-    Route::get('/grades', [\App\Http\Controllers\TeacherController::class, 'grades'])->name('grades');
+    Route::get('/grades', [TeacherController::class, 'grades'])->name('grades');
 
     // Chats
-    Route::get('/chats', [\App\Http\Controllers\TeacherController::class, 'chats'])->name('chats');
-    Route::post('/chats/send', [\App\Http\Controllers\TeacherController::class, 'sendChatMessage'])->name('chats.send');
-    Route::get('/chats/{id}', [\App\Http\Controllers\TeacherController::class, 'loadGroupChat'])->name('chats.group');
-    Route::get('/chats/{id}/poll', [\App\Http\Controllers\TeacherController::class, 'pollGroupMessages'])->name('chats.poll');
+    Route::get('/chats', [TeacherController::class, 'chats'])->name('chats');
+    Route::post('/chats/send', [TeacherController::class, 'sendChatMessage'])->name('chats.send');
+    Route::get('/chats/{id}', [TeacherController::class, 'loadGroupChat'])->name('chats.group');
+    Route::get('/chats/{id}/poll', [TeacherController::class, 'pollGroupMessages'])->name('chats.poll');
 
     // Settings
-    Route::get('/settings', [\App\Http\Controllers\TeacherSettingsController::class, 'edit'])->name('settings');
-    Route::post('/settings/profile', [\App\Http\Controllers\TeacherSettingsController::class, 'updateProfile'])->name('settings.profile');
-    Route::post('/settings/password', [\App\Http\Controllers\TeacherSettingsController::class, 'updatePassword'])->name('settings.password');
-    Route::post('/settings/notifications', [\App\Http\Controllers\TeacherSettingsController::class, 'updateNotifications'])->name('settings.notifications');
+    Route::get('/settings', [TeacherSettingsController::class, 'edit'])->name('settings');
+    Route::post('/settings/profile', [TeacherSettingsController::class, 'updateProfile'])->name('settings.profile');
+    Route::post('/settings/password', [TeacherSettingsController::class, 'updatePassword'])->name('settings.password');
+    Route::post('/settings/notifications', [TeacherSettingsController::class, 'updateNotifications'])->name('settings.notifications');
 
     Route::post('/teacher/quizzes', [TeacherController::class, 'storeQuiz'])->name('quizzes.store');
     Route::delete('/teacher/quizzes/{id}', [TeacherController::class, 'destroyQuiz'])->name('quizzes.destroy');
+
+
+    Route::get('/courses/{courseId}/videos/create', [VideoController::class, 'create'])
+        ->name('videos.create');
+
+    Route::post('/courses/{courseId}/videos', [VideoController::class, 'store'])
+        ->name('videos.store');
+
+    Route::delete('/videos/{id}', [VideoController::class, 'destroy'])
+        ->name('videos.destroy');
+
+    // Video qo'shish uchun alohida sahifa
+    Route::get('/courses/{course}/videos/create', [TeacherController::class, 'createVideo'])
+        ->name('courses.videos.create');
+
+    // Video saqlash (oldincha qoldiramiz)
+    Route::post('/courses/{course}/videos', [TeacherController::class, 'storeVideo'])
+        ->name('courses.videos.store');
 });
 
 

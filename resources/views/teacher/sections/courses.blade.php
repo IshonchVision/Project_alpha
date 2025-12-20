@@ -17,6 +17,7 @@
             {{ session('success') }}
         </div>
         @endif
+
         @forelse($courses as $course)
         <div class="course-item" data-course-id="{{ $course->id }}">
             <div class="course-thumbnail">
@@ -49,12 +50,9 @@
                         <i class="fas fa-clipboard-check"></i> Quiz/Test
                     </button>
                     @else
-                    <button
-                        type="button"
-                        class="btn-sm btn-info"
-                        onclick="openAddVideoModal({{ $course->id }})">
+                    <a href="{{ route('teacher.courses.videos.create', $course->id) }}" class="btn-sm btn-info">
                         <i class="fas fa-video"></i> Video qo'shish
-                    </button>
+                    </a>
                     @endif
                     <form action="{{ route('teacher.courses.destroy', $course->id) }}" method="POST"
                         style="display:inline" onsubmit="return confirm('Kursni o\'chirishni xohlaysizmi?')">
@@ -66,6 +64,7 @@
                     </form>
                 </div>
 
+                <!-- Quizlar ro'yxati (theory kurslar uchun) -->
                 @if($course->course_type === 'theory' && $course->quizzes && $course->quizzes->count())
                 <div class="course-quizzes" style="margin-top:15px;">
                     @foreach($course->quizzes as $quiz)
@@ -99,6 +98,7 @@
                 </div>
                 @endif
 
+                <!-- Videolar ro'yxati -->
                 @if($course->videos->count())
                 <div class="course-videos" style="margin-top:15px;">
                     @foreach($course->videos as $video)
@@ -136,7 +136,7 @@
     <div class="modal-content" style="max-width: 600px; width: 95%;">
         <div class="modal-header">
             <h3>Yangi Kurs Qo'shish</h3>
-            <button class="modal-close" onclick="closeModal('addCourseModal')">
+            <button class="modal-close" onclick="document.getElementById('addCourseModal').style.display='none'">
                 <i class="fas fa-times"></i>
             </button>
         </div>
@@ -178,7 +178,7 @@
                         placeholder="Bu kursda o'quvchilar nimalarni o'rganadi? Qisqacha va jozibali yozing..." required></textarea>
                 </div>
                 <div style="text-align: right; margin-top: 30px;">
-                    <button type="button" class="btn-secondary" onclick="closeModal('addCourseModal')" style="margin-right: 15px;">
+                    <button type="button" class="btn-secondary" onclick="document.getElementById('addCourseModal').style.display='none'" style="margin-right: 15px;">
                         Bekor qilish
                     </button>
                     <button type="submit" class="btn-primary" style="padding: 14px 32px; font-size: 16px;">
@@ -190,12 +190,69 @@
     </div>
 </div>
 
-<!-- Quiz/Test Qo'shish Modali -->
+<!-- Yangi Video Qo'shish Modali (Kurs yaratish bilan bir xil dizayn va uslub) -->
+<div id="addVideoModal" class="modal-overlay" style="display: none;">
+    <div class="modal-content" style="max-width: 600px; width: 95%;">
+        <div class="modal-header">
+            <h3><i class="fas fa-video"></i> Yangi Video Qo'shish</h3>
+            <button class="modal-close" onclick="document.getElementById('addVideoModal').style.display='none'">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <form id="addVideoForm" action="" method="POST" enctype="multipart/form-data">
+                @csrf
+                <input type="hidden" id="video_course_id" name="course_id" value="">
+
+                <div class="form-group">
+                    <label for="video_file"><i class="fas fa-file-video"></i> Video faylini yuklash</label>
+                    <input type="file" id="video_file" name="video" accept="video/*" class="form-control" required>
+                    <small style="color: #64748b; display: block; margin-top: 8px;">
+                        Qo'llab-quvvatlanadigan formatlar: MP4, AVI, MOV, WebM va boshqalar. Maksimal hajm: 1 GB
+                    </small>
+                </div>
+
+                <div class="form-group">
+                    <label for="video_title"><i class="fas fa-heading"></i> Video Nomi</label>
+                    <input type="text" id="video_title" name="title" class="form-control"
+                        placeholder="Masalan: 1-dars. Kirish va asosiy tushunchalar" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="video_description"><i class="fas fa-align-left"></i> Video Izohi (Tavsifi)</label>
+                    <textarea id="video_description" name="description" class="form-control" rows="8"
+                        placeholder="Bu videoda o'quvchilar nimalarni o'rganadi? Qisqacha, aniq va jozibali yozing..."
+                        required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="duration_minutes"><i class="fas fa-clock"></i> Video Davomiyligi (daqiqa)</label>
+                    <input type="number" id="duration_minutes" name="duration_minutes" class="form-control"
+                        placeholder="45" min="1" required>
+                </div>
+
+                <div style="text-align: right; margin-top: 30px;">
+                    <button type="button" class="btn-secondary"
+                        onclick="document.getElementById('addVideoModal').style.display='none'"
+                        style="margin-right: 15px;">
+                        Bekor qilish
+                    </button>
+                    <button type="submit" class="btn-primary"
+                        style="padding: 14px 32px; font-size: 16px; background: linear-gradient(135deg, #10b981, #059669);">
+                        <i class="fas fa-upload"></i> Videoni Yuklash
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Quiz/Test Qo'shish Modali (o'zgarmagan) -->
 <div id="addQuizModal" class="modal-overlay" style="display: none;">
     <div class="modal-content" style="max-width: 800px; width: 95%;">
         <div class="modal-header">
             <h3><i class="fas fa-clipboard-check"></i> Yangi Quiz/Test Qo'shish</h3>
-            <button class="modal-close" onclick="closeModal('addQuizModal')">
+            <button class="modal-close" onclick="document.getElementById('addQuizModal').style.display='none'">
                 <i class="fas fa-times"></i>
             </button>
         </div>
@@ -283,58 +340,11 @@
                 </button>
 
                 <div style="text-align: right; margin-top: 30px;">
-                    <button type="button" class="btn-secondary" onclick="closeModal('addQuizModal')" style="margin-right: 15px;">
+                    <button type="button" class="btn-secondary" onclick="document.getElementById('addQuizModal').style.display='none'" style="margin-right: 15px;">
                         Bekor qilish
                     </button>
                     <button type="submit" class="btn-primary" style="padding: 14px 32px; font-size: 16px;">
                         <i class="fas fa-save"></i> Testni Saqlash
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<!-- Video Qo'shish Modali (TO'G'RI ISHLAYDIGAN) -->
-<div id="addVideoModal" class="modal-overlay" style="display: none;">
-    <div class="modal-content" style="max-width: 700px; width: 95%;">
-        <div class="modal-header">
-            <h3><i class="fas fa-video"></i> Yangi Video Qo'shish</h3>
-            <button class="modal-close" onclick="closeModal('addVideoModal')">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-        <div class="modal-body">
-            <form id="addVideoForm" action="" method="POST" enctype="multipart/form-data">
-                @csrf
-                <input type="hidden" id="video_course_id" name="course_id" value="">
-
-                <div class="form-group">
-                    <label for="video_title"><i class="fas fa-heading"></i> Video Sarlavhasi</label>
-                    <input type="text" id="video_title" name="title" class="form-control" placeholder="Masalan: Lesson 1 - Present Simple Tense" required>
-                </div>
-                <div class="form-group">
-                    <label for="video_description"><i class="fas fa-align-left"></i> Video Izohi</label>
-                    <textarea id="video_description" name="description" class="form-control" rows="6" placeholder="Bu videoda nimalar tushuntiriladi?" required></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="video_file"><i class="fas fa-file-video"></i> Video Fayl</label>
-                    <input type="file" id="video_file" name="video" accept="video/*" class="form-control" required>
-                    <small style="color: #64748b; display: block; margin-top: 8px;">
-                        Faqat video fayllar. Maksimal hajm: 500MB
-                    </small>
-                </div>
-                <div class="form-group">
-                    <label for="duration"><i class="fas fa-clock"></i> Davomiyligi (daqiqa)</label>
-                    <input type="number" id="duration" name="duration_minutes" class="form-control" placeholder="45" min="1" required>
-                </div>
-
-                <div style="text-align: right; margin-top: 30px;">
-                    <button type="button" class="btn-secondary" onclick="closeModal('addVideoModal')" style="margin-right: 15px;">
-                        Bekor qilish
-                    </button>
-                    <button type="submit" class="btn-primary" style="padding: 14px 32px; font-size: 16px; background: linear-gradient(135deg, #10b981, #059669);">
-                        <i class="fas fa-upload"></i> Video Yuklash
                     </button>
                 </div>
             </form>
@@ -478,10 +488,10 @@
     }
 
     .course-actions {
-        position: relative;
-        z-index: 9999;
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
     }
-
 
     .btn-sm {
         padding: 10px 18px;
@@ -614,125 +624,89 @@
     .btn-primary:hover {
         background: linear-gradient(135deg, #7c3aed, #6d28d9);
     }
-
-    .course-actions {
-        position: relative;
-        z-index: 9999;
-    }
 </style>
-
 @endsection
 
 @section('scripts')
 <script>
-    // Modallarni yopish uchun universal funksiya
-    function closeModal(modalId) {
-        const modal = document.getElementById(modalId);
-        if (modal) modal.style.display = 'none';
-    }
-
-    // Overlayga bosganda yopish (barcha modallar uchun)
-    document.addEventListener('click', function(e) {
-        if (e.target.classList.contains('modal-overlay')) {
-            e.target.style.display = 'none';
-        }
-    });
-
     document.addEventListener('DOMContentLoaded', function() {
-        // 1. VIDEO QO'SHISH MODALI — endi 100% ishlaydi
-        document.querySelectorAll('.open-video-modal').forEach(function(btn) {
+        let questionIndex = 1;
+
+        // Video modal ochish
+        document.querySelectorAll('.course-add-video-btn').forEach(function(btn) {
             btn.addEventListener('click', function() {
-                const courseId = this.getAttribute('data-course-id');
-                const modal = document.getElementById('addVideoModal');
+                const courseId = btn.getAttribute('data-id');
                 const form = document.getElementById('addVideoForm');
-
-                // Forma tozalash
                 form.reset();
-
-                // Action va hidden inputni to'ldirish
-                form.action = `/teacher/courses/${courseId}/videos`;
+                document.getElementById('video_file').value = '';
+                form.action = `/teacher/courses/${courseId}/videos`; // O'zingizning route ga moslang
                 document.getElementById('video_course_id').value = courseId;
-
-                // Modalni ochish
-                modal.style.display = 'flex';
+                document.getElementById('addVideoModal').style.display = 'flex';
             });
         });
 
-        // 2. QUIZ MODALI
+        // Quiz modal ochish
         document.querySelectorAll('.open-quiz-modal').forEach(function(btn) {
             btn.addEventListener('click', function() {
-                const courseId = this.getAttribute('data-course-id');
+                const courseId = btn.getAttribute('data-course-id');
                 document.getElementById('quiz_course_id').value = courseId;
                 document.getElementById('addQuizModal').style.display = 'flex';
             });
         });
 
-        // 3. YANGI KURS MODALI (tugma bor joyda)
-        document.querySelector('.btn-primary').addEventListener('click', function() {
-            document.getElementById('addCourseModal').style.display = 'flex';
+        // Savol qo'shish
+        document.getElementById('add-question-btn').addEventListener('click', function() {
+            const container = document.getElementById('questions-container');
+            const newBlock = document.querySelector('.question-block').cloneNode(true);
+
+            newBlock.setAttribute('data-question-index', questionIndex);
+            newBlock.querySelector('h5').innerHTML = `<i class="fas fa-question-circle"></i> Savol ${questionIndex + 1}`;
+
+            newBlock.querySelectorAll('input, textarea, select').forEach(function(input) {
+                input.value = '';
+                const name = input.getAttribute('name');
+                if (name) {
+                    input.setAttribute('name', name.replace(/\[\d+\]/, `[${questionIndex}]`));
+                }
+            });
+
+            newBlock.querySelector('.remove-question').style.display = 'inline-block';
+
+            container.appendChild(newBlock);
+            questionIndex++;
+
+            updateRemoveButtons();
         });
 
-        // 4. Savol qo'shish/o'chirish (quiz uchun)
-        let questionIndex = 1;
-
-        const addQuestionBtn = document.getElementById('add-question-btn');
-        if (addQuestionBtn) {
-            addQuestionBtn.addEventListener('click', function() {
-                const container = document.getElementById('questions-container');
-                const template = container.querySelector('.question-block');
-                const newBlock = template.cloneNode(true);
-
-                // Yangi savol raqami
-                newBlock.querySelector('h5').innerHTML = `<i class="fas fa-question-circle"></i> Savol ${questionIndex + 1}`;
-                newBlock.setAttribute('data-question-index', questionIndex);
-
-                // Barcha maydonlarni tozalash va name ni yangilash
-                newBlock.querySelectorAll('input, textarea, select').forEach(el => {
-                    el.value = '';
-                    if (el.name) {
-                        el.name = el.name.replace(/\[\d+\]/, `[${questionIndex}]`);
-                    }
-                });
-
-                // O'chirish tugmasini ko'rsatish
-                newBlock.querySelector('.remove-question').style.display = 'inline-block';
-
-                container.appendChild(newBlock);
-                questionIndex++;
-
-                // O'chirish tugmalarini yangilash
-                bindRemoveButtons();
-            });
-        }
-
-        // Savol o'chirish
-        function bindRemoveButtons() {
-            document.querySelectorAll('.remove-question').forEach(btn => {
+        function updateRemoveButtons() {
+            document.querySelectorAll('.remove-question').forEach(function(btn) {
                 btn.onclick = function() {
                     if (document.querySelectorAll('.question-block').length > 1) {
                         this.closest('.question-block').remove();
                         updateQuestionNumbers();
                     } else {
-                        alert("Kamida bitta savol bo'lishi kerak!");
+                        alert('Kamida bitta savol bo\'lishi kerak!');
                     }
                 };
             });
         }
 
         function updateQuestionNumbers() {
-            document.querySelectorAll('.question-block').forEach((block, idx) => {
-                block.querySelector('h5').innerHTML = `<i class="fas fa-question-circle"></i> Savol ${idx + 1}`;
-                block.querySelectorAll('input, textarea, select').forEach(el => {
-                    if (el.name) {
-                        el.name = el.name.replace(/\[\d+\]/, `[${idx}]`);
+            document.querySelectorAll('.question-block').forEach(function(block, index) {
+                block.setAttribute('data-question-index', index);
+                block.querySelector('h5').innerHTML = `<i class="fas fa-question-circle"></i> Savol ${index + 1}`;
+
+                block.querySelectorAll('input, textarea, select').forEach(function(input) {
+                    const name = input.getAttribute('name');
+                    if (name) {
+                        input.setAttribute('name', name.replace(/\[\d+\]/, `[${index}]`));
                     }
                 });
             });
             questionIndex = document.querySelectorAll('.question-block').length;
         }
 
-        // Boshida o'chirish tugmalarini faollashtirish
-        bindRemoveButtons();
+        updateRemoveButtons();
     });
 </script>
 @endsection
