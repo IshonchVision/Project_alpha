@@ -158,7 +158,7 @@
                             <input type="radio" name="course_type" value="theory">
                             <div class="radio-content">
                                 <i class="fas fa-book" style="font-size:24px;color:#8b5cf6;"></i>
-                                <span style="font-weight:700;margin-top:8px;">Nazariya</span>
+                                <span style="font-weight:700;margin-top:8px;">Video va Nazariya</span>
                                 <small style="color:#64748b;">Quiz va testlar</small>
                             </div>
                         </label>

@@ -1,17 +1,17 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
-use Illuminate\Http\RedirectResponse;
+use App\Models\Course;
 
 class CourseController extends Controller
 {
     public function my_course()
     {
-        return view('courses.my_course');
+        $courses = Course::withCount('videos')->get();
+
+        return view('courses.my_course', compact('courses'));
     }
 
     /**
@@ -20,7 +20,7 @@ class CourseController extends Controller
      */
     public function watch(Request $request)
     {
-        if (!Auth::check()) {
+        if (! Auth::check()) {
             if ($request->ajax() || $request->wantsJson()) {
                 return response()->json(['message' => 'Siz tizimga kirmagansiz. Iltimos, ro\'yxatdan o\'ting yoki tizimga kiring.'], 401);
             }

@@ -1,8 +1,6 @@
 <?php
-
 namespace App\Http\Controllers;
-
-use Illuminate\Http\Request;
+use App\Models\Course;
 
 class HomeController extends Controller
 {
@@ -21,7 +19,9 @@ class HomeController extends Controller
 
     public function course()
     {
-        return view("course");
+        $courses = Course::withCount('videos')->get();
+
+        return view("course", compact('courses'));
     }
 
     public function detail()
