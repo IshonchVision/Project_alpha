@@ -109,21 +109,20 @@
                                 @enderror
                             </div>
 
-                            <div class="col-md-6">
-                                <label for="subject_id" class="form-label">Fan</label>
-                                <select name="subject_id" id="subject_id" class="form-select @error('subject_id') is-invalid @enderror">
-                                    <option value="">-- Fan tanlang --</option>
-                                    @foreach ($subjects as $subject)
-                                        <option value="{{ $subject->id }}" {{ old('subject_id') == $subject->id ? 'selected' : '' }}>
-                                            {{ $subject->name }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                                @error('subject_id')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
+<div class="col-md-6">
+    <label for="subject" class="form-label">Fan nomi</label>
+    <input type="text" 
+           name="subject" 
+           id="subject" 
+           class="form-control @error('subject') is-invalid @enderror"
+           value="{{ old('subject') }}" 
+           placeholder="Masalan: Matematika, Ingliz tili, Fizika"
+           required>
 
+    @error('subject')
+        <div class="invalid-feedback">{{ $message }}</div>
+    @enderror
+</div>
                             <div class="col-12">
                                 <label for="password" class="form-label">Parol <span class="text-danger">*</span></label>
                                 <input type="password" name="password" id="password" class="form-control @error('password') is-invalid @enderror" required>

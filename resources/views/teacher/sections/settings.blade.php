@@ -19,7 +19,9 @@
 
                     <div style="display: flex; align-items: center; gap: 25px; margin-bottom: 30px;">
                         <img
-                            src="{{ $user->avatar ? asset('storage/' . $user->avatar) : 'https://ui-avatars.com/api/?name=' . urlencode($user->name) . '&background=10b981&color=fff&size=128' }}"
+                            src="{{ $user->avatar 
+                                ? Storage::disk('s3')->url($user->avatar) 
+                                : 'https://ui-avatars.com/api/?name=' . urlencode($user->name) . '&background=10b981&color=fff&size=128' }}"
                             alt="Avatar"
                             id="avatar-preview"
                             style="width: 120px; height: 120px; border-radius: 50%; border: 5px solid var(--primary); object-fit: cover;">
@@ -114,8 +116,7 @@
         if (input.files && input.files[0]) {
             const reader = new FileReader();
             reader.onload = function(e) {
-                const img = input.closest('div').previousElementSibling.querySelector('img');
-                img.src = e.target.result;
+                document.getElementById('avatar-preview').src = e.target.result;
             }
             reader.readAsDataURL(input.files[0]);
         }
