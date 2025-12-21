@@ -8,18 +8,18 @@
             <div class="mx-auto mb-5" style="width: 100%; max-width: 600px;">
                 <div class="input-group">
                     <!-- <div class="input-group-prepend">
-                                <button class="btn btn-outline-light bg-white text-body px-4 dropdown-toggle" type="button" data-toggle="dropdown"
-                                    aria-haspopup="true" aria-expanded="false">Courses</button>
-                                <div class="dropdown-menu">
-                                    <a class="dropdown-item" href="#">Courses 1</a>
-                                    <a class="dropdown-item" href="#">Courses 2</a>
-                                    <a class="dropdown-item" href="#">Courses 3</a>
-                                </div>
-                            </div> -->
+                                    <button class="btn btn-outline-light bg-white text-body px-4 dropdown-toggle" type="button" data-toggle="dropdown"
+                                        aria-haspopup="true" aria-expanded="false">Courses</button>
+                                    <div class="dropdown-menu">
+                                        <a class="dropdown-item" href="#">Courses 1</a>
+                                        <a class="dropdown-item" href="#">Courses 2</a>
+                                        <a class="dropdown-item" href="#">Courses 3</a>
+                                    </div>
+                                </div> -->
                     <!-- <input type="text" class="form-control border-light" style="padding: 30px 25px;" placeholder="Keyword">
-                            <div class="input-group-append">
-                                <button class="btn btn-secondary px-4 px-lg-5">Search</button>
-                            </div> -->
+                                <div class="input-group-append">
+                                    <button class="btn btn-secondary px-4 px-lg-5">Search</button>
+                                </div> -->
                 </div>
             </div>
         </div>
@@ -51,33 +51,15 @@
                         Darslar, testlar va qo'shimcha materiallar orqali o'rganganlaringizni real jarayonda qo'llab
                         borishingiz mumkin.
                         Fan boэyicha rivojlanishni bugunoq boshlang!
+                        tamoyillari va samarali metodlarini mukammal o'zlashtirish imkonini beradi.
+                        Darslar, testlar va qo'shimcha materiallar orqali o'rganganlaringizni real jarayonda qo'llab
+                        borishingiz mumkin.
+                        Fan boэyicha rivojlanishni bugunoq boshlang!
+                        tamoyillari va samarali metodlarini mukammal o'zlashtirish imkonini beradi.
+                        Darslar, testlar va qo'shimcha materiallar orqali o'rganganlaringizni real jarayonda qo'llab
+                        borishingiz mumkin.
+                        Fan boэyicha rivojlanishni bugunoq boshlang!
                     </p>
-                    <div class="row pt-3 mx-0">
-                        <div class="col-4 px-0">
-                            <div class="bg-primary text-center p-4" style="border-top-left-radius: 12px;">
-                                <h1 class="text-white" data-toggle="counter-up">123</h1>
-                                <h6 class="text-uppercase text-white">
-                                    Onlayn<span class="d-block">Kurslar</span>
-                                </h6>
-                            </div>
-                        </div>
-                        <div class="col-4 px-0">
-                            <div class="bg-secondary text-center p-4" style="border-top-left-radius: 12px;">
-                                <h1 class="text-white" data-toggle="counter-up">123</h1>
-                                <h6 class="text-uppercase text-white">
-                                    Maxoratli<span class="d-block">O'qituvchilar</span>
-                                </h6>
-                            </div>
-                        </div>
-                        <div class="col-4 px-0">
-                            <div class="bg-warning text-center p-4" style="border-top-left-radius: 12px;">
-                                <h1 class="text-white" data-toggle="counter-up">123</h1>
-                                <h6 class="text-uppercase text-white">
-                                    O'quvchilar<span class="d-block">Soni</span>
-                                </h6>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
