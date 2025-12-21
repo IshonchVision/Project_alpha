@@ -66,8 +66,8 @@
                                     name="message" required></textarea>
                             </div>
                             <div class="text-center">
-                                <button class="btn btn-primary btn-lg px-3 py-2 rounded-pill shadow" type="submit">
-                                    Yuborish
+                                <button class="btn btn-primary btn-lg px-3 py-1 rounded-pill shadow" type="submit">
+                                    yuborish
                                 </button>
                             </div>
                         </form>
