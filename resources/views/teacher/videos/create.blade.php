@@ -179,35 +179,53 @@
         const videoSection = document.getElementById('video-section');
         const quizSection = document.getElementById('quiz-section');
 
-        @if($course -> course_type === 'regular')
-        // Regular kurs: faqat video bo'limi ko'rinsin, kartochkalar yashirilsin
-        if (videoSection) {
-            videoSection.style.display = 'block';
-        }
-        // Tanlov kartalarini yashirish (regular kursda kerak emas)
-        document.querySelectorAll('.hover-shadow').forEach(card => {
-            card.style.display = 'none';
-        });
-
+        // Regular va theory kurslar uchun dastlabki holat
+        @if($course->course_type === 'regular')
+            if (videoSection) videoSection.style.display = 'block';
+            document.querySelectorAll('.hover-shadow').forEach(card => card.style.display = 'none');
         @elseif($course->course_type === 'theory')
-        // Theory kurs: standart holatda video bo'limi ochiq bo'lsin
-        if (videoSection) {
-            videoSection.style.display = 'block';
-        }
-        // Video kartani faol holatga keltirish
-        const videoCard = document.querySelector('.hover-shadow');
-        if (videoCard) {
-            videoCard.classList.add('active-card');
-        }
-
+            if (videoSection) videoSection.style.display = 'block';
+            const videoCard = document.querySelector('.hover-shadow');
+            if (videoCard) videoCard.classList.add('active-card');
         @endif
 
-        // Agar oldin video yuklangan bo'lsa (success session bo'lsa) – video bo'limi ochiq bo'lsin
         @if(session('success'))
-        if (videoSection) {
-            videoSection.style.display = 'block';
-        }
+            if (videoSection) videoSection.style.display = 'block';
         @endif
+
+        // VIDEO HAJM TEKSHIRISH – ENG MUHIM QISM
+        const videoInput = document.querySelector('input[name="video"]');
+        const form = videoInput?.form;
+
+        if (videoInput && form) {
+            form.addEventListener('submit', function(e) {
+                const file = videoInput.files[0];
+                if (file) {
+                    const maxSize = 1 * 1024 * 1024 * 1024; // 1 GB = 1073741824 bytes
+                    if (file.size > maxSize) {
+                        e.preventDefault();
+                        alert('Xatolik: Video fayl hajmi 1 GB dan oshmasligi kerak!\n' +
+                              'Joriy hajm: ' + formatFileSize(file.size) +
+                              '\nIltimos, kichikroq fayl tanlang yoki videoni siqib yuklang.');
+                        return false;
+                    }
+
+                    // Qo‘shimcha: 10 MB dan kichik bo‘lsa ogohlantirish (ixtiyoriy)
+                    if (file.size < 1024 * 1024) {
+                        // Juda kichik video haqida ogohlantirish mumkin, lekin ruxsat beramiz
+                    }
+                }
+            });
+        }
+
+        // Fayl hajmini chiroyli ko‘rsatish uchun yordamchi funksiya
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
     });
 </script>
 @endsection

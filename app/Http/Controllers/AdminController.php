@@ -105,7 +105,6 @@ class AdminController extends Controller
                 'users.phone',
                 'users.status',
             ])
-            // Guruhlar soni (0 bo‘lsa ham chiqadi)
             ->selectSub(function ($query) {
                 $query->selectRaw('COUNT(groups.id)')
                     ->from('groups')
@@ -240,24 +239,30 @@ class AdminController extends Controller
 
     public function teacher_store(Request $request)
     {
-        $request->validate([
+        Log::info('Yangi o‘qituvchi qo‘shish so‘rovi', ['request' => $request->all()]);
+
+        $validated = $request->validate([
             'name'     => 'required|string|max:255',
             'email'    => 'required|email|unique:users,email',
             'phone'    => 'nullable|string|max:20',
-            'subject_id' => 'nullable|exists:subjects,id',
+            'subject'  => 'required|string|max:255',
             'password' => 'required|min:6|confirmed',
             'status'   => 'required|in:active,inactive',
-            
         ]);
 
-        User::create([
+        $teacher = User::create([
             'name'       => $request->name,
             'email'      => $request->email,
             'phone'      => $request->phone,
-            'subject_id' => $request->subject_id,
             'role'       => 'teacher',
             'password'   => Hash::make($request->password),
             'is_teacher' => true,
+            'status'     => true,
+        ]);
+
+        Subject::create([
+            'name'       => $request->subject,
+            'teacher_id' => $teacher->id,
         ]);
 
         return redirect()->route('admin.teachers')

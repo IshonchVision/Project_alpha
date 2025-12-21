@@ -13,7 +13,9 @@ use App\Models\Video;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Storage;
 
 class TeacherController extends Controller
 {
@@ -235,33 +237,37 @@ class TeacherController extends Controller
     public function storeCourse(Request $request)
     {
         $user = Auth::user();
+
         $data = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'duration_hours' => 'nullable|numeric',
+            'duration_hours' => 'nullable|numeric|min:0',
             'is_active' => 'sometimes|boolean',
             'course_type' => 'required|in:regular,theory',
+            'img' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048', // 2MB maks
         ]);
 
-        // Handle optional image upload
         if ($request->hasFile('img')) {
-            $path = $request->file('img')->store('courses', 'public');
-            $data['img'] = $path;
+            try {
+                $path = $request->file('img')->store('courses', 's3');
+
+                $data['img'] = $path;
+            } catch (\Exception $e) {
+                return back()->with('error', 'Rasm yuklashda xatolik: ' . $e->getMessage());
+            }
         }
 
-        // Ensure DB non-nullable columns have sensible defaults when omitted from the form
+        // Default qiymatlar (DB non-nullable ustunlar uchun)
         $data['description'] = $data['description'] ?? '';
-        $data['duration_hours'] = isset($data['duration_hours']) ? (int) $data['duration_hours'] : 0;
+        $data['duration_hours'] = $data['duration_hours'] ?? 0;
         $data['sertificate_template'] = $data['sertificate_template'] ?? '';
-        $data['img'] = $data['img'] ?? '';
-        $data['is_active'] = isset($data['is_active']) ? (bool) $data['is_active'] : true;
-        $data['course_type'] = $data['course_type'];
-
+        $data['img'] = $data['img'] ?? null; // yoki '' agar DB da null bo‘lmasa
+        $data['is_active'] = $data['is_active'] ?? true;
         $data['user_id'] = $user->id;
 
         Course::create($data);
 
-        return back()->with('success', 'Kurs yaratildi');
+        return back()->with('success', 'Kurs muvaffaqiyatli yaratildi!');
     }
 
     /**
@@ -332,27 +338,131 @@ class TeacherController extends Controller
     {
         $course = Auth::user()->courses()->findOrFail($courseId);
 
+        // 1️⃣ Validatsiya (PHP limitini tekshirish)
+        $maxUploadSize = min(
+            $this->parseSize(ini_get('upload_max_filesize')),
+            $this->parseSize(ini_get('post_max_size')),
+            1024 * 1024 * 1024 // 1 GB
+        );
+
         $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
+            'title'            => 'required|string|max:255',
+            'description'      => 'nullable|string',
             'duration_minutes' => 'required|integer|min:1',
-            'video' => 'required|file|mimes:mp4,avi,mov,webm|max:1024000', // 1 GB = 1024000 KB
+            'video'            => [
+                'required',
+                'file',
+                'mimes:mp4,avi,mov,webm,mpg,mpeg',
+                'max:' . ($maxUploadSize / 1024), // KB ga aylantirish
+            ],
+        ], [
+            'video.max' => 'Video hajmi ' . $this->formatBytes($maxUploadSize) . ' dan oshmasligi kerak!'
         ]);
 
-        $path = $request->file('video')->store('videos', 'public');
+        $file = $request->file('video');
 
-        Video::create([
-            'course_id' => $course->id,
-            'user_id' => Auth::id(),
-            'title' => $validated['title'],
-            'description' => $validated['description'],
-            'video_url' => 'storage/' . $path,
-            'duration_seconds' => $validated['duration_minutes'] * 60,
-        ]);
+        if (!$file || !$file->isValid()) {
+            return back()->with('error', 'Video fayl yuklanmadi yoki buzilgan.');
+        }
 
-        return back()->with('success', 'Video muvaffaqiyatli yuklandi!');
+        // 2️⃣ Manual hajm tekshirish
+        if ($file->getSize() > $maxUploadSize) {
+            return back()->with('error', 'Video hajmi ' . $this->formatBytes($maxUploadSize) . ' dan oshib ketdi!');
+        }
+
+        try {
+            // 3️⃣ S3 mavjudligini tekshirish
+            if (!config('filesystems.disks.s3')) {
+                throw new \Exception('S3 disk sozlanmagan! .env faylini tekshiring.');
+            }
+
+            // 4️⃣ Test ulanish
+            try {
+                Storage::disk('s3')->exists('test'); // Connection test
+            } catch (\Exception $e) {
+                throw new \Exception('S3 ga ulanib bo\'lmadi: ' . $e->getMessage());
+            }
+
+            Log::info('Video yuklash boshlandi', [
+                'file_size' => $file->getSize(),
+                'file_name' => $file->getClientOriginalName(),
+                'mime_type' => $file->getMimeType()
+            ]);
+
+            // 5️⃣ S3 ga yuklash
+            $fileName = time() . '_' . preg_replace('/[^A-Za-z0-9._-]/', '_', $file->getClientOriginalName());
+
+            // MUHIM: putFileAs ishlatish (kattaroq fayllar uchun yaxshiroq)
+            $path = Storage::disk('s3')->putFileAs('videos', $file, $fileName);
+
+            if (!$path) {
+                throw new \Exception('S3 ga yuklash muvaffaqiyatsiz tugadi!');
+            }
+
+            // 6️⃣ Yuklangani tekshirish
+            if (!Storage::disk('s3')->exists($path)) {
+                throw new \Exception('Fayl S3 ga yuklanmadi: ' . $path);
+            }
+
+            Log::info('Video S3 ga yuklandi', ['path' => $path]);
+
+            // 7️⃣ Public qilish
+            try {
+                Storage::disk('s3')->setVisibility($path, 'public');
+            } catch (\Exception $e) {
+                Log::warning('Visibility xatosi: ' . $e->getMessage());
+            }
+
+            // 8️⃣ Bazaga saqlash
+            $video = Video::create([
+                'course_id'        => $course->id,
+                'user_id'          => Auth::id(),
+                'title'            => $validated['title'],
+                'description'      => $validated['description'] ?? null,
+                'video_url'        => $path, // videos/1234567890_filename.mp4
+                'duration_seconds' => $validated['duration_minutes'] * 60,
+            ]);
+
+            Log::info('Video bazaga saqlandi', ['video_id' => $video->id, 'path' => $path]);
+
+            return back()->with('success', 'Video muvaffaqiyatli yuklandi! (S3: ' . $path . ')');
+        } catch (\Throwable $e) {
+            Log::error('Video yuklash xatosi', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return back()->with('error', 'Xatolik: ' . $e->getMessage());
+        }
     }
 
+    // Helper funksiyalar
+    private function parseSize($size)
+    {
+        $unit = strtoupper(substr($size, -1));
+        $value = (int) substr($size, 0, -1);
+
+        switch ($unit) {
+            case 'G':
+                return $value * 1024 * 1024 * 1024;
+            case 'M':
+                return $value * 1024 * 1024;
+            case 'K':
+                return $value * 1024;
+            default:
+                return (int) $size;
+        }
+    }
+
+    private function formatBytes($bytes, $precision = 2)
+    {
+        $units = ['B', 'KB', 'MB', 'GB'];
+        $bytes = max($bytes, 0);
+        $pow = floor(($bytes ? log($bytes) : 0) / log(1024));
+        $pow = min($pow, count($units) - 1);
+        $bytes /= pow(1024, $pow);
+        return round($bytes, $precision) . ' ' . $units[$pow];
+    }
     public function destroyVideo($id)
     {
         $user = Auth::user();

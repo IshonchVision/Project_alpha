@@ -9,86 +9,75 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\TeacherSettingsController;
 use App\Http\Controllers\UniversalController;
-use App\Http\Controllers\VideoController;
-use App\Http\Controllers\VideoController as ControllersVideoController;
 use Illuminate\Support\Facades\Route;
 
-// Route::view('/{any}', 'dashboard')->where('any', '.*');
+// ============================================
+// PUBLIC ROUTES
+// ============================================
 
-Route::get('/', [HomeController::class, 'home'])->name('home'); // Sayt bosh sahifasi (kurslar ro'yxati)
+Route::get('/', [HomeController::class, 'home'])->name('home');
+Route::get('/courses', [CourseController::class, 'index'])->name('courses');
+Route::get('/about', [HomeController::class, 'about'])->name('about');
+Route::get('/contact', [HomeController::class, 'contact']);
+Route::get('/course', [HomeController::class, 'course']);
+Route::get('/detail', [HomeController::class, 'detail']);
+Route::get('/feature', [HomeController::class, 'feature']);
+Route::get('/team', [HomeController::class, 'team']);
+Route::get('/testimonial', [HomeController::class, 'testimonial']);
 
-Route::get('/courses', [CourseController::class, 'index'])->name('courses'); // Barcha kurslar sahifasi (public)
-Route::get('/courses/{id}', [CourseController::class, 'show'])->name('courses.show'); // Kurs detali (public)
+// ============================================
+// AUTH ROUTES
+// ============================================
 
+Route::get('/login', [AuthController::class, 'login_blade'])->name('login');
+Route::post('/login', [AuthController::class, 'login']);
+Route::get('/register', [AuthController::class, 'register_blade'])->name('register');
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::get('/verify', [AuthController::class, 'showVerifyForm'])->name('verify.show');
+Route::post('/verify', [AuthController::class, 'verify'])->name('verify.check');
 
-// Boshqa public sahifalar (masalan: about, contact va h.k.)
-Route::get('/about', function () {
-    return view('about');
-})->name('about');
+// ============================================
+// AUTHENTICATED USER ROUTES
+// ============================================
 
-// 2. Faqat login qilgan foydalanuvchilar uchun (Dashboard va shaxsiy sahifalar)
 Route::middleware(['auth'])->group(function () {
-
-    // Dashboard (mening kurslarim)
-    Route::get('/dashboard', [HomeController::class, 'dashboard'])
-        ->name('dashboard');
-
-    // Student uchun shaxsiy sahifalar
+    Route::get('/dashboard', [HomeController::class, 'dashboard'])->name('dashboard');
+    Route::get('/my_course', [CourseController::class, 'my_course']);
+    Route::get('/universal/panel', [UniversalController::class, 'panel']);
+    Route::get('/group_chats', [GroupChatsController::class, 'index']);
+    
+    // Student routes
     Route::get('/student/courses', function () {
         return view('student.courses');
     })->name('student.courses.index');
-
+    
     Route::get('/student/courses/{course}', function ($course) {
         return view('student.course-detail', ['courseId' => $course]);
     })->name('student.courses.show');
-
+    
     Route::get('/student/lessons/{lesson}', function ($lesson) {
         return view('student.lesson', ['lessonId' => $lesson]);
     })->name('student.lessons.show');
 });
 
+// ============================================
+// COURSE ROUTES
+// ============================================
 
+Route::get('/course/{id}', [CourseController::class, 'detail'])->name('course.detail');
+Route::post('/course/watch', [CourseController::class, 'watch'])->name('course.watch');
 
-// website url
-Route::get('/about', [HomeController::class, 'about']);
-Route::get('contact', [HomeController::class, 'contact']);
-Route::get('course', [HomeController::class, 'course']);
-Route::get('detail', [HomeController::class, 'detail']);
-Route::get('feature', [HomeController::class, 'feature']);
-Route::get('team', [HomeController::class, 'team']);
-Route::get('testimonial', [HomeController::class, 'testimonial']);
+// ============================================
+// CONTACT ROUTE
+// ============================================
 
+Route::post('/contact/message/send', [ContactController::class, 'store'])
+    ->name('contact.message.send');
 
-// Login Register
-
-// Login sahifasini ko'rsatish (GET)
-Route::get('/login', [AuthController::class, 'login_blade'])->name('login');
-
-// Login qilish (POST) — alohida nom kerak emas, lekin bo'lsa ham bo'ladi
-Route::post('/login', [AuthController::class, 'login']); // name('login.post') yoki umuman namesiz
-
-// Register sahifasini ko'rsatish (GET)
-Route::get('/register', [AuthController::class, 'register_blade'])->name('register');
-
-// Register qilish (POST)
-Route::post('/register', [AuthController::class, 'register']);
-// Mening kurslarim
-
-
-Route::get('/universal/panel', [UniversalController::class, 'panel']);
-
-
-
-Route::get('/my_course', [CourseController::class, 'my_course'])->middleware('auth');;
-
-
-Route::get('group_chats', [GroupChatsController::class, 'index']);
-
-
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-
-
-//  Admin url
+// ============================================
+// ADMIN ROUTES
+// ============================================
 
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'is_admin'])->group(function () {
     Route::get('/', [AdminController::class, 'admin_panel']);
@@ -99,127 +88,96 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'is_admin'])->group(
     Route::get('/chats', [AdminController::class, 'chats'])->name('chats');
     Route::get('/statistics', [AdminController::class, 'statistics'])->name('statistics');
     Route::get('/payments', [AdminController::class, 'payments'])->name('payments');
-    Route::get('/settings', [AdminController::class, 'settings'])->name('settings');
-
-    // Admin settings controller actions
+    
+    // Settings
     Route::get('/settings', [\App\Http\Controllers\AdminSettingsController::class, 'edit'])->name('settings');
     Route::post('/settings/profile', [\App\Http\Controllers\AdminSettingsController::class, 'updateProfile'])->name('settings.profile');
     Route::post('/settings/general', [\App\Http\Controllers\AdminSettingsController::class, 'updateGeneral'])->name('settings.general');
     Route::post('/settings/notifications', [\App\Http\Controllers\AdminSettingsController::class, 'updateNotifications'])->name('settings.notifications');
     Route::post('/settings/password', [\App\Http\Controllers\AdminSettingsController::class, 'updatePassword'])->name('settings.password');
     Route::post('/settings/destroy', [\App\Http\Controllers\AdminSettingsController::class, 'destroyAll'])->name('settings.destroy');
-    Route::delete('/users/{user}', [AdminController::class, 'destroy'])
-        ->name('users.destroy');
-    Route::delete('/teacher/{user}', [AdminController::class, 'teacher_destroy'])
-        ->name('teachers.destroy');
-    Route::post('/teachers', [AdminController::class, 'teach    er_store'])->name('teachers.store');
-
-    Route::get('/chats', [AdminController::class, 'chats'])->name('chats');
+    
+    // Users & Teachers
+    Route::delete('/users/{user}', [AdminController::class, 'destroy'])->name('users.destroy');
+    Route::delete('/teacher/{user}', [AdminController::class, 'teacher_destroy'])->name('teachers.destroy');
+    Route::post('/teachers', [AdminController::class, 'teacher_store'])->name('teachers.store');
+    
+    // Chats
     Route::post('/chats/send', [AdminController::class, 'sendChatMessage'])->name('chats.send');
     Route::get('/chats/{id}', [AdminController::class, 'loadGroupChat'])->name('chats.group');
     Route::get('/chats/{id}/poll', [AdminController::class, 'pollGroupMessages'])->name('chats.poll');
-    // Creates a new group — use existing controller method `storeGroup`
+    
+    // Groups
     Route::post('/groups', [AdminController::class, 'storeGroup'])->name('groups.store');
 });
 
+// ============================================
+// TEACHER ROUTES - ✅ FAQAT TeacherController
+// ============================================
 
 Route::prefix('teacher')->name('teacher.')->middleware(['auth', 'is_teacher'])->group(function () {
-
+    
+    // Dashboard
     Route::get('/dashboard', [TeacherController::class, 'dashboard'])->name('dashboard');
-
+    
     // Groups
     Route::get('/groups', [TeacherController::class, 'groups'])->name('groups');
     Route::post('/groups', [TeacherController::class, 'storeGroup'])->name('groups.store');
     Route::get('/groups/{id}', [TeacherController::class, 'showGroup'])->name('groups.show');
     Route::put('/groups/{id}', [TeacherController::class, 'updateGroup'])->name('groups.update');
     Route::delete('/groups/{id}', [TeacherController::class, 'destroyGroup'])->name('groups.destroy');
-
+    
     // Courses
     Route::get('/courses', [TeacherController::class, 'courses'])->name('courses');
     Route::post('/courses', [TeacherController::class, 'storeCourse'])->name('courses.store');
     Route::get('/courses/{id}', [TeacherController::class, 'showCourse'])->name('courses.show');
     Route::put('/courses/{id}', [TeacherController::class, 'updateCourse'])->name('courses.update');
     Route::delete('/courses/{id}', [TeacherController::class, 'destroyCourse'])->name('courses.destroy');
-
-    // Video upload/delete
-    Route::delete('/videos/{id}', [TeacherController::class, 'destroyVideo'])->name('videos.destroy');
-
+    
+    // ✅ VIDEOS - FAQAT TeacherController
+    Route::get('/courses/{course}/videos/create', [TeacherController::class, 'createVideo'])
+        ->name('courses.videos.create');
+    Route::post('/courses/{course}/videos', [TeacherController::class, 'storeVideo'])
+        ->name('courses.videos.store');
+    Route::delete('/videos/{id}', [TeacherController::class, 'destroyVideo'])
+        ->name('videos.destroy');
+    
+    // ✅ QUIZZES - TeacherController
+    Route::get('/courses/{course}/quizzes/create', [TeacherController::class, 'createQuiz'])
+        ->name('quizzes.create');
+    Route::post('/courses/{course}/quizzes', [TeacherController::class, 'storeQuiz'])
+        ->name('quizzes.store');
+    Route::delete('/quizzes/{id}', [TeacherController::class, 'destroyQuiz'])
+        ->name('quizzes.destroy');
+    
     // Students
     Route::get('/students', [TeacherController::class, 'students'])->name('students');
-
-    // Grades (placeholder)
+    
+    // Grades
     Route::get('/grades', [TeacherController::class, 'grades'])->name('grades');
-
+    
     // Chats
     Route::get('/chats', [TeacherController::class, 'chats'])->name('chats');
     Route::post('/chats/send', [TeacherController::class, 'sendChatMessage'])->name('chats.send');
     Route::get('/chats/{id}', [TeacherController::class, 'loadGroupChat'])->name('chats.group');
     Route::get('/chats/{id}/poll', [TeacherController::class, 'pollGroupMessages'])->name('chats.poll');
-
+    
     // Settings
     Route::get('/settings', [TeacherSettingsController::class, 'edit'])->name('settings');
     Route::put('/settings', [TeacherSettingsController::class, 'updateProfile'])->name('profile.update');
     Route::put('/password', [TeacherSettingsController::class, 'updatePassword'])->name('password.update');
-
-    Route::post('/teacher/quizzes', [TeacherController::class, 'storeQuiz'])->name('quizzes.store');
-    Route::delete('/teacher/quizzes/{id}', [TeacherController::class, 'destroyQuiz'])->name('quizzes.destroy');
-
-
-    Route::get('/courses/{courseId}/videos/create', [VideoController::class, 'create'])
-        ->name('videos.create');
-
-    Route::post('/courses/{courseId}/videos', [VideoController::class, 'store'])
-        ->name('videos.store');
-
-    Route::delete('/videos/{id}', [VideoController::class, 'destroy'])
-        ->name('videos.destroy');
-
-    // Video qo'shish uchun alohida sahifa
-    Route::get('/courses/{course}/videos/create', [TeacherController::class, 'createVideo'])
-        ->name('courses.videos.create');
-
-    // Video saqlash (oldincha qoldiramiz)
-    Route::post('/courses/{course}/videos', [TeacherController::class, 'storeVideo'])
-        ->name('courses.videos.store');
-
-
-    Route::get('/courses/{course}/quizzes/create', [TeacherController::class, 'createQuiz'])
-        ->name('quizzes.create');
-
-    // Quiz saqlash (agar hali yo'q bo'lsa)
-    Route::post('/courses/{course}/quizzes', [TeacherController::class, 'storeQuiz'])
-        ->name('quizzes.store');
 });
 
-
-
+// ============================================
+// STUDENT ROUTES
+// ============================================
 
 Route::prefix('student')->name('student.')->middleware('auth')->group(function () {
-
     Route::get('/dashboard', function () {
         return view('student.sections.dashboard');
     })->name('dashboard');
-
+    
     Route::get('/courses', function () {
         return view('student.sections.courses');
     })->name('courses');
 });
-
-
-
-Route::post('/contact/message/send', [ContactController::class, 'store'])
-    ->name('contact.message.send');
-
-
-Route::get('/verify', [AuthController::class, 'showVerifyForm'])->name('verify.show');
-Route::post('/verify', [AuthController::class, 'verify'])->name('verify.check');
-
-
-Route::get('/course/{id}', [CourseController::class, 'detail'])
-    ->name('course.detail');
-
-// Watch/Access a course — requires auth; returns JSON 401 for AJAX or flashes error for guests
-Route::post('/course/watch', [CourseController::class, 'watch'])->name('course.watch');
-
-
-// routes/web.php yoki teacher route file ichiga:

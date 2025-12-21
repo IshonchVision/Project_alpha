@@ -28,18 +28,22 @@ class TeacherSettingsController extends Controller
         if ($request->hasFile('avatar')) {
             try {
                 $file = $request->file('avatar');
-                $path = $file->store('avatars', 'public');
-                if (!$path || !Storage::disk('public')->exists($path)) {
-                    return back()->with('error', 'Avatarni saqlashda xatolik yuz berdi');
+
+                $path = $file->store('avatars', 's3');
+
+                if (!$path || !Storage::disk('s3')->exists($path)) {
+                    return back()->with('error', 'Avatar S3 ga saqlanmadi');
                 }
 
-                if ($user->avatar && Storage::disk('public')->exists($user->avatar)) {
-                    Storage::disk('public')->delete($user->avatar);
+                // eski avatarni o‘chirish
+                if ($user->avatar && Storage::disk('s3')->exists($user->avatar)) {
+                    Storage::disk('s3')->delete($user->avatar);
                 }
 
+                // agar public url kerak bo‘lsa
                 $user->avatar = $path;
             } catch (\Throwable $e) {
-                return back()->with('error', 'Avatarni yuklashda xatolik');
+                dd($e->getMessage()); // 👈 vaqtincha, xatoni ko‘rish uchun
             }
         }
 

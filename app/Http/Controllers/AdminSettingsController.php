@@ -35,7 +35,6 @@ class AdminSettingsController extends Controller
                 $file = $request->file('avatar');
                 $path = $file->store('avatars', 'public');
                 if (!$path || !Storage::disk('public')->exists($path)) {
-                    \Log::error('Avatar upload: stored path missing or file not found', ['path' => $path, 'user_id' => $user->id]);
                     return back()->with('error', 'Avatarni saqlashda xatolik yuz berdi');
                 }
 
@@ -45,7 +44,6 @@ class AdminSettingsController extends Controller
 
                 $user->avatar = $path;
             } catch (\Throwable $e) {
-                \Log::error('Avatar upload failed: ' . $e->getMessage(), ['user_id' => $user->id]);
                 return back()->with('error', 'Avatarni yuklashda xatolik');
             }
         }
@@ -99,7 +97,16 @@ class AdminSettingsController extends Controller
             DB::statement('SET FOREIGN_KEY_CHECKS=0');
             // Truncate tables that are safe to remove
             $tables = [
-                'group_messages', 'groups', 'courses', 'payments', 'contacts', 'quizzes', 'reflections', 'modules', 'videos', 'posts'
+                'group_messages',
+                'groups',
+                'courses',
+                'payments',
+                'contacts',
+                'quizzes',
+                'reflections',
+                'modules',
+                'videos',
+                'posts'
             ];
             foreach ($tables as $t) {
                 if (DB::getSchemaBuilder()->hasTable($t)) {
