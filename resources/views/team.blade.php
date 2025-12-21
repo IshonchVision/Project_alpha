@@ -23,7 +23,7 @@
                     </div>
                 </div>
                 <div class="team-item">
-                    <img class="img-fluid w-100" src="img/rustam.png" alt="">
+                    <img class="img-fluid w-100" src="img/rus.jpg" alt="">
                     <div class="bg-light text-center p-4">
                         <h5 class="mb-3">Rustam Qoriyev</h5>
                         <p class="mb-2">Ingliz tili o'qituvchisi</p>
