@@ -68,4 +68,5 @@ class User extends Authenticatable
             ->withTimestamps()
             ->withPivot('enrolled_at');
     }
+    
 }
