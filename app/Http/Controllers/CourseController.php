@@ -1,7 +1,9 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\Course;
+use App\Models\StudentCourse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -45,11 +47,19 @@ class CourseController extends Controller
             return redirect()->back()->with('error', 'Siz tizimga kirmagansiz. Iltimos, tizimga kiring.');
         }
 
-        // Logged in users are sent to their courses / viewing area
+
         if ($request->ajax() || $request->wantsJson()) {
             return response()->json(['success' => true, 'redirect' => route('my_course')]);
         }
 
-        return redirect()->route('/my_course');
+        $course_id = $request->course_id;
+
+        StudentCourse::create([
+            'course_id' => $course_id,
+            'user_id' => auth()->id(),
+            'enrolled_at' => now()
+        ]);
+
+        return redirect()->route('student.courses');
     }
 }

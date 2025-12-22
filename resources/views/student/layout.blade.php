@@ -256,12 +256,16 @@
             <h3>Talaba Paneli</h3>
         </div>
         <ul class="menu" style="list-style: none; padding: 0;">
-            <li><a href="{{ route('student.dashboard') }}" class="menu-link {{ request()->routeIs('student.dashboard') ? 'active' : '' }}"><i class="fas fa-home"></i> <span>Dashboard</span></a></li>
             <li><a href="{{ route('student.courses') }}" class="menu-link {{ request()->routeIs('student.courses') ? 'active' : '' }}"><i class="fas fa-book-open"></i> <span>Mening Kurslarim</span></a></li>
-            <li><a href="{{ route('student.grades') }}" class="menu-link {{ request()->routeIs('student.grades') ? 'active' : '' }}"><i class="fas fa-table"></i> <span>Baholarim</span></a></li>
             <li><a href="{{ route('student.chats') }}" class="menu-link {{ request()->routeIs('student.chats') ? 'active' : '' }}"><i class="fas fa-comments"></i> <span>Chatlar</span> <span class="badge bg-danger" style="margin-left: auto; padding: 4px 10px; border-radius: 20px; font-size: 12px;">3</span></a></li>
             <li><a href="{{ route('student.settings') }}" class="menu-link {{ request()->routeIs('student.settings') ? 'active' : '' }}"><i class="fas fa-cog"></i> <span>Sozlamalar</span></a></li>
-            <li><a href="#" class="menu-link"><i class="fas fa-sign-out-alt"></i> <span>Chiqish</span></a></li>
+             <li class="menu-item">
+            <form id="admin-logout-form" action="{{ route('logout') }}" method="POST" style="display:none">@csrf</form>
+            <a href="#" class="menu-link" onclick="event.preventDefault(); document.getElementById('admin-logout-form').submit();">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Chiqish</span>
+            </a>
+        </li>
         </ul>
     </div>
 

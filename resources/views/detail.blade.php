@@ -36,8 +36,24 @@
             <div class="row mb-4">
                 <div class="col-lg-6 col-md-12 mb-4">
                     <div class="position-relative" style="border-radius: 10px; overflow: hidden; height: 100%;">
-                        <img class="img-fluid w-100" style="height: 400px; object-fit: cover;"
-                            src="{{ asset('storage/' . $course->img) }}" alt="{{ $course->title }}">
+                         @php
+                        // Xuddi shu logika boshqa kurslar uchun
+                        if ($course->img) {
+                            $courseImageUrl = (config('filesystems.default') === 's3' && Storage::disk('s3')->exists($course->img))
+                                ? Storage::disk('s3')->url($course->img)
+                                : asset('storage/' . $course->img);
+                        } else {
+                            $courseImageUrl = 'https://images.unsplash.com/photo-1516321310764-9f3c9619d7d7?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=85';
+                        }
+                    @endphp
+
+                        <img class="img-fluid course-img"
+                                 src="{{ $courseImageUrl }}"
+                                 alt="{{ $course->title }}"
+                                 loading="lazy"
+                                 style="height: 100%; width: 100%; object-fit: cover; position: absolute; top: 0; left: 0; z-index: 1;
+                                        filter: brightness(1.2) contrast(1.15) saturate(1.1);">
+
                         <div class="position-absolute" style="bottom: 20px; left: 20px;">
                             <button class="btn btn-primary btn-lg">
                                 <i class="fa fa-play-circle"></i> Video ko'rish

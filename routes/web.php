@@ -6,10 +6,17 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\GroupChatsController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\StudentController;
 use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\TeacherSettingsController;
 use App\Http\Controllers\UniversalController;
 use Illuminate\Support\Facades\Route;
+
+// 404 Fallback Route
+
+Route::fallback(function () {
+    return response()->view('errors.404', [], 404);
+});
 
 // ============================================
 // PUBLIC ROUTES
@@ -46,19 +53,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/my_course', [CourseController::class, 'my_course']);
     Route::get('/universal/panel', [UniversalController::class, 'panel']);
     Route::get('/group_chats', [GroupChatsController::class, 'index']);
-    
-    // Student routes
-    Route::get('/student/courses', function () {
-        return view('student.courses');
-    })->name('student.courses.index');
-    
-    Route::get('/student/courses/{course}', function ($course) {
-        return view('student.course-detail', ['courseId' => $course]);
-    })->name('student.courses.show');
-    
-    Route::get('/student/lessons/{lesson}', function ($lesson) {
-        return view('student.lesson', ['lessonId' => $lesson]);
-    })->name('student.lessons.show');
 });
 
 // ============================================
@@ -88,7 +82,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'is_admin'])->group(
     Route::get('/chats', [AdminController::class, 'chats'])->name('chats');
     Route::get('/statistics', [AdminController::class, 'statistics'])->name('statistics');
     Route::get('/payments', [AdminController::class, 'payments'])->name('payments');
-    
+
     // Settings
     Route::get('/settings', [\App\Http\Controllers\AdminSettingsController::class, 'edit'])->name('settings');
     Route::post('/settings/profile', [\App\Http\Controllers\AdminSettingsController::class, 'updateProfile'])->name('settings.profile');
@@ -96,72 +90,67 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'is_admin'])->group(
     Route::post('/settings/notifications', [\App\Http\Controllers\AdminSettingsController::class, 'updateNotifications'])->name('settings.notifications');
     Route::post('/settings/password', [\App\Http\Controllers\AdminSettingsController::class, 'updatePassword'])->name('settings.password');
     Route::post('/settings/destroy', [\App\Http\Controllers\AdminSettingsController::class, 'destroyAll'])->name('settings.destroy');
-    
+
     // Users & Teachers
     Route::delete('/users/{user}', [AdminController::class, 'destroy'])->name('users.destroy');
     Route::delete('/teacher/{user}', [AdminController::class, 'teacher_destroy'])->name('teachers.destroy');
     Route::post('/teachers', [AdminController::class, 'teacher_store'])->name('teachers.store');
-    
+
     // Chats
     Route::post('/chats/send', [AdminController::class, 'sendChatMessage'])->name('chats.send');
     Route::get('/chats/{id}', [AdminController::class, 'loadGroupChat'])->name('chats.group');
     Route::get('/chats/{id}/poll', [AdminController::class, 'pollGroupMessages'])->name('chats.poll');
-    
+
     // Groups
     Route::post('/groups', [AdminController::class, 'storeGroup'])->name('groups.store');
 });
 
-// ============================================
-// TEACHER ROUTES - ✅ FAQAT TeacherController
-// ============================================
 
 Route::prefix('teacher')->name('teacher.')->middleware(['auth', 'is_teacher'])->group(function () {
-    
+
     // Dashboard
     Route::get('/dashboard', [TeacherController::class, 'dashboard'])->name('dashboard');
-    
+
     // Groups
     Route::get('/groups', [TeacherController::class, 'groups'])->name('groups');
     Route::post('/groups', [TeacherController::class, 'storeGroup'])->name('groups.store');
     Route::get('/groups/{id}', [TeacherController::class, 'showGroup'])->name('groups.show');
     Route::put('/groups/{id}', [TeacherController::class, 'updateGroup'])->name('groups.update');
     Route::delete('/groups/{id}', [TeacherController::class, 'destroyGroup'])->name('groups.destroy');
-    
+
     // Courses
     Route::get('/courses', [TeacherController::class, 'courses'])->name('courses');
     Route::post('/courses', [TeacherController::class, 'storeCourse'])->name('courses.store');
     Route::get('/courses/{id}', [TeacherController::class, 'showCourse'])->name('courses.show');
     Route::put('/courses/{id}', [TeacherController::class, 'updateCourse'])->name('courses.update');
     Route::delete('/courses/{id}', [TeacherController::class, 'destroyCourse'])->name('courses.destroy');
-    
-    // ✅ VIDEOS - FAQAT TeacherController
+
     Route::get('/courses/{course}/videos/create', [TeacherController::class, 'createVideo'])
         ->name('courses.videos.create');
     Route::post('/courses/{course}/videos', [TeacherController::class, 'storeVideo'])
         ->name('courses.videos.store');
     Route::delete('/videos/{id}', [TeacherController::class, 'destroyVideo'])
         ->name('videos.destroy');
-    
-    // ✅ QUIZZES - TeacherController
+
     Route::get('/courses/{course}/quizzes/create', [TeacherController::class, 'createQuiz'])
         ->name('quizzes.create');
     Route::post('/courses/{course}/quizzes', [TeacherController::class, 'storeQuiz'])
         ->name('quizzes.store');
     Route::delete('/quizzes/{id}', [TeacherController::class, 'destroyQuiz'])
         ->name('quizzes.destroy');
-    
+
     // Students
     Route::get('/students', [TeacherController::class, 'students'])->name('students');
-    
+
     // Grades
     Route::get('/grades', [TeacherController::class, 'grades'])->name('grades');
-    
+
     // Chats
     Route::get('/chats', [TeacherController::class, 'chats'])->name('chats');
     Route::post('/chats/send', [TeacherController::class, 'sendChatMessage'])->name('chats.send');
     Route::get('/chats/{id}', [TeacherController::class, 'loadGroupChat'])->name('chats.group');
     Route::get('/chats/{id}/poll', [TeacherController::class, 'pollGroupMessages'])->name('chats.poll');
-    
+
     // Settings
     Route::get('/settings', [TeacherSettingsController::class, 'edit'])->name('settings');
     Route::put('/settings', [TeacherSettingsController::class, 'updateProfile'])->name('profile.update');
@@ -172,12 +161,18 @@ Route::prefix('teacher')->name('teacher.')->middleware(['auth', 'is_teacher'])->
 // STUDENT ROUTES
 // ============================================
 
+
+
 Route::prefix('student')->name('student.')->middleware('auth')->group(function () {
-    Route::get('/dashboard', function () {
-        return view('student.sections.dashboard');
-    })->name('dashboard');
-    
-    Route::get('/courses', function () {
-        return view('student.sections.courses');
-    })->name('courses');
+    Route::get('/courses', [StudentController::class, 'courses'])->name('courses');
+
+    Route::get('/courses/{id}', [StudentController::class, 'courseDetail'])->name('courses.show');
+
+    Route::get('/chats', function () {
+        return view('student.sections.chats');
+    })->name('chats');
+
+    Route::get('/settings', function () {
+        return view('student.sections.settings');
+    })->name('settings');
 });

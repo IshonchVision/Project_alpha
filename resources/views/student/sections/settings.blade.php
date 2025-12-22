@@ -64,7 +64,7 @@
                 <h4>Parolni Almashtirish</h4>
             </div>
             <div class="card-body">
-                <form action="{{ route('settings.password') }}" method="POST" style="max-width:500px;">
+                <form action="{{ route('student.settings.password') }}" method="POST" style="max-width:500px;">
                     @csrf
                     <div style="margin-bottom: 20px;">
                         <label style="display: block; margin-bottom: 8px; font-weight: 700;">Joriy Parol</label>
