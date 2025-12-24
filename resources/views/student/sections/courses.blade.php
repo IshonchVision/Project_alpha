@@ -23,7 +23,7 @@
                                             onclick="loadVideo('{{ $video->signed_url ?? '#' }}')">
                                         <i class="fas fa-play"></i> Ko'rish
                                     </button>
-                                </li>
+                 `               </li>
                             @endforeach
                             @if($course->videos_count > 5)
                                 <li class="text-muted small">... va yana {{ $course->videos_count - 5 }} ta</li>
