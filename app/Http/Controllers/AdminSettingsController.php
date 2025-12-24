@@ -27,24 +27,27 @@ class AdminSettingsController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255|unique:users,email,' . $user->id,
             'phone' => 'nullable|string|max:50',
-            'avatar' => 'nullable|image|max:2048',
+            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         if ($request->hasFile('avatar')) {
             try {
                 $file = $request->file('avatar');
-                $path = $file->store('avatars', 'public');
-                if (!$path || !Storage::disk('public')->exists($path)) {
-                    return back()->with('error', 'Avatarni saqlashda xatolik yuz berdi');
-                }
 
-                if ($user->avatar && Storage::disk('public')->exists($user->avatar)) {
-                    Storage::disk('public')->delete($user->avatar);
+                // S3 ga yuklash va public visibility
+                $path = $file->store('avatars', [
+                    'disk' => 's3',
+                    'visibility' => 'public',
+                ]);
+
+                // Eski avatarni o'chirish
+                if ($user->avatar && Storage::disk('s3')->exists($user->avatar)) {
+                    Storage::disk('s3')->delete($user->avatar);
                 }
 
                 $user->avatar = $path;
             } catch (\Throwable $e) {
-                return back()->with('error', 'Avatarni yuklashda xatolik');
+                return back()->with('error', 'Avatarni yuklashda xatolik: ' . $e->getMessage());
             }
         }
 
@@ -53,24 +56,17 @@ class AdminSettingsController extends Controller
         $user->phone = $data['phone'] ?? $user->phone;
         $user->save();
 
-        return back()->with('success', 'Admin profil saqlandi');
+        return back()->with('success', 'Profil muvaffaqiyatli yangilandi');
     }
 
     public function updatePassword(Request $request)
     {
-        $user = Auth::user();
-
         $request->validate([
-            'current_password' => 'required',
-            'password' => 'required|confirmed|min:6',
+            'current_password' => ['required', 'current_password'],
+            'password' => ['required', 'confirmed', 'min:8'],
         ]);
 
-        if (!Hash::check($request->current_password, $user->password)) {
-            return back()->with('error', 'Joriy parol noto\'g\'ri');
-        }
-
-        $user->password = bcrypt($request->password);
-        $user->save();
+        Auth::user()->update(['password' => Hash::make($request->password)]);
 
         return back()->with('success', 'Parol muvaffaqiyatli yangilandi');
     }
@@ -91,11 +87,10 @@ class AdminSettingsController extends Controller
             return back()->with('error', 'Tasdiqlash to\'g\'ri kelmadi');
         }
 
-        // Perform destructive cleanup within transaction and with FK checks disabled
         DB::beginTransaction();
         try {
             DB::statement('SET FOREIGN_KEY_CHECKS=0');
-            // Truncate tables that are safe to remove
+
             $tables = [
                 'group_messages',
                 'groups',
@@ -108,13 +103,13 @@ class AdminSettingsController extends Controller
                 'videos',
                 'posts'
             ];
+
             foreach ($tables as $t) {
                 if (DB::getSchemaBuilder()->hasTable($t)) {
                     DB::table($t)->truncate();
                 }
             }
 
-            // Remove non-admin users
             User::where('is_admin', false)->delete();
 
             DB::statement('SET FOREIGN_KEY_CHECKS=1');
