@@ -164,6 +164,11 @@ Route::prefix('teacher')->name('teacher.')->middleware(['auth', 'is_teacher'])->
 
 
 Route::prefix('student')->name('student.')->middleware('auth')->group(function () {
+
+    Route::post('/settings/profile', [StudentController::class, 'updateProfile'])->name('settings.profile');
+
+    Route::get('/dashboard', [StudentController::class, 'dashboard'])->name('dashboard');
+
     Route::get('/courses', [StudentController::class, 'courses'])->name('courses');
 
     Route::get('/courses/{id}', [StudentController::class, 'courseDetail'])->name('courses.show');

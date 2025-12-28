@@ -1,11 +1,8 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\Course;
-use App\Models\StudentCourse;
 use App\Models\Video;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class StudentController extends Controller
@@ -35,13 +32,13 @@ class StudentController extends Controller
             'videos' => function ($query) {
                 $query->orderBy('id'); // yoki order column bo'lsa 'order'
             },
-            'quizzes'
+            'quizzes',
         ])
             ->withCount(['videos', 'quizzes'])
             ->findOrFail($courseId);
 
         // Talaba bu kursga enrolledmi?
-        if (!Auth::user()->enrolledCourses()->where('course_id', $courseId)->exists()) {
+        if (! Auth::user()->enrolledCourses()->where('course_id', $courseId)->exists()) {
             abort(403, 'Siz bu kursga ro\'yxatdan o\'tmagansiz.');
         }
 
@@ -55,10 +52,15 @@ class StudentController extends Controller
         $video = Video::with('course.user')->findOrFail($lessonId);
 
         // Tekshirish: talaba kursga enrolledmi?
-        if (!Auth::user()->enrolledCourses()->where('course_id', $video->course_id)->exists()) {
+        if (! Auth::user()->enrolledCourses()->where('course_id', $video->course_id)->exists()) {
             abort(403, 'Ruxsat etilmagan.');
         }
 
         return view('student.lesson', compact('video'));
+    }
+
+    public function dashboard()
+    {
+        return view('student.sections.dashboard');
     }
 }

@@ -14,7 +14,7 @@
                 <h4>Profil Ma'lumotlari</h4>
             </div>
             <div class="card-body">
-                <form action="{{ route('settings.profile') }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('student.settings.profile') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div style="display: flex; align-items: center; gap: 25px; margin-bottom: 30px;">
                         @php
