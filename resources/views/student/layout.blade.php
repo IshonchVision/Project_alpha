@@ -257,7 +257,7 @@
         </div>
         <ul class="menu" style="list-style: none; padding: 0;">
             <li><a href="{{ route('student.courses') }}" class="menu-link {{ request()->routeIs('student.courses') ? 'active' : '' }}"><i class="fas fa-book-open"></i> <span>Mening Kurslarim</span></a></li>
-            <li><a href="{{ route('student.chats') }}" class="menu-link {{ request()->routeIs('student.chats') ? 'active' : '' }}"><i class="fas fa-comments"></i> <span>Chatlar</span> <span class="badge bg-danger" style="margin-left: auto; padding: 4px 10px; border-radius: 20px; font-size: 12px;">3</span></a></li>
+            <li><a href="{{ route('student.chats') }}" class="menu-link {{ request()->routeIs('student.chats') ? 'active' : '' }}"><i class="fas fa-comments"></i> <span>Chatlar</span></a></li>
             <li><a href="{{ route('student.settings') }}" class="menu-link {{ request()->routeIs('student.settings') ? 'active' : '' }}"><i class="fas fa-cog"></i> <span>Sozlamalar</span></a></li>
              <li class="menu-item">
             <form id="admin-logout-form" action="{{ route('logout') }}" method="POST" style="display:none">@csrf</form>
@@ -272,9 +272,6 @@
     <div class="main-content">
         <div class="top-bar">
             <h1 class="page-title">@yield('page-title', 'Dashboard')</h1>
-            <div class="search-box">
-                <input type="text" class="search-input" placeholder="Qidirish...">
-            </div>
             <div class="user-info">
                 <div>
                     <h5 style="margin: 0; font-weight: 800; font-size: 16px;">{{ Auth::user()->name }}</h5>
