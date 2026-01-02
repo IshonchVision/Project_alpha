@@ -13,7 +13,6 @@ use App\Http\Controllers\UniversalController;
 use Illuminate\Support\Facades\Route;
 
 // 404 Fallback Route
-
 Route::fallback(function () {
     return response()->view('errors.404', [], 404);
 });
@@ -105,9 +104,11 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'is_admin'])->group(
     Route::post('/groups', [AdminController::class, 'storeGroup'])->name('groups.store');
 });
 
+// ============================================
+// TEACHER ROUTES
+// ============================================
 
 Route::prefix('teacher')->name('teacher.')->middleware(['auth', 'is_teacher'])->group(function () {
-
     // Dashboard
     Route::get('/dashboard', [TeacherController::class, 'dashboard'])->name('dashboard');
 
@@ -161,22 +162,28 @@ Route::prefix('teacher')->name('teacher.')->middleware(['auth', 'is_teacher'])->
 // STUDENT ROUTES
 // ============================================
 
-
-
 Route::prefix('student')->name('student.')->middleware('auth')->group(function () {
-
-    Route::post('/settings/profile', [StudentController::class, 'updateProfile'])->name('settings.profile');
-
+    // Dashboard
     Route::get('/dashboard', [StudentController::class, 'dashboard'])->name('dashboard');
 
-    Route::get('/courses', [StudentController::class, 'courses'])->name('courses');
+    // Profile Settings
+    Route::post('/settings/profile', [StudentController::class, 'updateProfile'])->name('settings.profile');
 
+    // Courses
+    Route::get('/courses', [StudentController::class, 'courses'])->name('courses');
     Route::get('/courses/{id}', [StudentController::class, 'courseDetail'])->name('courses.show');
 
-    Route::get('/chats', function () {
-        return view('student.sections.chats');
-    })->name('chats');
+    // Quizzes
+    Route::get('/quizzes/{id}/take', [StudentController::class, 'takeQuiz'])->name('quiz.take');
+    Route::post('/quizzes/{id}/submit', [StudentController::class, 'submitQuiz'])->name('quiz.submit');
 
+    // Chats
+    Route::get('/chats', [StudentController::class, 'chats'])->name('chats');
+    Route::get('/chats/{id}', [StudentController::class, 'loadGroupChat'])->name('chats.group');
+    Route::get('/chats/{id}/poll', [StudentController::class, 'pollGroupMessages'])->name('chats.poll');
+    Route::post('/chats/send', [StudentController::class, 'sendChatMessage'])->name('chats.send');
+
+    // Settings
     Route::get('/settings', function () {
         return view('student.sections.settings');
     })->name('settings');

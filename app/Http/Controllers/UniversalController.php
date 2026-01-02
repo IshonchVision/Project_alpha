@@ -12,7 +12,7 @@ class UniversalController extends Controller
         $user = Auth::user();
 
         if ($user->role === 'user') {
-            return redirect()->route('student.dashboard');
+            return redirect()->route('student.courses');
         }
 
         if ($user->role === 'teacher') {
