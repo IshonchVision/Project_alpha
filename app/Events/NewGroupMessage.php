@@ -36,18 +36,21 @@ class NewGroupMessage implements ShouldBroadcast
 
     public function broadcastWith()
     {
-        $msg = $this->message->fresh();
+        $msg = $this->message->fresh(['user']);
 
+        // Foydalanuvchi role ga qarab to'g'ri partial tanlash
+        $viewPath = 'student.sections.partials.message'; // default
+        
         return [
             'id' => $msg->id,
             'group_id' => $msg->group_id,
             'user_id' => $msg->user_id,
-            'user_name' => $msg->user->name,
-            'user_role' => $msg->user->role,
+            'user_name' => $msg->user->name ?? 'Unknown',
+            'user_role' => $msg->user->role ?? 'user',
             'message' => $msg->message,
             'created_at' => $msg->created_at->toDateTimeString(),
             // Rendered HTML so frontend can append easily
-            'html' => view('admin.sections.partials.message', ['msg' => $msg])->render(),
+            'html' => view($viewPath, ['msg' => $msg])->render(),
         ];
     }
 

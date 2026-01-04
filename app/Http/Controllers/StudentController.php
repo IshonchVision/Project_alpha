@@ -12,22 +12,90 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class StudentController extends Controller
 {
+    public function settings()
+    {
+        $user = Auth::user();
+        return view('student.sections.settings', compact('user'));
+    }
+
     public function updateProfile(Request $request)
     {
         $user = Auth::user();
 
-        $validated = $request->validate([
+        $data = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $user->id,
-            'phone' => 'nullable|string|max:20',
+            'phone' => 'nullable|string|max:50',
+            'age' => 'nullable|integer|min:10|max:100',
+            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        $user->update($validated);
+        // Avatar yuklash S3 ga
+        if ($request->hasFile('avatar')) {
+            try {
+                $file = $request->file('avatar');
+
+                // S3 ga yuklash va public visibility
+                $path = $file->store('avatars', [
+                    'disk' => 's3',
+                    'visibility' => 'public',
+                ]);
+
+                // Eski avatarni o'chirish
+                if ($user->avatar && Storage::disk('s3')->exists($user->avatar)) {
+                    Storage::disk('s3')->delete($user->avatar);
+                }
+
+                $user->avatar = $path;
+            } catch (\Throwable $e) {
+                return back()->with('error', 'Avatarni yuklashda xatolik: ' . $e->getMessage());
+            }
+        }
+
+        $user->name = $data['name'];
+        $user->email = $data['email'];
+        $user->phone = $data['phone'] ?? $user->phone;
+        $user->age = $data['age'] ?? $user->age;
+        $user->save();
 
         return back()->with('success', 'Profil muvaffaqiyatli yangilandi!');
+    }
+
+    public function updatePassword(Request $request)
+    {
+        $request->validate([
+            'current_password' => 'required',
+            'password' => 'required|min:8|confirmed',
+        ]);
+
+        $user = Auth::user();
+
+        // Joriy parolni tekshirish
+        if (!Hash::check($request->current_password, $user->password)) {
+            return back()->withErrors(['current_password' => 'Joriy parol noto\'g\'ri']);
+        }
+
+        $user->update([
+            'password' => Hash::make($request->password)
+        ]);
+
+        return back()->with('success', 'Parol muvaffaqiyatli yangilandi!');
+    }
+
+    public function updateNotifications(Request $request)
+    {
+        $user = Auth::user();
+
+        $user->update([
+            'email_notifications' => $request->has('email_notifications'),
+            'push_notifications' => $request->has('push_notifications'),
+        ]);
+
+        return back()->with('success', 'Bildirishnoma sozlamalari saqlandi!');
     }
 
     public function courses()
@@ -264,49 +332,78 @@ class StudentController extends Controller
 
     public function sendChatMessage(Request $request)
     {
-        $request->validate([
-            'group_id' => 'required|exists:groups,id',
-            'message' => 'required|string|max:1000'
-        ]);
-
-        $user = Auth::user();
-
-        // TO'G'IRLANDI: student_id ishlatildi
-        $group = Group::whereHas('students', fn($q) => $q->where('student_id', $user->id))
-            ->findOrFail($request->group_id);
-
-        $message = GroupMessage::create([
-            'group_id' => $group->id,
-            'user_id' => $user->id,
-            'message' => $request->message,
-        ]);
-
-        event(new \App\Events\NewGroupMessage($message));
-
-        if ($request->ajax() || $request->wantsJson()) {
-            $selectedGroup = Group::with('teacher')->findOrFail($request->group_id);
-
-            $messages = GroupMessage::with('user')
-                ->where('group_id', $selectedGroup->id)
-                ->latest()
-                ->limit(100)
-                ->get()
-                ->reverse();
-
-            $html = view('student.sections.chat-window', compact('selectedGroup', 'messages'))->render();
-
-            return response()->json([
-                'html' => $html,
-                'group_id' => $selectedGroup->id,
-                'last_message' => $message->message,
-                'last_time' => $message->created_at->diffForHumans(),
-                'messages_count' => GroupMessage::where('group_id', $selectedGroup->id)->count(),
-                'last_message_id' => $message->id,
-                'message_html' => view('student.sections.partials.message', ['msg' => $message])->render(),
-                'message_id' => $message->id,
+        try {
+            $request->validate([
+                'group_id' => 'required|exists:groups,id',
+                'message' => 'required|string|max:1000'
             ]);
-        }
 
-        return back()->with('success', 'Xabar yuborildi');
+            $user = Auth::user();
+
+            // TO'G'IRLANDI: student_id ishlatildi
+            $group = Group::whereHas('students', fn($q) => $q->where('student_id', $user->id))
+                ->findOrFail($request->group_id);
+
+            $message = GroupMessage::create([
+                'group_id' => $group->id,
+                'user_id' => $user->id,
+                'message' => $request->message,
+            ]);
+
+            // Load the user relationship
+            $message->load('user');
+
+            event(new \App\Events\NewGroupMessage($message));
+
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'group_id' => $group->id,
+                    'last_message' => $message->message,
+                    'last_time' => $message->created_at->diffForHumans(),
+                    'messages_count' => GroupMessage::where('group_id', $group->id)->count(),
+                    'last_message_id' => $message->id,
+                    'message_html' => view('student.sections.partials.message', ['msg' => $message])->render(),
+                    'message_id' => $message->id,
+                ]);
+            }
+
+            return back()->with('success', 'Xabar yuborildi');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            Log::error('Student sendChatMessage validation error', ['errors' => $e->errors()]);
+            
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Validatsiya xatosi: ' . implode(', ', array_map(fn($arr) => implode(', ', $arr), $e->errors()))
+                ], 422);
+            }
+            throw $e;
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            Log::error('Student sendChatMessage: group not found or access denied', ['group_id' => $request->group_id, 'user_id' => Auth::id()]);
+            
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Guruhga kirish huquqingiz yo\'q yoki guruh topilmadi.'
+                ], 403);
+            }
+            abort(403);
+        } catch (\Throwable $e) {
+            Log::error('Student sendChatMessage error', [
+                'group_id' => $request->group_id ?? null,
+                'user_id' => Auth::id(),
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Xabar yuborishda xatolik yuz berdi: ' . $e->getMessage()
+                ], 500);
+            }
+            throw $e;
+        }
     }
 }

@@ -22,22 +22,92 @@
 
     <!-- Input form -->
     <div class="card-footer">
-        <form id="studentChatForm" class="d-flex gap-2">
-            @csrf
-            <input type="hidden" name="group_id" value="{{ $selectedGroup->id }}">
+        <div class="d-flex gap-2">
+            <input type="hidden" id="chatGroupId" value="{{ $selectedGroup->id }}">
             <input type="hidden" id="lastMessageId" value="{{ $messages->last()?->id ?? 0 }}">
             
             <input type="text" 
-                   name="message" 
                    class="form-control" 
                    placeholder="Xabar yozing..." 
-                   required 
-                   autocomplete="off">
-            <button type="submit" class="btn btn-primary">
+                   autocomplete="off"
+                   id="chatMessageInput"
+                   onkeypress="if(event.key==='Enter'){event.preventDefault();sendStudentMessage();}">
+            <button type="button" 
+                    class="btn btn-primary" 
+                    onclick="sendStudentMessage()">
                 <i class="fas fa-paper-plane"></i>
             </button>
-        </form>
+        </div>
     </div>
+</div>
+
+<script>
+function sendStudentMessage() {
+    console.log('sendStudentMessage called');
+    
+    const messageInput = document.getElementById('chatMessageInput');
+    const groupIdInput = document.getElementById('chatGroupId');
+    const lastMessageInput = document.getElementById('lastMessageId');
+    const messagesBox = document.getElementById('messagesBox');
+    
+    if (!messageInput || !groupIdInput) {
+        console.error('Required elements not found');
+        return;
+    }
+    
+    const message = messageInput.value.trim();
+    if (!message) {
+        console.log('Empty message');
+        return;
+    }
+    
+    const groupId = groupIdInput.value;
+    console.log('Sending:', message, 'to group:', groupId);
+    
+    const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+    if (!token) {
+        alert('CSRF token yo\'q. Sahifani yangilang.');
+        return;
+    }
+    
+    const formData = new FormData();
+    formData.append('group_id', groupId);
+    formData.append('message', message);
+    
+    fetch('/student/chats/send', {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': token,
+            'X-Requested-With': 'XMLHttpRequest',
+            'Accept': 'application/json'
+        },
+        body: formData
+    })
+    .then(r => {
+        console.log('Response:', r.status);
+        return r.json();
+    })
+    .then(data => {
+        console.log('Data:', data);
+        if (data.success && data.message_html) {
+            if (messagesBox) {
+                messagesBox.insertAdjacentHTML('beforeend', data.message_html);
+                messagesBox.scrollTop = messagesBox.scrollHeight;
+            }
+            if (lastMessageInput && data.message_id) {
+                lastMessageInput.value = data.message_id;
+            }
+            messageInput.value = '';
+        } else {
+            alert('Xabar yuborilmadi: ' + (data.message || 'Noma\'lum xato'));
+        }
+    })
+    .catch(err => {
+        console.error('Error:', err);
+        alert('Xatolik: ' + err.message);
+    });
+}
+</script>
 </div>
 @else
 <div class="card" style="height:calc(100vh - 150px)">

@@ -76,7 +76,6 @@
 document.addEventListener('DOMContentLoaded', function () {
     let lastId = 0;
     let currentGroupId = null;
-    let currentChatChannel = null;
 
     function bindGroupLinks() {
         document.querySelectorAll('.group-chat-item').forEach(el => {
@@ -93,11 +92,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 })
                 .then(async r => {
                     if (r.status === 401 || r.status === 419) {
-                        throw { message: 'Sessiya muddati tugagan' };
+                        throw { message: 'Sessiya muddati tugagan. Iltimos, qayta kiring.' };
                     }
                     const ct = r.headers.get('content-type') || '';
                     if (!ct.includes('application/json')) {
-                        throw { message: 'Xatolik yuz berdi' };
+                        throw { message: 'Xatolik yuz berdi. Sahifani yangilang.' };
                     }
                     if (!r.ok) throw await r.json().catch(() => ({ message: 'Server xatosi' }));
                     return r.json();
@@ -110,13 +109,15 @@ document.addEventListener('DOMContentLoaded', function () {
                     currentGroupId = groupId;
                     lastId = data.last_message_id || 0;
 
+                    // Guruh preview yangilash
                     updateGroupPreview(data);
+
                     bindGroupLinks();
                     initChatWindow();
                 })
                 .catch(err => {
                     console.error('Load group error:', err);
-                    alert(err.message || 'Guruh yuklanmadi');
+                    alert(err.message || 'Guruh yuklanmadi.');
                 });
             };
         });
@@ -158,12 +159,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function initChatWindow() {
-        // Eski kanal ulanishini o'chirish
-        if (currentChatChannel) {
-            currentChatChannel.stopListening('NewGroupMessage');
-            currentChatChannel = null;
-        }
-
         const messagesBox = document.getElementById('messagesBox');
         if (messagesBox) messagesBox.scrollTop = messagesBox.scrollHeight;
 
@@ -179,32 +174,47 @@ document.addEventListener('DOMContentLoaded', function () {
         currentGroupId = groupIdInput.value;
         console.log('Chat initialized for group:', currentGroupId);
 
-        // Real-time websocket setup
-        setupWebSocket();
-
-        // Setup send functionality
-        setupSendMessage();
-    }
-
-    function setupSendMessage() {
+        // Setup send button
         const sendBtn = document.getElementById('chatSendBtn');
         const messageInput = document.getElementById('chatMessageInput');
-        const messagesBox = document.getElementById('messagesBox');
-        const lastMessageInput = document.getElementById('lastMessageId');
         
-        if (!sendBtn || !messageInput) return;
+        if (!sendBtn || !messageInput) {
+            console.log('Send button or message input not found');
+            return;
+        }
         
-        const sendMessage = () => {
+        console.log('Chat elements found, attaching handlers');
+        
+        // Button click
+        sendBtn.onclick = function() {
+            console.log('Send button clicked!');
+            sendChatMessage();
+        };
+        
+        // Enter key
+        messageInput.onkeypress = function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                console.log('Enter pressed!');
+                sendChatMessage();
+            }
+        };
+        
+        function sendChatMessage() {
             const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
             
             if (!token) {
-                alert('CSRF token topilmadi');
+                alert('CSRF token topilmadi. Sahifani yangilang.');
                 return;
             }
 
             const message = messageInput.value.trim();
-            if (!message) return;
+            if (!message) {
+                console.log('Empty message');
+                return;
+            }
 
+            console.log('Sending message:', message);
             sendBtn.disabled = true;
             
             const formData = new FormData();
@@ -220,92 +230,98 @@ document.addEventListener('DOMContentLoaded', function () {
                 },
                 body: formData
             })
-            .then(r => r.json())
+            .then(async r => {
+                console.log('Response status:', r.status);
+                const contentType = r.headers.get('content-type') || '';
+                if (!contentType.includes('application/json')) {
+                    const text = await r.text();
+                    console.error('Non-JSON response:', text.substring(0, 200));
+                    throw { message: 'Server xatosi' };
+                }
+                const data = await r.json();
+                if (!r.ok) {
+                    console.error('Server error:', data);
+                    throw data;
+                }
+                return data;
+            })
             .then(data => {
-                if (data.success && data.message_id) {
-                    if (data.message_html) {
-                        const existing = document.querySelector(`[data-message-id="${data.message_id}"]`);
-                        if (!existing && messagesBox) {
-                            messagesBox.insertAdjacentHTML('beforeend', data.message_html);
-                            messagesBox.scrollTop = messagesBox.scrollHeight;
-                        }
+                console.log('Success:', data);
+                
+                if (data.success && data.message_html && data.message_id) {
+                    const existingMsg = document.querySelector(`[data-message-id="${data.message_id}"]`);
+                    if (!existingMsg && messagesBox) {
+                        messagesBox.insertAdjacentHTML('beforeend', data.message_html);
+                        messagesBox.scrollTop = messagesBox.scrollHeight;
                     }
                     if (lastMessageInput) lastMessageInput.value = data.message_id;
                     lastId = data.message_id;
 
                     updateGroupPreview(data);
                     messageInput.value = '';
+                } else {
+                    console.error('Invalid response:', data);
+                    throw { message: 'Xabar yuborilmadi' };
                 }
             })
             .catch(err => {
                 console.error('Error:', err);
-                alert('Xatolik yuz berdi');
+                alert(err.message || 'Xatolik yuz berdi');
             })
             .finally(() => {
                 sendBtn.disabled = false;
             });
-        };
-        
-        sendBtn.onclick = sendMessage;
-        messageInput.onkeypress = (e) => {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                sendMessage();
-            }
-        };
-    }
-
-    function setupWebSocket() {
-        if (!window.Echo) {
-            console.warn('Echo mavjud emas');
-            return;
         }
 
-        if (!currentGroupId) return;
+        // Polling (har 2.5 soniyada yangi xabarlarni tekshirish)
+        if (window.__studentChatPoll) clearInterval(window.__studentChatPoll);
 
-        try {
-            console.log('WebSocket setup for group:', currentGroupId);
-            currentChatChannel = window.Echo.channel(`group.${currentGroupId}`);
-            
-            currentChatChannel.listen('NewGroupMessage', function(e) {
-                console.log('New message via WebSocket:', e);
+        window.__studentChatPoll = setInterval(() => {
+            if (!currentGroupId) return;
+
+            fetch(`/student/chats/${currentGroupId}/poll?last_id=${lastId}`, {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json'
+                }
+            })
+            .then(r => r.ok ? r.json() : Promise.reject())
+            .then(data => {
+                if (data.html) {
+                    messagesBox?.insertAdjacentHTML('beforeend', data.html);
+                    messagesBox?.scrollTop = messagesBox.scrollHeight;
+                }
                 
-                const currentUserId = parseInt(document.querySelector('meta[name="user-id"]')?.content || 0);
-                
-                // O'z xabarimiz bo'lsa skip
-                if (e.user_id === currentUserId) {
-                    return;
+                if (data.last_message_id) {
+                    lastId = data.last_message_id;
+                    if (lastMessageInput) lastMessageInput.value = lastId;
                 }
 
-                const messagesBox = document.getElementById('messagesBox');
-                const lastMessageInput = document.getElementById('lastMessageId');
-                
-                // Yangi xabar qo'shish
-                if (e.html && messagesBox) {
-                    const existing = document.querySelector(`[data-message-id="${e.id}"]`);
-                    if (!existing) {
-                        messagesBox.insertAdjacentHTML('beforeend', e.html);
-                        messagesBox.scrollTop = messagesBox.scrollHeight;
+                // Preview yangilash
+                if (data.last_message && data.group_id) {
+                    const item = document.querySelector(`.group-chat-item[data-group-id="${currentGroupId}"]`);
+                    if (item) {
+                        const msgEl = item.querySelector('.last-message');
+                        if (msgEl) msgEl.textContent = data.last_message.substring(0, 30) + (data.last_message.length > 30 ? '...' : '');
                         
-                        if (window.toastr && e.message) {
-                            toastr.info(`${e.user_name || 'Kimdir'}: ${e.message}`, 'Yangi xabar');
+                        const timeEl = item.querySelector('.message-time');
+                        if (timeEl && data.last_time) timeEl.textContent = data.last_time;
+                        
+                        const badge = item.querySelector('.unread-badge');
+                        if (badge && data.messages_count) {
+                            badge.textContent = data.messages_count;
+                            badge.style.display = '';
                         }
                     }
                 }
-                
-                if (e.id > lastId) {
-                    lastId = e.id;
-                    if (lastMessageInput) lastMessageInput.value = e.id;
-                }
+            })
+            .catch(err => {
+                console.error('Poll error:', err);
             });
-
-            console.log('WebSocket connected');
-        } catch (err) {
-            console.error('WebSocket error:', err);
-        }
+        }, 2500);
     }
 
-    // Boshlash
+    // Boshida faollashtirish
     bindGroupLinks();
     initChatWindow();
 });

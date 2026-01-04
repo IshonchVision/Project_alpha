@@ -31,7 +31,9 @@ class User extends Authenticatable
         'address',
         'phone',
         'is_teacher',
-
+        'age',
+        'email_notifications',
+        'push_notifications',
     ];
 
     /**
