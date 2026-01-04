@@ -60,20 +60,4 @@ class StudentSettingsController extends Controller
 
         return back()->with('success', 'Parol muvaffaqiyatli yangilandi');
     }
-
-    public function updateNotifications(Request $request)
-    {
-        $user = Auth::user();
-
-        $data = $request->validate([
-            'email_notifications' => 'sometimes|boolean',
-            'push_notifications' => 'sometimes|boolean',
-        ]);
-
-        $user->email_notifications = (bool) ($request->has('email_notifications') && $request->email_notifications);
-        $user->push_notifications = (bool) ($request->has('push_notifications') && $request->push_notifications);
-        $user->save();
-
-        return back()->with('success', 'Bildirishnoma sozlamalari saqlandi');
-    }
 }

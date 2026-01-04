@@ -184,7 +184,7 @@ Route::prefix('student')->name('student.')->middleware('auth')->group(function (
     Route::post('/chats/send', [StudentController::class, 'sendChatMessage'])->name('chats.send');
 
     // Settings
-    Route::get('/settings', function () {
-        return view('student.sections.settings');
-    })->name('settings');
+    Route::get('/settings', [StudentController::class, 'settings'])->name('settings');
+    Route::post('/settings/password', [StudentController::class, 'updatePassword'])->name('settings.password');
+    Route::post('/settings/notifications', [StudentController::class, 'updateNotifications'])->name('settings.notifications');
 });

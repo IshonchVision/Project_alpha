@@ -3,8 +3,37 @@
 @section('title', 'Sozlamalar')
 @section('page-title', 'Sozlamalar')
 
+@php
+    use Illuminate\Support\Facades\Storage;
+@endphp
+
 @section('content')
 
+@if(session('success'))
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="fas fa-check-circle"></i> {{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+@endif
+
+@if(session('error'))
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="fas fa-exclamation-circle"></i> {{ session('error') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+@endif
+
+@if($errors->any())
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="fas fa-exclamation-circle"></i>
+        <ul style="margin: 0; padding-left: 20px;">
+            @foreach($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+@endif
 
 <div class="row">
     <!-- Profil ma'lumotlari -->
@@ -18,9 +47,13 @@
                     @csrf
                     <div style="display: flex; align-items: center; gap: 25px; margin-bottom: 30px;">
                         @php
-                            $avatarUrl = $user->avatar ? asset('storage/' . $user->avatar) : 'https://ui-avatars.com/api/?name=' . urlencode($user->name ?? '') . '&background=3b82f6&color=fff&size=128';
+                            if ($user->avatar) {
+                                $avatarUrl = Storage::disk('s3')->url($user->avatar);
+                            } else {
+                                $avatarUrl = 'https://ui-avatars.com/api/?name=' . urlencode($user->name ?? '') . '&background=3b82f6&color=fff&size=128';
+                            }
                         @endphp
-                        <img src="{{ $avatarUrl }}" alt="Avatar" style="width: 120px; height: 120px; border-radius: 50%; border: 5px solid var(--primary); object-fit:cover">
+                        <img src="{{ $avatarUrl }}" alt="Avatar" id="avatarPreview" style="width: 120px; height: 120px; border-radius: 50%; border: 5px solid var(--primary); object-fit:cover">
                         <div style="flex:1">
                             <label class="btn btn-outline-secondary" style="padding: 10px 20px; cursor:pointer">
                                 <i class="fas fa-camera"></i> Rasmni O'zgartirish
@@ -45,7 +78,7 @@
                         </div>
                         <div>
                             <label style="display: block; margin-bottom: 8px; font-weight: 700;">Yosh (ixtiyoriy)</label>
-                            <input type="number" name="age" class="form-control" value="{{ old('age') }}" style="padding: 12px 16px; border: 2px solid #e2e8f0; border-radius: 12px;">
+                            <input type="number" name="age" class="form-control" value="{{ old('age', $user->age) }}" style="padding: 12px 16px; border: 2px solid #e2e8f0; border-radius: 12px;">
                         </div>
                     </div>
 
@@ -84,50 +117,39 @@
                 </form>
             </div>
         </div>
-    </div>
 
-    <!-- Qo'shimcha sozlamalar -->
-    <div class="col-lg-4">
-        <div class="card">
+        <!-- Bildirishnomalar -->
+        <div class="card" style="margin-top: 30px;">
             <div class="card-header">
                 <h4>Bildirishnomalar</h4>
             </div>
             <div class="card-body">
-                <form action="{{ route('settings.notifications') }}" method="POST">
+                <form action="{{ route('student.settings.notifications') }}" method="POST">
                     @csrf
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
                         <div>
-                            <strong>Email bildirishnomalar</strong><br>
-                            <small style="color: #64748b;">Yangi darslar va izohlar</small>
+                            <h6 style="margin:0; font-weight:700;">Email xabarnomalar</h6>
+                            <p style="margin:4px 0 0; color:#64748b;">Yangi xabar va eslatmalarni email orqali oling</p>
                         </div>
                         <label class="switch">
-                            <input type="checkbox" name="email_notifications" value="1" {{ $user->email_notifications ? 'checked' : '' }}>
+                            <input type="checkbox" name="email_notifications" {{ old('email_notifications', $user->email_notifications) ? 'checked' : '' }}>
                             <span class="slider round"></span>
                         </label>
                     </div>
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                        <div>
-                            <strong>Push bildirishnomalar</strong><br>
-                            <small style="color: #64748b;">Brauzer orqali</small>
-                        </div>
-                        <label class="switch">
-                            <input type="checkbox" name="push_notifications" value="1" {{ $user->push_notifications ? 'checked' : '' }}>
-                            <span class="slider round"></span>
-                        </label>
-                    </div>
-                    <div style="text-align:right">
-                        <button class="btn btn-outline-primary">Saqlash</button>
-                    </div>
-                </form>
-            </div>
-        </div>
 
-        <div class="card" style="margin-top: 30px;">
-            <div class="card-body">
-                <form action="{{ route('logout') }}" method="POST">
-                    @csrf
-                    <button type="submit" style="background: linear-gradient(135deg, #ef4444, #dc2626); color: white; border: none; padding: 14px 24px; border-radius: 14px; width: 100%; font-weight: 700;">
-                        <i class="fas fa-sign-out-alt"></i> Chiqish
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
+                        <div>
+                            <h6 style="margin:0; font-weight:700;">Push xabarnomalar</h6>
+                            <p style="margin:4px 0 0; color:#64748b;">Real-time bildirishnomalarni olish</p>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" name="push_notifications" {{ old('push_notifications', $user->push_notifications) ? 'checked' : '' }}>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+
+                    <button class="btn-primary" style="padding: 12px 28px;">
+                        <i class="fas fa-bell"></i> Saqlash
                     </button>
                 </form>
             </div>
@@ -164,4 +186,42 @@
 input:checked + .slider { background-color: var(--primary); }
 input:checked + .slider:before { transform: translateX(26px); }
 </style>
+
+<script>
+// Avatar rasmni preview qilish
+document.addEventListener('DOMContentLoaded', function() {
+    const avatarInput = document.querySelector('input[name="avatar"]');
+    const avatarImg = document.getElementById('avatarPreview');
+    
+    if (avatarInput && avatarImg) {
+        avatarInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                // Fayl hajmini tekshirish (2MB)
+                if (file.size > 2 * 1024 * 1024) {
+                    alert('Rasm hajmi 2MB dan kichik bo\'lishi kerak!');
+                    e.target.value = '';
+                    return;
+                }
+                
+                // Rasm formatini tekshirish
+                const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+                if (!allowedTypes.includes(file.type)) {
+                    alert('Faqat JPG, PNG yoki GIF formatdagi rasmlar qabul qilinadi!');
+                    e.target.value = '';
+                    return;
+                }
+                
+                // Preview ko'rsatish
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    avatarImg.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+});
+</script>
+
 @endsection

@@ -4,8 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <meta name="pusher-key" content="{{ env('PUSHER_APP_KEY') }}">
-    <meta name="pusher-cluster" content="{{ env('PUSHER_APP_CLUSTER') }}">
+    <meta name="reverb-key" content="{{ env('REVERB_APP_KEY') }}">
+    <meta name="reverb-host" content="{{ env('REVERB_HOST') }}">
+    <meta name="reverb-port" content="{{ env('REVERB_PORT') }}">
+    <meta name="reverb-scheme" content="{{ env('REVERB_SCHEME') }}">
     <meta name="user-id" content="{{ auth()->id() }}">
     <title>O'qituvchi Panel - @yield('title')</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -366,27 +368,35 @@
 </head>
 <body>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://js.pusher.com/7.2/pusher.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/pusher-js@8.3.0/dist/web/pusher.min.js"></script>
     <script src="https://unpkg.com/laravel-echo/dist/echo.iife.js"></script>
     <script>
         (function() {
-            const key = document.querySelector('meta[name="pusher-key"]')?.getAttribute('content');
-            if (!key) return;
+            const key = document.querySelector('meta[name="reverb-key"]')?.getAttribute('content');
+            const host = document.querySelector('meta[name="reverb-host"]')?.getAttribute('content') || 'localhost';
+            const port = document.querySelector('meta[name="reverb-port"]')?.getAttribute('content') || '8080';
+            const scheme = document.querySelector('meta[name="reverb-scheme"]')?.getAttribute('content') || 'http';
+            
+            if (!key) {
+                console.warn('Reverb key topilmadi');
+                return;
+            }
 
-            Pusher.logToConsole = false;
+            Pusher.logToConsole = true; // Debug mode
 
             try {
                 window.Echo = new window.Echo({
-                    broadcaster: 'pusher',
+                    broadcaster: 'reverb',
                     key: key,
-                    wsHost: window.location.hostname,
-                    wsPort: 6001,
-                    wssPort: 6001,
-                    forceTLS: false,
-                    encrypted: false,
+                    wsHost: host,
+                    wsPort: port,
+                    wssPort: port,
+                    forceTLS: scheme === 'https',
+                    enabledTransports: ['ws', 'wss'],
                     disableStats: true,
-                    enabledTransports: ['ws', 'wss']
                 });
+                console.log('Teacher Echo initialized with Reverb');
+                console.log('Config:', { key, host, port, scheme });
             } catch (e) {
                 console.error('Echo init error', e);
             }
