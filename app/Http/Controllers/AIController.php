@@ -9,7 +9,7 @@ class AIController extends Controller
     public function chat(Request $request)
     {
         $question = $request->input('question');
-        $apiKey   = env('GEMINI_API_KEY');
+        $apiKey  = env('GEMINI_API_KEY');
 
         try {
             $response = Http::withoutVerifying()
@@ -28,14 +28,19 @@ class AIController extends Controller
                 return response()->json([
                     'content' => [
                         [
-                            'text' => "Xatolik! ❌❌❌\n\n" .
+                            'text' =>
+                            "Xatolik! ❌❌❌\n\n" .
                             "Uzur so'rayman.\n" .
-                            "Kunlik bepul limit (20 ta savol) tugadi. Google API cheklovi tufayli bugun boshqa javob bera olmayman.\n\n" .
-                            "Limitsiz va tezroq javob olish uchun rasmiy AI dan foydalaning 👇\n\n" .
-                            "Gemini AI ga o'tish: https://gemini.google.com ✅",
+                            "Kunlik bepul savol so'rash limiti tugadi. Google API cheklovi tufayli bugun boshqa javob bera olmayman.\n\n" .
+                            "Ko'proq va tezroq javob olish uchun rasmiy AI xizmatlaridan foydalaning 👇\n\n" .
+                            "Quyidagilardan birini tanlab davom eting:\n" .
+                            "• <a href=\"https://chat.openai.com\" target=\"_blank\">ChatGPT</a>\n" .
+                            "• <a href=\"https://gemini.google.com\" target=\"_blank\">Gemini AI</a>\n" .
+                            "• <a href=\"https://claude.ai\" target=\"_blank\">Claude AI</a>\n" .
+                            "• <a href=\"https://grok.x.ai\" target=\"_blank\">Grok AI</a>\n" ,
                         ],
                     ],
-                ]);
+                ], 429);
             }
 
             if ($response->successful()) {
