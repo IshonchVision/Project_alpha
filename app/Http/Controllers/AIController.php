@@ -9,7 +9,7 @@ class AIController extends Controller
     public function chat(Request $request)
     {
         $question = $request->input('question');
-        $apiKey  = env('GEMINI_API_KEY');
+        $apiKey   = env('GEMINI_API_KEY');
 
         try {
             $response = Http::withoutVerifying()
@@ -34,10 +34,12 @@ class AIController extends Controller
                             "Kunlik bepul savol so'rash limiti tugadi. Google API cheklovi tufayli bugun boshqa javob bera olmayman.\n\n" .
                             "Ko'proq va tezroq javob olish uchun rasmiy AI xizmatlaridan foydalaning 👇\n\n" .
                             "Quyidagilardan birini tanlab davom eting:\n" .
-                            "• <a href=\"https://chat.openai.com\" target=\"_blank\">ChatGPT</a>\n" .
-                            "• <a href=\"https://gemini.google.com\" target=\"_blank\">Gemini AI</a>\n" .
-                            "• <a href=\"https://claude.ai\" target=\"_blank\">Claude AI</a>\n" .
-                            "• <a href=\"https://grok.x.ai\" target=\"_blank\">Grok AI</a>\n" ,
+                            "<div style='display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px;'>" .
+                            "<a href='https://chat.openai.com' target='_blank' class='btn btn-sm btn-outline-success' style='border-radius: 20px; padding: 5px 15px;'>ChatGPT</a>" .
+                            "<a href='https://gemini.google.com' target='_blank' class='btn btn-sm btn-outline-primary' style='border-radius: 20px; padding: 5px 15px;'>Gemini AI</a>" .
+                            "<a href='https://claude.ai' target='_blank' class='btn btn-sm btn-outline-warning' style='border-radius: 20px; padding: 5px 15px;'>Claude AI</a>" .
+                            "<a href='https://grok.x.ai' target='_blank' class='btn btn-sm btn-outline-dark' style='border-radius: 20px; padding: 5px 15px;'>Grok AI</a>" .
+                            "</div>",
                         ],
                     ],
                 ], 429);
