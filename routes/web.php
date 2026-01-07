@@ -11,6 +11,7 @@ use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\TeacherSettingsController;
 use App\Http\Controllers\UniversalController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AIController;
 
 // 404 Fallback Route
 Route::fallback(function () {
@@ -21,6 +22,7 @@ Route::fallback(function () {
 // PUBLIC ROUTES
 // ============================================
 
+Route::post('/ai-chat', [AIController::class, 'chat']);  // Ai chat uchun 
 Route::get('/', [HomeController::class, 'home'])->name('home');
 Route::get('/courses', [CourseController::class, 'index'])->name('courses');
 Route::get('/about', [HomeController::class, 'about'])->name('about');
