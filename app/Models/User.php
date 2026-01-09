@@ -31,9 +31,6 @@ class User extends Authenticatable
         'address',
         'phone',
         'is_teacher',
-        'age',
-        'email_notifications',
-        'push_notifications',
     ];
 
     /**
@@ -54,7 +51,6 @@ class User extends Authenticatable
     protected function casts(): array
     {
         return [
-            'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
     }
