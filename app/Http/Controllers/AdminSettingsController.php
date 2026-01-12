@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class AdminSettingsController extends Controller
 {
@@ -24,34 +25,38 @@ class AdminSettingsController extends Controller
         $user = Auth::user();
 
         $data = $request->validate([
-            'name' => 'required|string|max:255',
+            'name'  => 'required|string|max:255',
             'email' => 'required|email|max:255|unique:users,email,' . $user->id,
             'phone' => 'nullable|string|max:50',
-            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:5120', // 5MB ga oshirdim, kerak bo'lsa
         ]);
 
         if ($request->hasFile('avatar')) {
             try {
                 $file = $request->file('avatar');
 
-                // S3 ga yuklash va public visibility
                 $path = $file->store('avatars', [
-                    'disk' => 's3',
+                    'disk'       => 's3',           // ← 'minio' emas, 's3' ishlatamiz
                     'visibility' => 'public',
                 ]);
 
-                // Eski avatarni o'chirish
-                if ($user->avatar && Storage::disk('s3')->exists($user->avatar)) {
-                    Storage::disk('s3')->delete($user->avatar);
+                // Eski avatar bor bo'lsa — exists() siz o'chirishga urinaymiz
+                if ($user->avatar) {
+                    try {
+                        Storage::disk('s3')->delete($user->avatar);
+                    } catch (\Throwable $e) {
+                        // Fayl yo'q bo'lsa yoki 403 chiqsa — jim o'tkazamiz
+                        Log::warning("Eski avatar o'chirishda xato (ehtimol mavjud emas): " . $e->getMessage());
+                    }
                 }
 
-                $user->avatar = $path;
+                $user->avatar = $path;   // ← bu yerda saqlanadi
             } catch (\Throwable $e) {
                 return back()->with('error', 'Avatarni yuklashda xatolik: ' . $e->getMessage());
             }
         }
 
-        $user->name = $data['name'];
+        $user->name  = $data['name'];
         $user->email = $data['email'];
         $user->phone = $data['phone'] ?? $user->phone;
         $user->save();
