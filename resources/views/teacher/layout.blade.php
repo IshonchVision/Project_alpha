@@ -1,5 +1,7 @@
+Laravel Php misollar, [13.01.2026 16:19]
 <!DOCTYPE html>
 <html lang="uz">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -45,7 +47,7 @@
             background: linear-gradient(180deg, #064e3b 0%, #065f46 100%);
             padding: 20px;
             overflow-y: auto;
-            box-shadow: 5px 0 30px rgba(0,0,0,0.4);
+            box-shadow: 5px 0 30px rgba(0, 0, 0, 0.4);
             z-index: 1000;
         }
 
@@ -54,7 +56,7 @@
         }
 
         .sidebar::-webkit-scrollbar-thumb {
-            background: rgba(255,255,255,0.2);
+            background: rgba(255, 255, 255, 0.2);
             border-radius: 3px;
         }
 
@@ -63,7 +65,7 @@
             align-items: center;
             gap: 15px;
             padding: 20px 10px;
-            border-bottom: 2px solid rgba(255,255,255,0.1);
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
             margin-bottom: 30px;
         }
 
@@ -94,7 +96,7 @@
             align-items: center;
             gap: 15px;
             padding: 16px 20px;
-            color: rgba(255,255,255,0.7);
+            color: rgba(255, 255, 255, 0.7);
             text-decoration: none;
             border-radius: 14px;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -116,7 +118,7 @@
         }
 
         .menu-link:hover {
-            background: rgba(255,255,255,0.1);
+            background: rgba(255, 255, 255, 0.1);
             color: white;
             transform: translateX(10px);
         }
@@ -128,13 +130,16 @@
         .menu-link.active {
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
-            box-shadow: 0 10px 30px rgba(16,185,129,0.5);
+            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.5);
         }
 
         .menu-link i {
             font-size: 20px;
             width: 25px;
         }
+
+Laravel Php misollar, [13.01.2026 16:19]
+
 
         .badge {
             padding: 4px 10px;
@@ -154,7 +159,7 @@
             background: white;
             padding: 28px 40px;
             border-radius: 24px;
-            box-shadow: 0 15px 50px rgba(0,0,0,0.1);
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.1);
             margin-bottom: 35px;
             display: flex;
             justify-content: space-between;
@@ -209,7 +214,7 @@
             background: white;
             padding: 35px;
             border-radius: 24px;
-            box-shadow: 0 15px 50px rgba(0,0,0,0.1);
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.1);
             display: flex;
             align-items: center;
             gap: 25px;
@@ -225,14 +230,14 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, transparent, rgba(16,185,129,0.05));
+            background: linear-gradient(135deg, transparent, rgba(16, 185, 129, 0.05));
             transform: translateX(-100%);
             transition: transform 0.4s;
         }
 
         .stat-card:hover {
             transform: translateY(-12px);
-            box-shadow: 0 25px 60px rgba(0,0,0,0.18);
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.18);
         }
 
         .stat-card:hover::before {
@@ -254,25 +259,25 @@
         .stat-icon.green {
             background: linear-gradient(135deg, #10b981, #059669);
             color: white;
-            box-shadow: 0 10px 30px rgba(16,185,129,0.4);
+            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.4);
         }
 
         .stat-icon.blue {
             background: linear-gradient(135deg, #3b82f6, #2563eb);
             color: white;
-            box-shadow: 0 10px 30px rgba(59,130,246,0.4);
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.4);
         }
 
         .stat-icon.orange {
             background: linear-gradient(135deg, #f59e0b, #d97706);
             color: white;
-            box-shadow: 0 10px 30px rgba(245,158,11,0.4);
+            box-shadow: 0 10px 30px rgba(245, 158, 11, 0.4);
         }
 
         .stat-icon.purple {
             background: linear-gradient(135deg, #8b5cf6, #7c3aed);
             color: white;
-            box-shadow: 0 10px 30px rgba(139,92,246,0.4);
+            box-shadow: 0 10px 30px rgba(139, 92, 246, 0.4);
         }
 
         .stat-info {
@@ -288,6 +293,9 @@
             color: var(--dark);
         }
 
+Laravel Php misollar, [13.01.2026 16:19]
+
+
         .stat-info p {
             color: #64748b;
             margin: 5px 0 0 0;
@@ -298,7 +306,7 @@
         .card {
             background: white;
             border-radius: 24px;
-            box-shadow: 0 15px 50px rgba(0,0,0,0.1);
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.1);
             overflow: hidden;
             margin-bottom: 35px;
         }
@@ -331,76 +339,109 @@
 
         .btn-primary:hover {
             transform: translateY(-4px);
-            box-shadow: 0 12px 30px rgba(16,185,129,0.5);
+            box-shadow: 0 12px 30px rgba(16, 185, 129, 0.5);
         }
 
         .card-body {
             padding: 35px;
         }
 
+        /* Eski @media (max-width: 768px) blokini mana bunga almashtiring */
         @media (max-width: 768px) {
             .sidebar {
                 transform: translateX(-100%);
-                transition: transform 0.3s;
+                transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                left: 0 !important;
+                z-index: 1001;
+                /* Overlaydan balandda turishi uchun */
             }
+
             .sidebar.active {
                 transform: translateX(0);
             }
+
             .main-content {
-                margin-left: 0;
-                padding: 20px;
+                margin-left: 0 !important;
+                padding: 15px;
+            }
+
+            .top-bar {
+                flex-direction: row !important;
+                /* Ustma-ust bo'lib qolmasligi uchun */
+                justify-content: space-between;
+                align-items: center;
+                padding: 15px 20px;
+            }
+
+            .page-title {
+                font-size: 20px;
+                /* Mobilda sarlavhani kichraytiramiz */
             }
 
             .stats-grid {
                 grid-template-columns: 1fr;
             }
 
-            .search-input {
-                width: 100%;
+            .user-info div {
+                display: none;
+                /* Mobilda faqat rasm qolsa joy ko'proq bo'ladi (ixtiyoriy) */
             }
+        }
 
-            .top-bar {
-                flex-direction: column;
-                align-items: stretch;
-            }
+        /* Buni @media blokidan tashqariga qo'shing */
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+        }
+
+        .sidebar-overlay.show {
+            display: block;
         }
     </style>
 </head>
+
 <body>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/pusher-js@8.3.0/dist/web/pusher.min.js"></script>
     <script src="https://unpkg.com/laravel-echo/dist/echo.iife.js"></script>
     <script>
-        (function() {
-            const key = document.querySelector('meta[name="reverb-key"]')?.getAttribute('content');
-            const host = document.querySelector('meta[name="reverb-host"]')?.getAttribute('content') || 'localhost';
-            const port = document.querySelector('meta[name="reverb-port"]')?.getAttribute('content') || '8080';
-            const scheme = document.querySelector('meta[name="reverb-scheme"]')?.getAttribute('content') || 'http';
-            
-            if (!key) {
-                console.warn('Reverb key topilmadi');
-                return;
-            }
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebar = document.querySelector('.sidebar');
+            const toggleBtn = document.getElementById('sidebarCollapse');
 
-            Pusher.logToConsole = true; // Debug mode
+            // Overlay (orqa fon xiralashishi) elementini yaratish
+            const overlay = document.createElement('div');
+            overlay.className = 'sidebar-overlay';
+            document.body.appendChild(overlay);
 
-            try {
-                window.Echo = new window.Echo({
-                    broadcaster: 'reverb',
-                    key: key,
-                    wsHost: host,
-                    wsPort: port,
-                    wssPort: port,
-                    forceTLS: scheme === 'https',
-                    enabledTransports: ['ws', 'wss'],
-                    disableStats: true,
+            // Hamburger tugmasi bosilganda
+            if (toggleBtn) {
+                toggleBtn.addEventListener('click', function() {
+                    sidebar.classList.add('active');
+                    overlay.classList.add('show');
+                    document.body.style.overflow = 'hidden'; // Orqa fon aylanmasligi uchun
                 });
-                console.log('Teacher Echo initialized with Reverb');
-                console.log('Config:', { key, host, port, scheme });
-            } catch (e) {
-                console.error('Echo init error', e);
             }
-        })();
+
+Laravel Php misollar, [13.01.2026 16:19]
+
+
+            // Overlay yoki menyu tashqarisi bosilganda yopish
+            overlay.addEventListener('click', function() {
+                sidebar.classList.remove('active');
+                overlay.classList.remove('show');
+                document.body.style.overflow = 'auto'; // Scrollni qaytarish
+            });
+
+
+        });
     </script>
     @include('teacher.partials.sidebar')
 
@@ -409,4 +450,5 @@
         @yield('content')
     </div>
 </body>
+
 </html>
