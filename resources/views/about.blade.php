@@ -38,7 +38,7 @@
             <div class="col-12">
                 <p style="font-size: 0.95rem; line-height: 1.7; text-align: justify;">
                     <b style="color: blue;">Ta'lim nazariyasi</b> — o'qitish jarayoni, metodlari, tamoyillari va o'quvchini
-                    rivojlantirishga qaratilgan ilmiy yondashuvlarni o'rganuvchi fan.
+                    rivojlantirishga qaratilgan ilmiy ilmiy yondashuvlarni o'rganuvchi fan.
                     Ushbu platformada siz ta'lim jarayonining asoslari, didaktik tamoyillar, o'qitish metodlari, o'quvchi
                     psixologiyasi va zamonaviy pedagogik yondashuvlarni chuqur va amaliy shaklda o'rganasiz.
                 </p>
@@ -77,7 +77,6 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="col-md-4">
                         <div class="card text-center h-100 shadow-lg border-0 rounded-3">
                             <div class="card-body p-5"
