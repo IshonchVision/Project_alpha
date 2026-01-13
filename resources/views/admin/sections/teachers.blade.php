@@ -28,27 +28,29 @@
                     <tbody>
                         @forelse ($teachers as $teacher)
                             <tr>
-                                <td>
+                                <td data-label="O'QITUVCHI">
                                     <div class="d-flex align-items-center">
                                         <img src="https://ui-avatars.com/api/?name={{ urlencode($teacher->name) }}&background=random&color=fff&bold=true&rounded=true&size=48"
-                                             class="rounded-circle me-3" width="48" height="48" alt="{{ $teacher->name }}">
+                                            class="rounded-circle me-3" width="48" height="48"
+                                            alt="{{ $teacher->name }}">
                                         <div>
                                             <div class="fw-bold">{{ $teacher->name }}</div>
                                             <div class="text-muted small">{{ $teacher->email }}</div>
                                         </div>
                                     </div>
                                 </td>
-                                <td>{{ $teacher->subject_name ?? '-' }}</td>
-                                <td>{{ $teacher->group_count ?? 0 }}</td>
-                                <td>{{ $teacher->phone ?? '-' }}</td>
-                                <td>
+                                <td data-label="FAN">{{ $teacher->subject_name ?? '-' }}</td>
+                                <td data-label="GURUHLAR SONI">{{ $teacher->group_count ?? 0 }}</td>
+                                <td data-label="TELEFON">{{ $teacher->phone ?? '-' }}</td>
+                                <td data-label="STATUS">
                                     <span class="badge bg-{{ $teacher->status == 'active' ? 'success' : 'secondary' }}">
                                         {{ $teacher->status == 'active' ? 'Faol' : 'Faol emas' }}
                                     </span>
                                 </td>
-                                <td class="text-center">
+                                <td data-label="AMALLAR" class="text-center">
                                     <div class="d-flex gap-2 justify-content-center">
-                                        <form action="{{ route('admin.teachers.destroy', $teacher) }}" method="POST" class="d-inline">
+                                        <form action="{{ route('admin.teachers.destroy', $teacher) }}" method="POST"
+                                            class="d-inline">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-sm btn-outline-danger"
@@ -56,12 +58,16 @@
                                                 <i class="fas fa-trash-alt"></i>
                                             </button>
                                         </form>
+                                        <!-- Agar tahrirlash tugmasi qo'shmoqchi bo'lsang, shu yerga qo'sh -->
                                     </div>
                                 </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="6" class="text-center py-4 text-muted">Hozircha o'qituvchilar mavjud emas</td>
+                                <td colspan="6" class="text-center py-5 text-muted">
+                                    <i class="fas fa-user-slash fa-3x mb-3 d-block text-muted"></i>
+                                    Hozircha o'qituvchilar mavjud emas
+                                </td>
                             </tr>
                         @endforelse
                     </tbody>
@@ -83,9 +89,11 @@
                     <div class="modal-body">
                         <div class="row g-3">
                             <div class="col-md-6">
-                                <label for="name" class="form-label">Ism-familiya <span class="text-danger">*</span></label>
-                                <input type="text" name="name" id="name" class="form-control @error('name') is-invalid @enderror"
-                                       value="{{ old('name') }}" required>
+                                <label for="name" class="form-label">Ism-familiya <span
+                                        class="text-danger">*</span></label>
+                                <input type="text" name="name" id="name"
+                                    class="form-control @error('name') is-invalid @enderror" value="{{ old('name') }}"
+                                    required>
                                 @error('name')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -93,8 +101,8 @@
 
                             <div class="col-md-6">
                                 <label for="email" class="form-label">Email</label>
-                                <input type="email" name="email" id="email" class="form-control @error('email') is-invalid @enderror"
-                                       value="{{ old('email') }}">
+                                <input type="email" name="email" id="email"
+                                    class="form-control @error('email') is-invalid @enderror" value="{{ old('email') }}">
                                 @error('email')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -102,45 +110,47 @@
 
                             <div class="col-md-6">
                                 <label for="phone" class="form-label">Telefon raqami</label>
-                                <input type="text" name="phone" id="phone" class="form-control @error('phone') is-invalid @enderror"
-                                       value="{{ old('phone') }}" placeholder="+998">
+                                <input type="text" name="phone" id="phone"
+                                    class="form-control @error('phone') is-invalid @enderror" value="{{ old('phone') }}"
+                                    placeholder="+998">
                                 @error('phone')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
 
-<div class="col-md-6">
-    <label for="subject" class="form-label">Fan nomi</label>
-    <input type="text" 
-           name="subject" 
-           id="subject" 
-           class="form-control @error('subject') is-invalid @enderror"
-           value="{{ old('subject') }}" 
-           placeholder="Masalan: Matematika, Ingliz tili, Fizika"
-           required>
+                            <div class="col-md-6">
+                                <label for="subject" class="form-label">Fan nomi</label>
+                                <input type="text" name="subject" id="subject"
+                                    class="form-control @error('subject') is-invalid @enderror"
+                                    value="{{ old('subject') }}" placeholder="Masalan: Matematika, Ingliz tili, Fizika"
+                                    required>
 
-    @error('subject')
-        <div class="invalid-feedback">{{ $message }}</div>
-    @enderror
-</div>
+                                @error('subject')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
                             <div class="col-12">
                                 <label for="password" class="form-label">Parol <span class="text-danger">*</span></label>
-                                <input type="password" name="password" id="password" class="form-control @error('password') is-invalid @enderror" required>
+                                <input type="password" name="password" id="password"
+                                    class="form-control @error('password') is-invalid @enderror" required>
                                 @error('password')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
 
                             <div class="col-12">
-                                <label for="password_confirmation" class="form-label">Parolni tasdiqlang <span class="text-danger">*</span></label>
-                                <input type="password" name="password_confirmation" id="password_confirmation" class="form-control" required>
+                                <label for="password_confirmation" class="form-label">Parolni tasdiqlang <span
+                                        class="text-danger">*</span></label>
+                                <input type="password" name="password_confirmation" id="password_confirmation"
+                                    class="form-control" required>
                             </div>
 
                             <div class="col-md-6">
                                 <label for="status" class="form-label">Status</label>
                                 <select name="status" id="status" class="form-select">
                                     <option value="active" {{ old('status') == 'active' ? 'selected' : '' }}>Faol</option>
-                                    <option value="inactive" {{ old('status') == 'inactive' ? 'selected' : '' }}>Faol emas</option>
+                                    <option value="inactive" {{ old('status') == 'inactive' ? 'selected' : '' }}>Faol emas
+                                    </option>
                                 </select>
                             </div>
                         </div>
@@ -164,14 +174,17 @@
             align-items: center;
             gap: 12px;
         }
+
         .user-name {
             font-weight: 600;
         }
+
         .status-badge {
             padding: 4px 12px;
             border-radius: 12px;
             font-size: 0.85rem;
         }
+
         .status-badge.active {
             background: #d4edda;
             color: #155724;
